@@ -112,6 +112,7 @@ class Model {
 	}
 
 	public function checkPermission($actionId, $domain = null){
+		//12354
 		$actId = $this->actions[$actionId]->items[5062];
 		if (empty($domain)) $domain = $this->actions[$actionId]->items[5055];
 		//echo 'domain'.$domain.','.$actId.','.$actionId.',';
