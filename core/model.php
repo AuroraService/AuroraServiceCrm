@@ -437,12 +437,13 @@ class Model {
 			}
 		}
 	}
-	
+
+	//Изменение свойства сущности
 	public function updateProperty($entId,$prop,$propValue,$oldValue = null){
 		$type = $this->getResProperty($entId,5051,0,0);
 		$tableName = $this->getResProperty($type,503,0,0); //503.Местоположение
 		if (($prop->items[5055] == 134)||($prop->items[5055] == 136)) $value = '"'.$propValue.'"'; else $value = $propValue;
-		if ($prop->items[5084] == 0) {$query = 'update '.$tableName.' set '.$prop->items[506].' = '.$value;
+		if ($prop->items[5084] == 0) {$query = 'update '.$tableName.' set '.$prop->items[506].' = '.$value.' where id = '.$entId;
 		//else {
 		//	if ($this->isSubclassOf($prop[0]->items[5055],133) == 1) $col = ' value '; else $col = 'obj_id';
 			//if (!empty($oldValue))
