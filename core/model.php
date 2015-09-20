@@ -129,7 +129,7 @@ class Model {
 		//if ()
 	}
 
-	public function getResProperty2($id,$propId,$direct = 0,$resource = 1){
+	public function getResProperty2($id,$propId,$direct = 0,$resource = 1){//123
 		if ($propId == 5051){ //5051 - Тип
 			$query = 
 			"select type res
