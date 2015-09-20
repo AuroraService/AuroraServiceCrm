@@ -16,7 +16,7 @@ class EshowController {
 		//echo '123';
 		$data = $model->getDataSet($val, $elemId, $id);
 		//echo "123";
-		$req_flag=(($elemId=="1153") or ($elemId=="1155") or ($elemId=="1156") or ($elemId=="1157"));
+		$req_flag=1;
 		if ($req_flag){
 		echo '<div class="row" style="width: 100%;">
               <div class="col-md-8">';
@@ -66,23 +66,6 @@ class EshowController {
         //echo '</div>';
         echo '</div></div>';
 		}
-		echo "<script language ='JavaScript'>
-		function sendData() {
-			//alert(data[5028]);
-			var str = 'data='+JSON.stringify(data);
-			$.ajax({
-				type: 'POST',
-				url: '/core/ajax/interface.php?action=2334',
-				dataType: 'json',
-				cache: false,
-				data: str,
-				success: function(data) {alert(data);}
-			});
-		}
-		function editProperty(propId,valCounter,value){
-			data[propId][valCounter]=value;
-		}
-		</script>";
 		echo '<a onclick="sendData();">Сохранить</a>';
 	}
 	
@@ -93,11 +76,6 @@ class EshowController {
 		echo $mas."[".$valueCounter."]='".$propValue."';
 		data[".$propId."] = ".$mas.";";
 		echo "</script>";
-	}
-	
-	private function generateLink($elemId,$id){
-		$button = '<a href="index.php?elem='.$elemId.'&id='.$id.'">Открыть</a>';
-		return $button;
 	}
 }
 ?>

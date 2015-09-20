@@ -125,9 +125,15 @@ class Model {
 		return $res[0];
 	}
 	
-	public function getResPropertyTransitive($id,$propId,&$props,$direct = 0,$resource = 1){
-		$props = $this->getResProperty2($id,$propId,$direct,$resource);
-		//if ()
+	public function getResPropertyTransitive($id,$propId,$direct = 0,$resource = 1,&$props){
+		$ret = $this->getResProperty2($id,$propId,$direct,$resource);
+		$props = array_merge($props,$ret);
+		//$props = $this->getResource(1511, $filters);
+		$pClassIds = $this->getResProperty2($id,5061,0); //5061.Подкласс
+		if (!empty($pClassId)) foreach ($pClassIds as $pClassId){
+			$this->getResPropertyTransitive($pClassId,$propId,$direct,$resource,$props);
+		};
+		return $props;
 	}
 
 	public function getResProperty2($id,$propId,$direct = 0,$resource = 1){//123
@@ -392,25 +398,51 @@ class Model {
 	public function isSubclassOf($classId,$pClassId){
 		if ($pClassId == 133) if ($classId == 134 || $classId == 135 || $classId == 136) return 1; else return 0;
 	}
+
+	//Сохраняет изменения в переданной сущности
+	public function update($resource2){
+		//file_put_contents ('log', 'step0',FILE_APPEND);
+		$props = array();
+		$type = $this->getResProperty($resource2->items[5048][0],5051,0,0);
+		$this->getClassProperties($type,$props);
+		//file_put_contents ('log', 'step1',FILE_APPEND);
+		foreach ($props as $propId => $prop){
+			$valCounter = 0;
+			if ($prop->items[5052] != 0) foreach ($resource2->items[$prop->items[5082]] as $val){
+				$this->updateProperty($resource2->items[5048][0],$prop,$resource2->items[$prop->items[5082]][$valCounter]);
+				$valCounter++;
+			}
+		}
+	}
+
+	function entityEdit($data,$model){
+		//file_put_contents ('log', 'step0',FILE_APPEND);
+		$type = $model->getResProperty($data[5048][0],5051,0,0);
+		//file_put_contents ('log', 'step1',FILE_APPEND);
+		entityEdit2($type, $data, $model);
+		//file_put_contents ('log', 'step3',FILE_APPEND);
+		$type2 = $model->getResProperty($type,5061,0); //5061.Подкласс
+		if (!empty($type2)) entityEdit2($type2, $data, $model);
+	}
+
+	function entityEdit2($type, $data, $model){
+		$filters[5083]=$type;
+		$props = $model->getResource(1511, $filters);
+		foreach ($props as $propId => $prop){
+			$valCounter = 0;
+			file_put_contents ('log', 'propId='.$propId.';',FILE_APPEND);
+			if ($prop->items[5082] != 5048) foreach ($data[$prop->items[5082]] as $val){
+				$model->updateProperty($data[5048][0],$prop->items[5082],$data[$prop->items[5082]][$valCounter]);
+				$valCounter++;
+			}
+		}
+	}
 	
-	public function updateProperty($entId,$propId,$propValue,$oldValue = null){
-		//file_put_contents ('log', 'hai'.$entId.$propId.$propValue,FILE_APPEND);
+	public function updateProperty($entId,$prop,$propValue,$oldValue = null){
 		$type = $this->getResProperty($entId,5051,0,0);
 		$tableName = $this->getResProperty($type,503,0,0); //503.Местоположение
-		//file_put_contents ('log', $tableName.$type.$propId,FILE_APPEND);
-		$filters[5082]=$propId; $filters[5083]=$type;
-		$prop = $this->getResource(1511, $filters);
-		//file_put_contents ('log', 'Go',FILE_APPEND);
-		if (empty($prop)) {
-			$parentId = $this->getResProperty($type,5061,0); //5061.Подкласс
-			//file_put_contents ('log', 'Parent:'.$parentId,FILE_APPEND);
-			$filters[5083]=$parentId;
-			$prop = $this->getResource(1511, $filters);
-		}
-		//file_put_contents ('log', 'GO',FILE_APPEND);
-		//file_put_contents ('log', $prop[0]->items[506]);
-		if (($prop[0]->items[5055] == 134)||($prop[0]->items[5055] == 136)) $value = '"'.$propValue.'"'; else $value = $propValue;
-		if ($prop[0]->items[5084] == 0) {$query = 'update '.$tableName.' set '.$prop[0]->items[506].' = '.$value;
+		if (($prop->items[5055] == 134)||($prop->items[5055] == 136)) $value = '"'.$propValue.'"'; else $value = $propValue;
+		if ($prop->items[5084] == 0) {$query = 'update '.$tableName.' set '.$prop->items[506].' = '.$value;
 		//else {
 		//	if ($this->isSubclassOf($prop[0]->items[5055],133) == 1) $col = ' value '; else $col = 'obj_id';
 			//if (!empty($oldValue))
@@ -420,11 +452,16 @@ class Model {
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
 		}
 	}
-	
-	public function getClass($classId){
+
+	//Получение массива свойств класса (Transitive)
+	public function getClassProperties($classId,&$props){
 		$filters[5083]=$classId;
-		$props = $this->getResource(1511, $filters);
-		$pClassId = $this->getResProperty($type,5061,0); //5061.Подкласс
+		$ret = $this->getResource(1511, $filters);
+		$props = array_merge($props,$ret);
+		$pClassId = $this->getResProperty($classId,5061,0); //5061.Подкласс
+		if (!empty($pClassId)){
+			$this->getClassProperties($pClassId,$props);
+		}
 	}
 
 public function generateCode($length=6) {
@@ -539,6 +576,9 @@ class Resource{
 
 class Resource2{
 	public $items;
+	function __construct($items){
+		$this->items = $items;
+	}
 }
 
 ?>

@@ -32,3 +32,30 @@ function load_data(action, domain, id) {
 	req.send(null);
 	
 }
+
+
+function sendData() {
+  //alert(data[5028]);
+  var str = 'data='+JSON.stringify(data);
+  $.ajax({
+    type: 'POST',
+    url: '/core/ajax/interface.php?action=2334',
+    dataType: 'html',
+    cache: false,
+    data: str,
+    success: function(data,status,xhr) {
+      var statusElem = document.getElementById('dop_form_interface');
+      statusElem.innerHTML = data;
+      if ( data == 0  ) statusElem.innerHTML = 'Change save';
+      else {
+        statusElem.innerHTML = 'Safe error';
+        statusElem.innerHTML = data;
+      }
+      //alert(data);
+    }
+  });
+}
+
+function editProperty(propId,valCounter,value){
+  data[propId][valCounter]=value;
+}

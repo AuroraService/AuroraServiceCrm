@@ -1188,13 +1188,14 @@ create table ent_properties(
   alias     varchar(256),
   domain    bigint,
   external  int,
+  editable  int default 1,
   PRIMARY KEY(id)
 );  
  
 
 select * from ent_properties;
 -- Menu
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15111,113,5048,'id',113,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(15111,113,5048,'id',113,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15112,113,501,'name',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15113,113,5056,'link',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15114,113,5057,'pid',113,0);
@@ -1204,19 +1205,19 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15118,113,5051,'type',135,0);
 
 -- Viewers
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15119,12,5048,'id',12,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(15119,12,5048,'id',12,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151110,12,501,'name',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151111,12,503,'location',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151112,12,5051,'type',12,0);
 
 -- Controllers
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151113,14,5048,'id',14,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151113,14,5048,'id',14,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151114,14,501,'name',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151115,14,503,'location',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151116,14,5051,'type',14,0);
 
 -- 23.Действие
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151117,23,5048,'id',23,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151117,23,5048,'id',23,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151118,23,5062,'action_id',23,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151119,23,501,'name',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151120,23,5063,'contr_id',14,0);
@@ -1225,15 +1226,16 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151123,23,5065,'form',111,0);
 
 -- 1511.Свойство сущности
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151124,1511,5048,'id',1501,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151124,1511,5048,'id',1501,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151125,1511,5083,'ent_id',23,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151126,1511,5082,'prop_id',50,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151127,1511,506,'alias',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151128,1511,5055,'domain',132,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151129,1511,5084,'external',135,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151190,1511,5052,'editable',135,0);
 
 -- 112.Столбец формы
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151130,112,5048,'id',112,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151130,112,5048,'id',112,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151131,112,501,'name',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151132,112,504,'position',135,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151133,112,5051,'type',135,0);
@@ -1245,14 +1247,14 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151139,112,5087,'ent_prop_id',1511,0);
 
 -- 101.Клиент
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151140,101,5048,'id',101,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151140,101,5048,'id',101,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151141,101,508,'second_name',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151142,101,509,'first_name',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151143,101,5010,'patronymic',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151144,101,5021,'comment',134,0);
 
 -- 102.Сотрудник
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151145,102,5048,'id',102,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151145,102,5048,'id',102,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151146,102,508,'second_name',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151147,102,509,'first_name',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151148,102,5010,'patronymic',134,0);
@@ -1264,8 +1266,8 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151154,102,5021,'comment',134,0); 
 
 -- 103.Заявка
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151155,103,5048,'id',103,0);
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151156,103,5022,'creation_time',136,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151155,103,5048,'id',103,0,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151156,103,5022,'creation_time',136,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151157,103,5014,'user_id',102,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151158,103,5024,'client_id',101,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151159,103,5025,'tel',1014,0);
@@ -1300,7 +1302,6 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151185,1011,5040,'sell_cost',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151186,1011,5041,'dep_cost',134,0);
 -- 1012.Заявка на изъятие техники
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151187,1012,5048,'id',1012,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151188,1012,5030,'dep_time',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151189,1012,5031,'dep_date',136,0);
 
