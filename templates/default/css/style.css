@@ -1,0 +1,130 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100%;
+  padding: 0;
+  margin: 0;
+  padding-top: 70px;
+  padding-bottom: 80px;
+
+}
+.wrapper{
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 80px;
+  background-color: rgb(50,50,50);
+  line-height: 60px;
+  border-top: 1px solid rgb(8,8,8);
+}
+.result_view{
+  margin-top: 3px;
+}
+
+.win_inform{
+  border: 1px solid gray;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.hrf{
+  margin-left: 10px;
+  height: 24px;
+  width: 25px;
+}
+.hrf_nmrg{
+  height: 24px;
+  width: 25px;
+  margin: 0px;
+  padding: 0px;
+}
+.img-btn{
+  border: none;
+  background: none;
+  outline: none;
+  font-weight: bold;
+
+}
+.img-btn:hover{
+  text-decoration: underline;
+}
+
+.im-add{
+   background: url(../images/icon_add.png) center no-repeat;
+   height: 25px; width: 25px;
+   padding-left: 40px;
+}
+.im-open{
+   background: url(../images/icon_open.png) center no-repeat;
+   height: 25px; width: 25px;
+   padding-left: 40px;
+}
+.im-edit{
+   background: url(../images/icon_add.png) center no-repeat;
+   height: 25px; width: 25px;
+
+}
+.im-delete{
+   background: url(../images/icon_delete.png) center no-repeat;
+   height: 25px; width: 25px;
+}
+
+.test{
+  height: 40px;
+  color: black;
+  font-weight: bold;
+  padding: 5px 30px;
+     background: url(../images/icon_add.png) left no-repeat;
+}
+
+.control_time_selector{
+  float: left;
+  border: 1px solid gray;
+  cursor: pointer;
+  padding: 0 5px;
+  margin-right: 5px;
+  border-radius: 3px;
+}
+.control_time_selector_selected{
+  float: left;
+  border: 1px solid gray;
+  cursor: pointer;
+  padding: 0 5px;
+  margin-right: 5px;
+  background-color: rgb(140,140,140);
+  border-radius: 3px;
+}
+
+.control_time_selector:hover{
+  float: left;
+  border: 1px solid gray;
+  cursor: pointer;
+  padding: 0 5px;
+  background-color: rgb(200,200,200);
+}
+
+.res_value_link{
+  margin: 0;
+  padding: 0;
+  float: left;
+  cursor: default;
+  border: 2px solid rgb(59,187,210);
+  background-color: rgba(59,187,210, 0.3);
+  padding: 0px 5px;
+  border-radius: 5px;
+  transition: 0.3;
+}
+
+.res_value_link:hover{
+  border: 2px solid rgb(67,210,60);
+  background-color: rgba(67,210,60, 0.3);
+  transition: 0.3;
+}

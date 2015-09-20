@@ -1,0 +1,8 @@
+AddDefaultCharset Off
+<IfModule dir_module>
+    DirectoryIndex index.php
+</IfModule>
+<Files style.css>
+  ForceType application/x-httpd-php
+  AddHandler application/x-httpd-php .css
+</Files>

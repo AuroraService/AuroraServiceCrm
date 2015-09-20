@@ -1,0 +1,9 @@
+﻿<?
+     $template_header='header.php';
+     $template_end='end.php';
+     $template_css='css.php';
+     $template_body_start='body_start.php';
+	 $template_body_end='body_end.php';
+     $template_include='inc.php';
+	 $template_login_form='form-login.php';
+?>
