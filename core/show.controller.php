@@ -2,10 +2,14 @@
 class ShowController {
 	public function execute($params){
 		$model = Model::getModel();
-		$action = $model->getAction($params[5058]); //5058.Действие
-		$formId = $action->items[5065];             //5065.Форма
+		//if (empty($params[5065])) {
+			$action = $model->getAction($params[5058]); //5058.Действие
+			$formId = $action->items[5065];             //5065.Форма
+		//} else $formId = $params[5065];
+
 		$columns = $model->getColumns2($formId);
-		$table = $model->getDataSet($columns, $formId,NULL);
+		if ($params[5091] == 1) $id = 1; else $id = null; //5091.Флаг поискка
+		$table = $model->getDataSet($columns, $formId,$id);
 		//$val = $model->getShowData($_REQUEST['elem']);
 		
 		echo '<div class="table-responsive"><table class="table table-striped table-hover table-condensed"><thead><tr>';

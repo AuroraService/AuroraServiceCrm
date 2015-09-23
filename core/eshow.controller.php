@@ -67,7 +67,7 @@ class EshowController {
         //echo '</div>';
         echo '</div></div>';
 		}
-		echo '<a onclick="sendData();">Сохранить</a>';
+		echo '<a onclick="sendData(2334);">Сохранить</a>';
 	}
 	
 	private function printJavaScript($propId,$propValue,$propCounter,$valueCounter){

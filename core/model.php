@@ -113,6 +113,11 @@ class Model {
 	public function getAction($actionId){
 		return $this->actions[$actionId];
 	}
+
+	public function getLeafAction($actionId,$domain){
+		$realAction = $this->getRealAction($actionId, $domain);
+		return $this->perm[$realAction->items[5062]][$domain]['action'];
+	}
 	
 	public function getRealAction($actionId, $domain){
 		$action = $this->getAction($actionId);
@@ -269,7 +274,7 @@ class Model {
     }
 	$filterNum = 0;
 	if (!empty($id)) {
-		$filter[$filterNum] = "id = '".$id."'";
+		if ($id == 1) $filter[$filterNum] = "id in (select id from find) "; else $filter[$filterNum] = "id = '".$id."'";
 		$filterNum++;
 	}
 	$classId = $this->getResProperty($formId,507,0);
@@ -455,7 +460,7 @@ class Model {
 		$tableName = $this->getResProperty($domain,503,0,0);
 
 		$query = 'insert into '.$tableName.' ('.$columns.') values('.$values.')';
-		echo $query;
+		//echo $query;
 
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
 		$query = 'insert into dim_resource(id,type) values ('.$id.','.$domain.')';
@@ -467,30 +472,14 @@ class Model {
 		if (($domain == 134)||($domain == 136)) $value = '"'.$value.'"';
 		return $value;
 	}
-/*
-	function entityEdit($data,$model){
-		//file_put_contents ('log', 'step0',FILE_APPEND);
-		$type = $model->getResProperty($data[5048][0],5051,0,0);
-		//file_put_contents ('log', 'step1',FILE_APPEND);
-		entityEdit2($type, $data, $model);
-		//file_put_contents ('log', 'step3',FILE_APPEND);
-		$type2 = $model->getResProperty($type,5061,0); //5061.Подкласс
-		if (!empty($type2)) entityEdit2($type2, $data, $model);
+	public function find($text, $domain){
+		$text = strtoupper($text);
+		$query = 'delete from find';
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$query = 'insert into find(id,type) select id,type from dim_resource where Upper(name) LIKE "%'.$text.'%" and type = '.$domain;
+		//echo $query;
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
 	}
-
-	function entityEdit2($type, $data, $model){
-		$filters[5083]=$type;
-		$props = $model->getResource(1511, $filters);
-		foreach ($props as $propId => $prop){
-			$valCounter = 0;
-			file_put_contents ('log', 'propId='.$propId.';',FILE_APPEND);
-			if ($prop->items[5082] != 5048) foreach ($data[$prop->items[5082]] as $val){
-				$model->updateProperty($data[5048][0],$prop->items[5082],$data[$prop->items[5082]][$valCounter]);
-				$valCounter++;
-			}
-		}
-	}
-*/
 	//Изменение свойства сущности
 	public function updateProperty($entId,$prop,$propValue,$oldValue = null){
 		$type = $this->getResProperty($entId,5051,0,0);

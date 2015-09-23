@@ -7,6 +7,6 @@ class TextViewerFabrica{
 class TextViewer{
 	public function show($cell, $params){
 		if ($params[5042] == 0) $editable = 'disabled';
-		return "<input onchange='editProperty(".$params[5082].",".$params[5088].",this.value)' value='".$cell->value."' ".$editable."/>";
+		return "<input onchange='editProperty(".$params[5082].",".$params[5088].",this.value);' value='".$cell->value."' ".$editable."/>";
 	}
 }

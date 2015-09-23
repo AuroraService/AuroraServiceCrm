@@ -12,10 +12,10 @@ class ComboBoxItemViewer{
 		$this->items = $this->model->getComboItems($params[5055]);
 	}
 	public function show($cell, $params){
-		$result = "<select>";
+		$result = "<select onchange='editProperty(".$params[5082].",".$params[5088].",this.options[this.selectedIndex].value);'>";
 		foreach ($this->items as $elem){
 			if ($elem->id == $cell->value) $selected = " selected "; else $selected = "";
-			$result = $result."<option".$selected.">".$elem->value."</option>";
+			$result = $result."<option value = '".$elem->id."'".$selected.">".$elem->value."</option>";
 		}
 		$result = $result."</select>";
 		return $result;

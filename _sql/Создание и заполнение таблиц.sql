@@ -94,6 +94,7 @@ insert into dim_resource(id,name,type) values(120,'Элемент выпадаю
 -- Списки
 insert into dim_resource(id,name,type) values(1191,'Состояние',119);
 insert into dim_resource(id,name,type) values(1192,'Время выезда',119);
+insert into dim_resource(id,name,type) values(1193,'Сущности для поиска',119);
 
 insert into dim_resource(id,name,type) values(1201,'Выполняется',120);
 insert into dim_resource(id,name,type) values(1202,'Выполнено',120);
@@ -104,6 +105,11 @@ insert into dim_resource(id,name,type) values(1205,'9-12',120);
 insert into dim_resource(id,name,type) values(1206,'12-15',120);
 insert into dim_resource(id,name,type) values(1207,'15-18',120);
 insert into dim_resource(id,name,type) values(1208,'В течении дня',120);
+
+insert into dim_resource(id,name,type) values(1209,'Клиент',120);
+insert into dim_resource(id,name,type) values(12010,'Сотрудник',120);
+insert into dim_resource(id,name,type) values(12011,'Заявка',120);
+
 
 -- Элементы CRM
 -- Формы просмотра
@@ -161,6 +167,8 @@ insert into triplets(subj_id, prop_id,obj_id) values(1012,5061,103);
 insert into triplets(subj_id, prop_id,obj_id) values(5050,5049,5028);
 -- Выпадающие списки
 insert into triplets(subj_id, prop_id,obj_id) values(1191,1515,119);
+insert into triplets(subj_id, prop_id,obj_id) values(1192,1515,119);
+insert into triplets(subj_id, prop_id,obj_id) values(1193,1515,119);
 -- Состояние
 insert into triplets(subj_id, prop_id,obj_id) values(1201,1515,120);
 insert into triplets(subj_id, prop_id,obj_id) values(1202,1515,120);
@@ -181,6 +189,18 @@ insert into triplets(subj_id, prop_id,obj_id) values(1205,502,1192);
 insert into triplets(subj_id, prop_id,obj_id) values(1206,502,1192);
 insert into triplets(subj_id, prop_id,obj_id) values(1207,502,1192);
 insert into triplets(subj_id, prop_id,obj_id) values(1208,502,1192);
+-- Сущности для поиска
+insert into triplets(subj_id, prop_id,obj_id) values(1209,1515,120);
+insert into triplets(subj_id, prop_id,obj_id) values(12010,1515,120);
+insert into triplets(subj_id, prop_id,obj_id) values(12011,1515,120);
+
+insert into triplets(subj_id, prop_id,obj_id) values(1209,502,1193);
+insert into triplets(subj_id, prop_id,obj_id) values(12010,502,1193);
+insert into triplets(subj_id, prop_id,obj_id) values(12011,502,1193);
+
+insert into triplets(subj_id, prop_id,obj_id) values(1209,507,101);
+insert into triplets(subj_id, prop_id,obj_id) values(12010,507,102);
+insert into triplets(subj_id, prop_id,obj_id) values(12011,507,103);
 
 -- 1119,11110,1157,1158 / 1013,104
 
@@ -258,7 +278,7 @@ insert into users(id,first_name,second_name,patronymic,hash,paswd,login) values(
 insert into users(id,first_name,second_name,patronymic,hash,paswd,login) values(15012,'Станислав','Лобанов', 'Дмитриевич', 'gfdghipo3yf732nf','2d6d67a62e46d53cbbac80095548b812','kaen');
 insert into users(id,first_name,second_name,patronymic,hash,paswd) values(15013,'Иван','Иванов', '','gfdghipo3yf732nf','2d6d67a62e46d53cbbac80095548b812');
 
-insert into dim_resource(id,name,type) values(15011,'Максим Чернов',102);
+insert into dim_resource(id,name,type) values(15011,'Чернов Максим Михайлович, Россия, Саратовская обл., г.Ртищево, ул.Железнодорожная, д.16., кв.56',102);
 insert into dim_resource(id,name,type) values(15012,'Станислав Лобанов',102);
 insert into dim_resource(id,name,type) values(15013,'Иван Иванов',102);
 
@@ -1484,3 +1504,18 @@ insert into calls(id,tel1,tel2,client_id,user_id,datetime,duration,call_type) va
 
 insert into dim_resource(id,name,type) values(15101,'+7(909)925-77-54',104);
 
+-- Создание таблицы поиска
+drop table if exists find;
+create table find(
+  id         bigint,
+  type       bigint,
+  PRIMARY KEY(id)
+);
+
+select * from dim_resource where id in(select id from users)
+
+insert into find(id) select id from users;
+
+select * from dim_resource WHERE upper(name) = 'm';
+
+select * from find;

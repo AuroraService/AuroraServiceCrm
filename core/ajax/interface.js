@@ -34,12 +34,12 @@ function load_data(action, domain, id) {
 }
 
 
-function sendData() {
+function sendData(action) {
   //alert(data[5028]);
   var str = 'data='+JSON.stringify(data);
   $.ajax({
     type: 'POST',
-    url: '/core/ajax/interface.php?action=2334',
+    url: '/core/ajax/interface.php?action='+action,
     dataType: 'html',
     cache: false,
     data: str,
