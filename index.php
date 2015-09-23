@@ -50,16 +50,16 @@ class Controller{
 	$id = $_REQUEST['id'];
 	if (!empty($actionId)){
 		if (!empty($id)){
-			$domain = $model->getResProperty2($id,5051,0); //5051.Type
+			$domain = $model->getResProperty($id,5051,0); //5051.Type
 		}
 		//echo 'Action!';
-		if($model->checkPermission($actionId,$domain[0])){
+		if($model->checkPermission($actionId,$domain)){
 			$contr = $model->getController($actionId);
 			require_once($contr->items[503]);   //503.Местоположение
 			$contrEnt = new $contr->items[501]; //501.Название
 			$params[5058] = $actionId;          //5058.Действие
 			$params[5048] = $id;                //5048.Идентификатор
-			$params[5055] = $domain[0];            //5055.Домен
+			$params[5055] = $domain;            //5055.Домен
 			//$params[5014] = $_REQUEST['elem'];
 			$contrEnt->execute($params);
 		} else echo "Нет прав";

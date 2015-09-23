@@ -10,6 +10,7 @@ class Model {
 	private $perm;         //Массив доступа [b_action_id][domain][action/perm/contr]
 	private $actions;      //Массив действий [action_id]
 	private $controllers;  //Массив контроллеров [contr_id]
+	private $entities;
   
 	private $user_id;
   
@@ -22,6 +23,7 @@ class Model {
 		$this->loadActions();
 		$this->loadControllers();
 		$this->estimateControllers();
+		$this->loadEntities();
 		//$this->loadPermissions();
 	}
   
@@ -40,6 +42,23 @@ class Model {
 		$viewerFactory = new $className;
 		$viewer = $viewerFactory->getViewer($params,$model);
 		return $viewer;
+	}
+
+	public function getId($domain){
+		$next = (++$this->entities[$domain]->items[5090]);
+		$id = $this->entities[$domain]->items[5089].$next;
+		$query = 'update entities set counter = '.$next;
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		return $id;
+	}
+
+	private function loadEntities(){
+		//$filters[5051] = 12;
+		$entities = $this->getResource(10);
+		foreach ($entities as $entity){
+			$this->entities[$entity->items[5048]]=$entity;
+		}
+		//print_r($this->entities);
 	}
   
 	private function loadVievers(){
@@ -195,7 +214,7 @@ class Model {
 	
 	$filters[5065] = $formId; $orders[504] = 1;
 	$columns = $this->getResource(112, $filters, $orders);
-	foreach ($columns as $line){
+	if (!empty($columns)) foreach ($columns as $line){
 		$col = new Column($line->items['5048'],$line->items['501'],$line->items['504'],null,null,null,$line->items['5051'],$line->items['5085'],$line->items['5052'],null,$line->items['5057'],null);
 		$filters2[5048] = $line->items[5087];
 		$property = $this->getResource(1511, $filters2);
@@ -409,12 +428,46 @@ class Model {
 		foreach ($props as $propId => $prop){
 			$valCounter = 0;
 			if ($prop->items[5052] != 0) foreach ($resource2->items[$prop->items[5082]] as $val){
-				$this->updateProperty($resource2->items[5048][0],$prop,$resource2->items[$prop->items[5082]][$valCounter]);
+				if (!empty($val)) $this->updateProperty($resource2->items[5048][0],$prop,$val);
 				$valCounter++;
 			}
 		}
 	}
+	//Создание сущности
+	public function insert($resource2){
+		//print_r($resource2);
+		$props = array();
+		$domain = $resource2->items[5055][0];
+		//echo 'Domain:'.$resource2->items[5055][0];
+		$this->getClassProperties($domain,$props);
+		$columns = '';
+		$values = '';
+		$id = $this->getId($domain);
+		foreach ($props as $propId => $prop){
+			//echo $prop->items[506];
+			if (($prop->items[5052] != 0) && (!empty($resource2->items[$prop->items[5082]][0]))){
+				$columns = $columns.','.$prop->items[506];
+				$values = $values.','.$this->quotation($resource2->items[$prop->items[5082]][0],$prop->items[5055]);
+			}
+		}
+		$columns = 'id'.$columns;
+		$values = $id.$values;
+		$tableName = $this->getResProperty($domain,503,0,0);
 
+		$query = 'insert into '.$tableName.' ('.$columns.') values('.$values.')';
+		echo $query;
+
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$query = 'insert into dim_resource(id,type) values ('.$id.','.$domain.')';
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+
+	}
+
+    private function quotation($value, $domain){
+		if (($domain == 134)||($domain == 136)) $value = '"'.$value.'"';
+		return $value;
+	}
+/*
 	function entityEdit($data,$model){
 		//file_put_contents ('log', 'step0',FILE_APPEND);
 		$type = $model->getResProperty($data[5048][0],5051,0,0);
@@ -437,7 +490,7 @@ class Model {
 			}
 		}
 	}
-
+*/
 	//Изменение свойства сущности
 	public function updateProperty($entId,$prop,$propValue,$oldValue = null){
 		$type = $this->getResProperty($entId,5051,0,0);
@@ -450,6 +503,7 @@ class Model {
 		//	$query = 'update triplets set '.$col.' = '.$value.' where subj_id = '.$entId.' and prop_id = '.$propId;
 		//}
 		//file_put_contents ('log', $prop[0]->items[5084].$query,FILE_APPEND);
+			echo $query;
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
 		}
 	}

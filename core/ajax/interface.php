@@ -19,7 +19,8 @@ switch ($action) {
 		$json = json_decode($_POST['data'], true);
 		file_put_contents ('log', 'stepx'.$json[5048][0],FILE_APPEND);
 		$resource2 = new Resource2($json);
-		$model->update($resource2);
+		if (!empty($json[5048][0])) $model->update($resource2);
+		else $model->insert($resource2);
 		//entityEdit($json,$model);
         break;
 	return 0;

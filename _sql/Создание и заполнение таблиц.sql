@@ -127,6 +127,16 @@ insert into dim_resource(id,name,type) values(1156,'Форма просмотр�
 insert into dim_resource(id,name,type) values(1157,'Форма просмотра адреса',115);
 insert into dim_resource(id,name,type) values(1158,'Форма просмотра звонка',115);
 insert into dim_resource(id,name,type) values(1159,'Форма просмотра телефона',115);
+
+-- Формы создания
+insert into dim_resource(id,name,type) values(11510,'Форма создания сотрудника',115);
+insert into dim_resource(id,name,type) values(11511,'Форма создания клиента',115);
+insert into dim_resource(id,name,type) values(11512,'Форма создания сервисной заявки',115);
+insert into dim_resource(id,name,type) values(11513,'Форма создания заявки на заказ запчасти',115);
+insert into dim_resource(id,name,type) values(11514,'Форма создания заявки на доставку',115);
+insert into dim_resource(id,name,type) values(11515,'Форма создания заявки на изъятие техники',115);
+insert into dim_resource(id,name,type) values(11516,'Форма создания адреса',115);
+
 -- 1119,11110,1157,1158 / 1013,104
 -- Создание таблицы высказываний
 drop table if exists triplets;
@@ -274,6 +284,7 @@ insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,238);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2323);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2322);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2333);
+insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2314);
 
 
 insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,231);
@@ -1071,6 +1082,26 @@ insert into sColumns(id, name, position, property, alias, domain, type, template
 insert into sColumns(id, name, position, property, alias, domain, type, template,editable,location,form,pid,external,viewer) 
  values( 112207,'Номер',2,5067,'number',NULL, 1, NULL,1,NULL,1159,NULL,0,121);
  
+-- 11510
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112291,'Фамилия',2,1, NULL,1,11510,NULL,121,151146);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112292,'Имя',3,1, NULL,1,11510,NULL,121,151147);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112293,'Отчество',4,1, NULL,1,11510,NULL,121,151148);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112294,'Должность',5,1, NULL,1,11510,NULL,121,151149);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112295,'Телефон',6,1, NULL,1,11510,NULL,121,151150);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112296,'Адрес',7,1, NULL,1,11510,NULL,121,151151);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112297,'День рождения',8,1, NULL,1,11510,NULL,121,151152);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112298,'Состояние',9,1, NULL,1,11510,NULL,121,151153);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112299,'Комментарий',10,1, NULL,1,11510,NULL,121,151154);
+ 
 
 
 
@@ -1139,7 +1170,7 @@ insert into buttons(id,name,link,pid,action,position,level,type) values(150521,'
 insert into buttons(id,name,link,pid,action,position,level,type) values(150522,'Список сотрудников','index.php?action=236',15056,null,1,4,1);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150523,'Разделитель',null,15056,null,2,4,2);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150524,'Создание',null,15056,null,3,4,3);
-insert into buttons(id,name,link,pid,action,position,level,type) values(150525,'Создание',null,15056,null,4,4,1);
+insert into buttons(id,name,link,pid,action,position,level,type) values(150525,'Создание','index.php?action=2314',15056,null,4,4,1);
 
 insert into buttons(id,name,link,pid,action,position,level,type) values(150526,'user_name',null,15053,null,1,4,1);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150527,'Выход','/logout',15053,null,2,4,1);
@@ -1150,12 +1181,14 @@ drop table if exists entities;
 create table entities(
   id  bigint,
   location     varchar(256),
+  namespace    bigint,
+  counter      bigint,
   PRIMARY KEY(id)
 );  
 
 insert into entities(id, location) values(113, 'buttons');
 insert into entities(id, location) values(101, 'clients');
-insert into entities(id, location) values(102, 'users');
+insert into entities(id, location,namespace,counter) values(102, 'users',1501,10);
 insert into entities(id, location) values(106, 'actions');
 insert into entities(id, location) values(107, 'logins');
 insert into entities(id, location) values(103, 'requests');
@@ -1178,6 +1211,7 @@ insert into entities(id, location) values(112, 'sColumns');
 
 insert into entities(id, location) values(1192, 'dim_resource');
 insert into entities(id, location) values(1191, 'dim_resource');
+insert into entities(id, location) values(10, 'entities');
 
 -- Создание таблицы свойств сущности
 drop table if exists ent_properties;
@@ -1305,6 +1339,13 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151188,1012,5030,'dep_time',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151189,1012,5031,'dep_date',136,0);
 
+-- 10.Элемент предметной области
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151191,10,5048,'id',10,0,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151192,10,503,'location',134,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151193,10,5089,'namespace',135,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151194,10,5090,'counter',135,0);
+
+
 -- 104.Звонок
 -- 106.Действие пользователя
 -- 107.Логин в систему
@@ -1349,16 +1390,17 @@ insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2326,
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2328,2315,'Просмотр адреса',null,1013,1157,2315);
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2329,2315,'Просмотр звонка',null,104,1158,2315);
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2332,2315,'Просмотр телефона',null,1014,1159,2315);
-insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2318,2318,'Создание сущности',null,132,23);
+insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2318,2318,'Создание сущности',147,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2327,2318,'Создание заявки',null,103,2318);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(239,2318,'Создание сервисной заявки',null,109,2327);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2310,2318,'Создание заявки на заказ запчасти',null,1010,2327);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2311,2318,'Создание заявки на доставку',null,1011,2327);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2312,2318,'Создание заявки на изъятие техники',null,1012,2327);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2313,2318,'Создание клиента',null,101,2318);
-insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2314,2318,'Создание пользователя',null,102,2318);
+insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2314,2318,'Создание пользователя',null,102,11510,2318);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2319,2319,'Удаление сущности',null,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2333,2333,'Поиск сущностей',146,132,23);
+
 
 -- Создание таблицы элементов CRM
 drop table if exists sCrmElements;
@@ -1376,6 +1418,7 @@ insert into sCrmElements(id,name,location,type) values(143, 'MenuController','co
 insert into sCrmElements(id,name,location,type) values(144, 'RedirectController', 'core/redirect.controller.php',14);
 insert into sCrmElements(id,name,location,type) values(145, 'EntityController', 'core/entity.controller.php',14);
 insert into sCrmElements(id,name,location,type) values(146, 'SearchController', 'core/search.controller.php',14);
+insert into sCrmElements(id,name,location,type) values(147, 'CreateController', 'core/create.controller.php',14);
 
 insert into sCrmElements(id,name,location,type) values(121,'TextViewer','core/viewers/text.viewer.php',12);
 insert into sCrmElements(id,name,location,type) values(122,'DateTimeViewer','core/viewers/datetime.viewer.php',12);

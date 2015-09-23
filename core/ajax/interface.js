@@ -58,4 +58,5 @@ function sendData() {
 
 function editProperty(propId,valCounter,value){
   data[propId][valCounter]=value;
+  //alert(value);
 }

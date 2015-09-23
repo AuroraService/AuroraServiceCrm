@@ -4,17 +4,18 @@ class EshowController {
 		$model = Model::getModel();
 		$id = $iParams[5048] ; //5048.Идентификатор
         $elemId = $iParams[5014]; //5014.Исполнитель
-		
-		if (empty($elemId)) {
+		echo 'ElemId:'.$elemId;
+		if (empty($elemId) && !empty($id)) {
 			$domain = $model->getResProperty2($id,5051,0); //5051.Type
 			$elemId=$model->getEShowElement($domain[0]);
 		}
 		//echo 'ID:'.$id.','.$elemId;
 		//echo '123';
 		echo ' <script language ="JavaScript">var data = [];</script>';
+		$this->printJavaScript(5055,$iParams[5055],0,0);
 		$val = $model->getColumns2($elemId);
-		//echo '123';
-		$data = $model->getDataSet($val, $elemId, $id);
+		//echo $elemId;
+		if (!empty($id)) $data = $model->getDataSet($val, $elemId, $id);
 		//echo "123";
 		$req_flag=1;
 		if ($req_flag){
@@ -23,7 +24,7 @@ class EshowController {
 		}
 		echo '<div class="table-responsive"><table class="table table-condensed">';
 		$lineNum = 0;
-		foreach ($val->cols as $col_value) {
+		if (!empty($val->cols)) foreach ($val->cols as $col_value) {
 			echo "<tr>";
 			echo "<td>".$col_value->name."</td>";
 			echo "<td>";
@@ -40,13 +41,13 @@ class EshowController {
 			$valueCounter = 0;
 			if ($col_value->external == 0 ) {
 				echo $viewer->show($data->data[0][$lineNum],$params);
-				$this->printJavaScript($col_value->property,$data->data[0][$lineNum]->id,$lineNum,$valueCounter);
+				$this->printJavaScript($col_value->property,$data->data[0][$lineNum]->id,$lineNum+1,$valueCounter);
 			}else {
 				
 				if (!empty($val->ext[$id][$col_value->property])) foreach ($val->ext[$_REQUEST['id']][$col_value->property] as $inner){
 					$params[5088] = $valueCounter;
 					echo $viewer->show($inner,$params);
-					$this->printJavaScript($col_value->property,$inner->id,$lineNum,$valueCounter);
+					$this->printJavaScript($col_value->property,$inner->id,$lineNum+1,$valueCounter);
 					$valueCounter++;
 			  }
 			  echo '<a href="/" class="test"><span class="glyphicon glyphicon-plus" style="color:black; margin-right: 5px;"></span>Добавить</a>';
