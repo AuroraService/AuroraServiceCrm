@@ -15,7 +15,7 @@ class SearchController {
 		$params2[5082]=5055; $params2[5088]=0; //5082.Идентификатор свойства, 5088.Номер значения
 		echo $viewer->show($cell,$params2);
 		echo '<a onclick="sendData(2333);">Поиск</a>';
-		echo '<div class="col-md-4" id="dop_form_interface"></div>';
+		echo '<div id="dop_form_interface"></div>';
 
 		}
 

@@ -4,10 +4,13 @@ class EshowController {
 		$model = Model::getModel();
 		$id = $iParams[5048] ; //5048.Идентификатор
         $elemId = $iParams[5014]; //5014.Исполнитель
-		echo 'ElemId:'.$elemId;
+		$actionId = $iParams[5058];
+		//echo 'ElemId:'.$elemId;
 		if (empty($elemId) && !empty($id)) {
-			$domain = $model->getResProperty2($id,5051,0); //5051.Type
-			$elemId=$model->getEShowElement($domain[0]);
+			$domain = $model->getResProperty($id,5051,0); //5051.Type
+			//$elemId=$model->getEShowElement($domain[0]);
+			$elemId=$model->getForm($actionId,$domain);
+			//echo "ElemId:".$elemId.$domain.$actionId;
 		}
 		//echo 'ID:'.$id.','.$elemId;
 		//echo '123';
@@ -67,7 +70,7 @@ class EshowController {
         //echo '</div>';
         echo '</div></div>';
 		}
-		echo '<a onclick="sendData(2334);">Сохранить</a>';
+
 	}
 	
 	private function printJavaScript($propId,$propValue,$propCounter,$valueCounter){

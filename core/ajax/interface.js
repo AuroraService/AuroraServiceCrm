@@ -60,3 +60,8 @@ function editProperty(propId,valCounter,value){
   data[propId][valCounter]=value;
   //alert(value);
 }
+
+function editFilter(filterId,value){
+  data[5095][filterId]=value;
+  //alert(value);
+}

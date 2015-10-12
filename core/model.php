@@ -62,7 +62,7 @@ class Model {
 	}
   
 	private function loadVievers(){
-		$filters[5051] = 12;
+		$filters[5051] = '%COLUMN%='.'12';
 		$viewers = $this->getResource(12, $filters);
 		foreach ($viewers as $viewer){
 			$this->viewers[$viewer->items[5048]]=$viewer;
@@ -79,7 +79,7 @@ class Model {
 	}
 	
 	private function loadControllers(){
-		$filters[5051] = 14;
+		$filters[5051] = '%COLUMN%='.'14';
 		$controllers = $this->getResource(14, $filters);
 		foreach ($controllers as $controller){
 			$this->controllers[$controller->items[5048]]=$controller;
@@ -217,11 +217,11 @@ class Model {
 	$lineNum=0;
 	$retval = new Table();
 	
-	$filters[5065] = $formId; $orders[504] = 1;
+	$filters[5065] = '%COLUMN%='.$formId; $orders[504] = 1;
 	$columns = $this->getResource(112, $filters, $orders);
 	if (!empty($columns)) foreach ($columns as $line){
 		$col = new Column($line->items['5048'],$line->items['501'],$line->items['504'],null,null,null,$line->items['5051'],$line->items['5085'],$line->items['5052'],null,$line->items['5057'],null);
-		$filters2[5048] = $line->items[5087];
+		$filters2[5048] = '%COLUMN%='.$line->items[5087];
 		$property = $this->getResource(1511, $filters2);
 		$col->property = $property[0]->items[5082];
 		$col->alias = $property[0]->items[506];
@@ -236,10 +236,16 @@ class Model {
 	return $retval;
   }
   
-  public function getDataSet($table, $formId, $id){
+  public function getDataSet($table, $formId, $id, $filters = null){
 	$entId = $this->getResProperty($formId,507,0); //507.Представление
 	$tableName = $this->getResProperty($entId,503,0,0); //503.Местоположение
 	foreach ($table->cols as $line)  {
+		if (!empty($filters[$line->property])){
+			//echo $filters[$line[prop_id]];
+			$filter = str_replace('%COLUMN%',$line->alias,$filters[$line->property]);
+			//if (($line[domain] == 134) || ($line[domain] == 136)) $filter = $line[alias]." = '".$filters[$line[prop_id]]."'"; else $filter = $line[alias]." = ".$filters[$line[prop_id]];
+			$where2 = $where2 ." and ". $filter;
+		}
 	if ($line->external == '0'){
 	  if ($line->type == 0){
 		$childCols = $this->getChildColumns($line->id);
@@ -272,6 +278,7 @@ class Model {
 		  }
 	  }
     }
+	  $filter = null;
 	$filterNum = 0;
 	if (!empty($id)) {
 		if ($id == 1) $filter[$filterNum] = "id in (select id from find) "; else $filter[$filterNum] = "id = '".$id."'";
@@ -290,6 +297,8 @@ class Model {
 		}
 		$where = substr($where,0,strlen($where)-5);
 	}
+	  if (!empty($where2)) if (!empty($where))$where = $where . ' and '. substr($where2,5); else $where = ' where '.substr($where2,5);
+	  //if (!empty($where)) $where = $where . ' and '. substr($where2,5); else if (!empty($where2)) $where = ' where '.substr($where2,5);
 	$columns = substr($columns,2);
 	$query = "select $columns from $tableName".$where;
 	//echo $query;
@@ -329,6 +338,7 @@ class Model {
 	}
   
   //Получение идентификатора элемента интерфейса для просмотра единичной сущности по идентификатору класса
+	/*
 	function getEShowElement($classId){
 	$query = "select t.subj_id elem_id from triplets t 
                 join triplets t2 on t2.subj_id = t.subj_id and t2.prop_id = 507
@@ -339,6 +349,12 @@ class Model {
 	mysqli_free_result($result);
 	return $line['elem_id'];
   }
+	*/
+	function getForm($actionId, $domain = null){
+		if (empty($domain)) $action = $this->getAction($actionId);
+		else $action = $this->getLeafAction($actionId,$domain);
+		return $action->items[5065];
+	}
   //Получение класса хранимых сущностей таблицы
 	function getStorageClass($tableName){
 	$query = "select class_id from sTables t 
@@ -377,7 +393,8 @@ class Model {
 	}
 	return $retval;
 	}
-  
+
+	//Получение массива ресурсов
 	function getResource($entId, $filters = null, $orders = null){
 		$tableName = $this->getResProperty($entId,503,0,0); //503.Местоположение
 		if (empty($tableName)) return null;
@@ -391,7 +408,9 @@ class Model {
 			$props[$propNum]['id'] = $line[prop_id];
 			$props[$propNum]['alias']=$line[alias];
 			if (!empty($filters[$line[prop_id]])){
-				if (($line[domain] == 134) || ($line[domain] == 136)) $filter = $line[alias]." = '".$filters[$line[prop_id]]."'"; else $filter = $line[alias]." = ".$filters[$line[prop_id]];
+				//echo $filters[$line[prop_id]];
+				$filter = str_replace('%COLUMN%',$line[alias],$filters[$line[prop_id]]);
+				//if (($line[domain] == 134) || ($line[domain] == 136)) $filter = $line[alias]." = '".$filters[$line[prop_id]]."'"; else $filter = $line[alias]." = ".$filters[$line[prop_id]];
 				$where = $where ." and ". $filter;
 			}
 			
@@ -499,7 +518,7 @@ class Model {
 
 	//Получение массива свойств класса (Transitive)
 	public function getClassProperties($classId,&$props){
-		$filters[5083]=$classId;
+		$filters[5083]='%COLUMN% = '.$classId;
 		$ret = $this->getResource(1511, $filters);
 		$props = array_merge($props,$ret);
 		$pClassId = $this->getResProperty($classId,5061,0); //5061.Подкласс

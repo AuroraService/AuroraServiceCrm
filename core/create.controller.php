@@ -3,10 +3,13 @@ class CreateController {
     public function execute($iParams){
         $model = Model::getModel();
         $id = $iParams[5048] ;
+
         $pAction = $model->getAction($iParams[5058]);
         //$action = $model->getRealAction($iParams[5058],$iParams[5055]); //5058.Действие, 5055.Домен
         $elemId = $pAction->items[5065];              //5065.Форма
+
         $domain = $pAction->items[5055];
+        //echo "Elem:".$elemId.$domain;
         //echo $domain;
 
         $params2[5048] = $id;

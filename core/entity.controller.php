@@ -11,6 +11,7 @@ class EntityController {
 		require_once('eshow.controller.php');
 		$contr = new EshowController();
 		$contr->execute($params2);
+		echo '<a onclick="sendData(2334);">Сохранить</a>';
 	}
 }
 ?>
