@@ -558,12 +558,14 @@ insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address
 insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time) values(15033,'12.08.2012', 'test2',1011,15023,15012,15093,15081, '10000','12.08.2010',1203,1208);
 insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time) values(15034,'12.08.2015', 'test3',1011,15023,15013,15094,15082, '10000','12.08.2010',1203,1208);
 insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time) values(15035,'12.08.2015', 'test4',1012,15023,15014,15095,15082, '10000','12.08.2010',1203,1208);
+insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time) values(15036,'12.10.2015', 'la-la-la',109,15021,15012,15091,15082, '10000','2015-10-12',1203,1208);
 
 insert into dim_resource(id,name,type) values(15031,'15031 Лобанов Станислав Дмитриевич Илья Бобошко Александрович +7(909)925-77-54 Железнодорожная 12-15',109);
 insert into dim_resource(id,name,type) values(15032,'15032 Чернов Максим Михайлович Валентин Коткин Николаевич +7(906)313-75-54 Красная 16-54',1010);
 insert into dim_resource(id,name,type) values(15033,'15033 Лобанов Станислав Дмитриевич Елена Ерохина Владимировна +7(913)160-49-42 Красная 16-54',1011);
 insert into dim_resource(id,name,type) values(15034,'15034 Филатов Артур  Елена Ерохина Владимировна +7(911)568-73-44 Железнодорожная 12-15',1011);
 insert into dim_resource(id,name,type) values(15035,'15035 Зякина Валентина Михайловна Елена Ерохина Владимировна +7(962)205-75-00 Железнодорожная 12-15',1012);
+insert into dim_resource(id,name,type) values(15036,'15031 Лобанов Станислав Дмитриевич Илья Бобошко Александрович +7(909)925-77-54 Железнодорожная 12-15',109);
 
 select * from requests;
 
@@ -1980,3 +1982,4 @@ insert into sFilterFields(id,name,sql_code,filter_id) values(15184,'Все за�
 select * from sFilterFields;
 
 select * from entities;
+select now();

@@ -65,3 +65,9 @@ function editFilter(filterId,value){
   data[5095][filterId]=value;
   //alert(value);
 }
+
+function editField(fieldId, value){
+  
+  var field = document.getElementById(fieldId);
+  field.innerHTML = value;
+}
