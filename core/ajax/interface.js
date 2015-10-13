@@ -67,7 +67,7 @@ function editFilter(filterId,value){
 }
 
 function editField(fieldId, value){
-  
+  alert(fieldId);
   var field = document.getElementById(fieldId);
-  field.innerHTML = value;
+  field.innerHTML = '123';
 }

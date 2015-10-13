@@ -3,6 +3,7 @@ drop table if exists dim_resource;
 create table dim_resource(
   id	bigint,
   name       	varchar(256),
+  search_name  varchar(1024),
   type       	bigint,
   start_date   datetime default '2015-11-01',
   end_date     datetime default '9999-01-01',
