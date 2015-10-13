@@ -26,7 +26,7 @@ class Model {
 		$this->loadEntities();
 		//$this->loadPermissions();
 
-		$this->getResourceGen(null,103);
+		//$this->getResourceGen(null,103);
 	}
 
 	//Получение модели
@@ -169,7 +169,7 @@ class Model {
 		$ret = $this->getResProperty2($resourceId,5061,1);
 		$result = array_merge($result,$ret);
 		if (!empty($ret)) foreach($ret as $child){
-			getSubClass($child,$result);
+			$this->getSubClass($child,$result);
 		}
 	}
 
