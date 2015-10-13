@@ -128,3 +128,32 @@ body {
   background-color: rgba(67,210,60, 0.3);
   transition: 0.3;
 }
+
+.find_popup_disp{
+  position: absolute;
+  transition: 0.5s;
+  display: block;
+  height: 300px;
+  width: 150px;
+  z-index: 10;
+  box-shadow: 0 0 10px black;
+}
+
+.find_popup_dnone{
+  position: absolute;
+  left: -9999px;
+  display: none;
+  height: 10px;
+  width: 10px;
+}
+
+.popup_btn_close{
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  top: -10px;
+  right: -10px;
+  background: url(../images/icon_close2.png) no-repeat center;
+  background-size: 20px;
+  cursor: pointer;
+}

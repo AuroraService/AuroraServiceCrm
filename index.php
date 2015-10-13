@@ -81,6 +81,7 @@ $controller->execute();
 require_once($var_pth_template.$template_body_end);
 
 require_once($var_pth_template.$template_body_end);
+echo '<div class="find_popup_dnone" id="popup_window" style="padding: 10px;"></div>'; // элемент для всплывающих окон
 require_once('temp/footer.php'); // Временная подгрузка меню, пока не готова динамическая
 require_once($var_pth_template.$template_end);
 
