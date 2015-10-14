@@ -26,7 +26,7 @@ class Model {
 		$this->loadEntities();
 		//$this->loadPermissions();
 
-		//$this->getResourceGen(null,103);
+		$this->getResourceGen(null,103);
 	}
 
 	//Получение модели
@@ -167,7 +167,7 @@ class Model {
 	//Получить все подклассы данного класса
 	public function getSubClass($resourceId, &$result){
 		$ret = $this->getResProperty2($resourceId,5061,1);
-		$result = array_merge($result,$ret);
+		if (!empty($ret)) $result = array_merge($result,$ret);
 		if (!empty($ret)) foreach($ret as $child){
 			$this->getSubClass($child,$result);
 		}
@@ -414,13 +414,31 @@ class Model {
 		if (!empty($type)) {
 			$result = array();
 			$this->getSubClass($type,$result);
-			$whereType = 'type in('.$type;
+			$whereType = 'and type in('.$type;
 			if (!empty($result)) foreach ($result as $subClass){
 				$whereType = $whereType.','.$subClass;
 			}
 			$whereType = $whereType.')';
 		}
-		echo $whereType;
+		//$props = array(5048,501,50100);
+		if (!empty($filters[5048])) $filterId = 'and '.str_replace('%COLUMN%', 'id', $filters[5048]);
+		if (!empty($filters[501])) $filterName = 'and '.str_replace('%COLUMN%', 'name', $filters[501]);
+		if (!empty($filters[50100])) $filterSearchName = 'and '.str_replace('%COLUMN%', 'search_name', $filters[50100]);
+
+		$where = substr($whereType.$filterId.$filterName.$filterSearchName,4);
+		if (!empty($where)) $where = ' where '.$where;
+
+		$query = "select id,name,search_name,type from dim_resource ".$where;
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$lineNum = 0;
+		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
+			$ret[$lineNum] = new Resource();
+			$ret[$lineNum]->items[5048] = $line['id'];
+			$ret[$lineNum]->items[501] = $line['name'];
+			$ret[$lineNum]->items[50100] = $line['search_name'];
+			$ret[$lineNum]->items[5051] = $line['type'];
+		}
+		return $ret;
 
 	}
 

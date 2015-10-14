@@ -34,7 +34,7 @@ function load_data(action, domain, id) {
 }
 
 
-function sendData(action) {
+function sendData(action,elemId) {
   //alert(data[5028]);
   var str = 'data='+JSON.stringify(data);
   $.ajax({
@@ -133,9 +133,5 @@ $(".interface_edit").click(function(){
   
   
 });
-
-$(".popup_find_list_item").click(function(){
-  alert($(this).attr('id'));
-})
 
 });

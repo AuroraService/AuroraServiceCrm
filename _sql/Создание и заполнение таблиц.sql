@@ -383,16 +383,16 @@ insert into users(id,first_name,second_name,position,state,paswd,login) values(1
 insert into users(id,first_name,second_name,position,state,paswd,login) values(150110,'Дмитрий','Караваев','Сервис-инженер','Активный', md5(md5('12345')),'dkaravaev');
 
 
-insert into dim_resource(id,name,type) values(15011,'Чернов Максим Михайлович Разработчик Россия, Саратовская обл., г.Ртищево, ул.Железнодорожная, д.16., кв.56 +7(906)313-75-54',102);
-insert into dim_resource(id,name,type) values(15012,'Лобанов Станислав Дмитриевич Руководитель разработки +7(906)153-26-06  slobanov',102);
-insert into dim_resource(id,name,type) values(15013,'Филатов Артур  Генеральный директор +7(937)259-93-08  afilatov',102);
-insert into dim_resource(id,name,type) values(15014,'Зякина Валентина Михайловна Бухгалтер   vzyakina',102);
-insert into dim_resource(id,name,type) values(15015,'Храмов Александр  Разработчик +7(909)336-62-71  ahramov',102);
-insert into dim_resource(id,name,type) values(15016,'Великанова Юлия  Старший оператор +7(905)032-30-89  yvelikanova',102);
-insert into dim_resource(id,name,type) values(15017,'Овчинникова Елена  Оператор +7(927)120-47-23  eovchinikova',102);
-insert into dim_resource(id,name,type) values(15018,'Короткова Мария  Менеджер по рекламе   mkorotkova',102);
-insert into dim_resource(id,name,type) values(15019,'Подопригора Дмитрий  Курьер   dpodoprigora',102);
-insert into dim_resource(id,name,type) values(150110,'Караваев Дмитрий  Сервис-инженер   dkaravaev',102);
+insert into dim_resource(id,search_name,type) values(15011,'Чернов Максим Михайлович Разработчик Россия, Саратовская обл., г.Ртищево, ул.Железнодорожная, д.16., кв.56 +7(906)313-75-54',102);
+insert into dim_resource(id,search_name,type) values(15012,'Лобанов Станислав Дмитриевич Руководитель разработки +7(906)153-26-06  slobanov',102);
+insert into dim_resource(id,search_name,type) values(15013,'Филатов Артур  Генеральный директор +7(937)259-93-08  afilatov',102);
+insert into dim_resource(id,search_name,type) values(15014,'Зякина Валентина Михайловна Бухгалтер   vzyakina',102);
+insert into dim_resource(id,search_name,type) values(15015,'Храмов Александр  Разработчик +7(909)336-62-71  ahramov',102);
+insert into dim_resource(id,search_name,type) values(15016,'Великанова Юлия  Старший оператор +7(905)032-30-89  yvelikanova',102);
+insert into dim_resource(id,search_name,type) values(15017,'Овчинникова Елена  Оператор +7(927)120-47-23  eovchinikova',102);
+insert into dim_resource(id,search_name,type) values(15018,'Короткова Мария  Менеджер по рекламе   mkorotkova',102);
+insert into dim_resource(id,search_name,type) values(15019,'Подопригора Дмитрий  Курьер   dpodoprigora',102);
+insert into dim_resource(id,search_name,type) values(150110,'Караваев Дмитрий  Сервис-инженер   dkaravaev',102);
 
 select u.id, concat(IFNULL(u.second_name,''),' ',IFNULL(u.first_name,''),' ',IFNULL(u.patronymic,''),' ',IFNULL(u.position,''),' ',IFNULL(u.tel,''),' ',IFNULL(u.address,''),' ',IFNULL(u.login,''))
 from users u;
@@ -561,12 +561,12 @@ insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address
 insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time) values(15035,'12.08.2015', 'test4',1012,15023,15014,15095,15082, '10000','12.08.2010',1203,1208);
 insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time) values(15036,'12.10.2015', 'la-la-la',109,15021,15012,15091,15082, '10000','2015-10-12',1203,1208);
 
-insert into dim_resource(id,name,type) values(15031,'15031 Лобанов Станислав Дмитриевич Илья Бобошко Александрович +7(909)925-77-54 Железнодорожная 12-15',109);
-insert into dim_resource(id,name,type) values(15032,'15032 Чернов Максим Михайлович Валентин Коткин Николаевич +7(906)313-75-54 Красная 16-54',1010);
-insert into dim_resource(id,name,type) values(15033,'15033 Лобанов Станислав Дмитриевич Елена Ерохина Владимировна +7(913)160-49-42 Красная 16-54',1011);
-insert into dim_resource(id,name,type) values(15034,'15034 Филатов Артур  Елена Ерохина Владимировна +7(911)568-73-44 Железнодорожная 12-15',1011);
-insert into dim_resource(id,name,type) values(15035,'15035 Зякина Валентина Михайловна Елена Ерохина Владимировна +7(962)205-75-00 Железнодорожная 12-15',1012);
-insert into dim_resource(id,name,type) values(15036,'15031 Лобанов Станислав Дмитриевич Илья Бобошко Александрович +7(909)925-77-54 Железнодорожная 12-15',109);
+insert into dim_resource(id,search_name,type) values(15031,'15031 Лобанов Станислав Дмитриевич Илья Бобошко Александрович +7(909)925-77-54 Железнодорожная 12-15',109);
+insert into dim_resource(id,search_name,type) values(15032,'15032 Чернов Максим Михайлович Валентин Коткин Николаевич +7(906)313-75-54 Красная 16-54',1010);
+insert into dim_resource(id,search_name,type) values(15033,'15033 Лобанов Станислав Дмитриевич Елена Ерохина Владимировна +7(913)160-49-42 Красная 16-54',1011);
+insert into dim_resource(id,search_name,type) values(15034,'15034 Филатов Артур  Елена Ерохина Владимировна +7(911)568-73-44 Железнодорожная 12-15',1011);
+insert into dim_resource(id,search_name,type) values(15035,'15035 Зякина Валентина Михайловна Елена Ерохина Владимировна +7(962)205-75-00 Железнодорожная 12-15',1012);
+insert into dim_resource(id,search_name,type) values(15036,'15031 Лобанов Станислав Дмитриевич Илья Бобошко Александрович +7(909)925-77-54 Железнодорожная 12-15',109);
 
 select * from requests;
 
@@ -1920,12 +1920,12 @@ insert into calls(id,tel1,tel2,client_id,user_id,datetime,duration,call_type) va
 insert into calls(id,tel1,tel2,client_id,user_id,datetime,duration,call_type) values(15105,15095,15094,15022,15017,'2013-06-13 10:00',100,1);
 insert into calls(id,tel1,tel2,client_id,user_id,datetime,duration,call_type) values(15106,15096,15093,15023,15017,'2013-12-13 10:00',200,1);
 
-insert into dim_resource(id,name,type) values(15101,'15101 +7(909)925-77-54 +7(906)313-75-54 Великанова Юлия  Илья Бобошко Александрович',104);
-insert into dim_resource(id,name,type) values(15102,'15102 +7(906)313-75-54 +7(960)905-07-76 Великанова Юлия  Валентин Коткин Николаевич',104);
-insert into dim_resource(id,name,type) values(15103,'15103 +7(913)160-49-42 +7(918)382-27-91 Овчинникова Елена  Елена Ерохина Владимировна',104);
-insert into dim_resource(id,name,type) values(15104,'15104 +7(911)568-73-44 +7(962)205-75-00 Великанова Юлия  Илья Бобошко Александрович',104);
-insert into dim_resource(id,name,type) values(15105,'15105 +7(962)205-75-00 +7(911)568-73-44 Овчинникова Елена  Валентин Коткин Николаевич',104);
-insert into dim_resource(id,name,type) values(15106,'15106 +7(918)382-27-91 +7(913)160-49-42 Овчинникова Елена  Елена Ерохина Владимировна',104);
+insert into dim_resource(id,search_name,type) values(15101,'15101 +7(909)925-77-54 +7(906)313-75-54 Великанова Юлия  Илья Бобошко Александрович',104);
+insert into dim_resource(id,search_name,type) values(15102,'15102 +7(906)313-75-54 +7(960)905-07-76 Великанова Юлия  Валентин Коткин Николаевич',104);
+insert into dim_resource(id,search_name,type) values(15103,'15103 +7(913)160-49-42 +7(918)382-27-91 Овчинникова Елена  Елена Ерохина Владимировна',104);
+insert into dim_resource(id,search_name,type) values(15104,'15104 +7(911)568-73-44 +7(962)205-75-00 Великанова Юлия  Илья Бобошко Александрович',104);
+insert into dim_resource(id,search_name,type) values(15105,'15105 +7(962)205-75-00 +7(911)568-73-44 Овчинникова Елена  Валентин Коткин Николаевич',104);
+insert into dim_resource(id,search_name,type) values(15106,'15106 +7(918)382-27-91 +7(913)160-49-42 Овчинникова Елена  Елена Ерохина Владимировна',104);
 
 select c.id, u.id,cl.id,t1.id,t2.id,concat(c.id,' ', IFNULL(t1.number,''),' ', IFNULL(t2.number,''),' ', IFNULL(u.second_name,''),' ', IFNULL(u.first_name,''),' ',IFNULL(u.patronymic,''),' ', IFNULL(cl.second_name,''),' ', IFNULL(cl.first_name,''),' ', IFNULL(cl.patronymic,''))
 from calls c 
@@ -1977,10 +1977,13 @@ create table sFilterFields(
 insert into sFilterFields(id,name,sql_code,filter_id) values(15181,'На сегодня','DATE_FORMAT(%COLUMN%, "%Y-%m-%d") = CURDATE()',15171);
 insert into sFilterFields(id,name,sql_code,filter_id) values(15182,'На завтра','DATE_FORMAT(%COLUMN%, "%Y-%m-%d") = DATE_ADD(CURDATE(),INTERVAL 1 DAY)',15171);
 insert into sFilterFields(id,name,sql_code,filter_id) values(15183,'На неделю','YEAR(%COLUMN%) = YEAR(NOW()) AND WEEK(%COLUMN%, 1) = WEEK(NOW(), 1)',15171);
-insert into sFilterFields(id,name,sql_code,filter_id) values(15184,'Все заказы','1=1',15171);
+insert into sFilterFields(id,name,sql_code,filter_id) values(15184,'За всё время','1=1',15171);
 
 
 select * from sFilterFields;
 
 select * from entities;
 select now();
+
+
+select id,name,search_name,type from dim_resource;
