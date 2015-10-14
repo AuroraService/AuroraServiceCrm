@@ -157,3 +157,17 @@ body {
   background-size: 20px;
   cursor: pointer;
 }
+
+.message_box_disp_1_1{
+  position: fixed;
+  height: 100px;
+  width: 300px;
+  bottom: 30px;
+  right: 40px;
+  line-height: 100px;
+  text-align: center;
+  background-color: gray;
+  border-radius: 3px;
+  border: 1px solid black;
+  z-index: 999;
+}
