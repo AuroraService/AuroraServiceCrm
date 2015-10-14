@@ -25,8 +25,11 @@ class Model {
 		$this->estimateControllers();
 		$this->loadEntities();
 		//$this->loadPermissions();
+
+		//$this->getResourceGen(null,103);
 	}
-  
+
+	//Получение модели
 	public static function getModel(){
 		if (empty(Model::$model)) Model::$model = new Model();
 		return Model::$model;
@@ -148,7 +151,8 @@ class Model {
 		$res = $this->getResProperty2($id,$propId,$direct,$resource);
 		return $res[0];
 	}
-	
+
+	//Получение значений свойств ресурса включая значения свойств родителя
 	public function getResPropertyTransitive($id,$propId,$direct = 0,$resource = 1,&$props){
 		$ret = $this->getResProperty2($id,$propId,$direct,$resource);
 		$props = array_merge($props,$ret);
@@ -160,6 +164,16 @@ class Model {
 		return $props;
 	}
 
+	//Получить все подклассы данного класса
+	public function getSubClass($resourceId, &$result){
+		$ret = $this->getResProperty2($resourceId,5061,1);
+		$result = array_merge($result,$ret);
+		if (!empty($ret)) foreach($ret as $child){
+			$this->getSubClass($child,$result);
+		}
+	}
+
+	//Получение значений свойств ресурса
 	public function getResProperty2($id,$propId,$direct = 0,$resource = 1){//123
 		if ($propId == 5051){ //5051 - Тип
 			$query = 
@@ -378,7 +392,7 @@ class Model {
 	mysqli_free_result($result);
 	return $items;
   }
-  
+  /*
 	function getControllerName($elemId){
 	if (empty($elemId)) return $retval;
 	$retval = $this->getResProperty($elemId,5014,0,0); //5014.Исполнитель
@@ -392,6 +406,22 @@ class Model {
 		$retval = $line['value'];
 	}
 	return $retval;
+	}
+  */
+
+	//todo
+	function getResourceGen($filters = null, $type = null){
+		if (!empty($type)) {
+			$result = array();
+			$this->getSubClass($type,$result);
+			$whereType = 'type in('.$type;
+			if (!empty($result)) foreach ($result as $subClass){
+				$whereType = $whereType.','.$subClass;
+			}
+			$whereType = $whereType.')';
+		}
+		echo $whereType;
+
 	}
 
 	//Получение массива ресурсов
