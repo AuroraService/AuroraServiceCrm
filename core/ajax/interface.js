@@ -34,9 +34,10 @@ function load_data(action, domain, id) {
 }
 
 
-function sendData(action,elemId) {
+function sendData(action, elemId) {
   //alert(data[5028]);
   var str = 'data='+JSON.stringify(data);
+  var elemId=elemId || 'dop_form_interface';
   $.ajax({
     type: 'POST',
     url: '/core/ajax/interface.php?action='+action,
@@ -44,7 +45,7 @@ function sendData(action,elemId) {
     cache: false,
     data: str,
     success: function(data,status,xhr) {
-      var statusElem = document.getElementById('dop_form_interface');
+      var statusElem = document.getElementById(elemId);
       statusElem.innerHTML = data;
       if ( data == 0  ) statusElem.innerHTML = 'Change save';
       else {
@@ -54,6 +55,58 @@ function sendData(action,elemId) {
       //alert(data);
     }
   });
+}
+
+function sendData2(data, elemId) {
+
+  var str = 'data='+JSON.stringify(data);
+  var elemId=elemId || 'dop_form_interface';
+  $.ajax({
+    type: 'POST',
+    url: '/core/ajax/interface.php',
+    dataType: 'html',
+    cache: false,
+    data: str,
+    success: function(data,status,xhr) {
+      var statusElem = document.getElementById(elemId);
+      //alert(data);
+      statusElem.innerHTML = data;
+      switch (data){
+        case 0: ShowMessage('Сохранено');
+        break;
+      }
+    }
+  });
+}
+
+function setFormParams(selector, form, height, width, classes, offsetTop, offsetLeft, top, left){
+  var offsetTop=parseInt(offsetTop) || 0;
+  var offsetLeft=parseInt(offsetLeft) || 0;
+  var height=parseInt(height) || 100;
+  var width=parseInt(width) || 100;
+  var top=parseInt(top) || 0;
+  var left=parseInt(left) || 0;
+  var classes=classes || "find_popup_disp panel panel-default";
+  var selectorPos=[];
+  var bodyHeight=$('body').height();
+  if (selector != null) { // если передан селектор
+    selectorPos[1]=parseInt($(selector).offset().left); // позиция селектора
+    selectorPos[2]=parseInt($(selector).offset().top);  // позиция селектора
+  } else { // если селектора нет, то положение считываем по left top
+    selectorPos[1]=left;
+    selectorPos[2]=top;
+  }
+  var nposleft=selectorPos[1]+offsetLeft;   // Расчет новой позиции по горизонтали с учетом смещения
+  var npostop=selectorPos[2]+offsetTop;     // Расчет новой позиции по вертикали с учетом смещения
+  if (npostop+height>bodyHeight){
+    npostop=npostop-height;
+  }
+  $(form).css('width', width+'px');
+  $(form).css('height', height+'px');
+  $(form).css('left', nposleft);
+  $(form).css('top', npostop);
+  $(form).removeClass();
+  $(form).addClass(classes); 
 }
 
 function editProperty(propId,valCounter,value){
@@ -101,37 +154,46 @@ function popup_list_change_item(elem){
   window.popup_list_selected=elem.id;
 }
 
+function Test(){
+  alert($("#find_list_div").attr("id"));
+    $("#find_list_div").text("fdsfds");
+  //document.getElementById('find_list_div').innerHTML='fds';
+}
+
+function RemoveMessage(){
+  clearInterval(window.timerId);
+  $("#message_position_1").removeClass();
+  $("#message_position_1").addClass("find_popup_dnone");
+}
+
+function ShowMessage(text, type, position){
+  var type=type || 1;
+  var position=position || 1;
+  $("#message_position_"+position).removeClass();
+  $("#message_position_"+position).addClass("message_box_disp_"+type+"_"+position);
+  $("#message_position_"+position).text(text);
+  window.timerId=setInterval("RemoveMessage()", 3000);
+}
+
 $(document).ready(function(){
 
 $(".interface_edit").click(function(){
-  if ($(this).attr("id")==""){
-    return
-  }
-  var pos=[];
-  var offset=[];
-  var bh=$('body').height() ;
-  var mheight=parseInt($(this).attr("win_height")); // Максимальная высота всплывающего окна
-  var mwidth=parseInt($(this).attr("win_width"));
 
-  offset[1]=10; // смещение окна по горизонтали
-  offset[2]=10; // мещение окна по вертикали
-  pos[1]=$(this).offset().left; // позиция элемента, вызвавшего событие
-  pos[2]=$(this).offset().top;  // позиция элемента, вызвавшего событие
-  var nposleft=pos[1]+offset[1]; // Расчет новой позиции по горизонтали
-  var npostop=pos[2]+offset[2]; // Расчет новой позиции по вертикали
-  if (npostop+mheight>bh){
-    npostop=npostop-mheight;
-  }
-  //alert(npostop+mheight+", "+bh);
-  $("#popup_window").css('width', mwidth+'px');
-  $("#popup_window").css('height', mheight+'px');
-  $("#popup_window").css('left', nposleft);
-  $("#popup_window").css('top', npostop);
-  RequestFindForm(mheight-70); // максимальная высота списка в окошке
-  $("#popup_window").removeClass();
-  $("#popup_window").addClass("find_popup_disp panel panel-default");
-  
+
+  var form_data=[];
+  form_data['5055']=$(this).attr("domain");
+  form_data['5099']=$(this).attr("selectid");
+  form_data['5058']="2336";
+  form_data['9091']="235";
+  setFormParams($(this), $("#popup_window"), $(this).attr("win_height"), $(this).attr("win_width"));
+  //alert($(this).attr("id"));
+  sendData2(form_data, "popup_window");
   
 });
 
+//$('body').click(function() {
+//    ShowMessage('frew');
+//});
+
 });
+
