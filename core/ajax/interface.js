@@ -80,7 +80,7 @@ function sendData2(data, elemId) {
 }
 
 function setFormParams(selector, form, height, width, classes, offsetTop, offsetLeft, top, left){
-  var offsetTop=parseInt(offsetTop) || 0;
+  var offsetTop=parseInt(offsetTop) || 0; 
   var offsetLeft=parseInt(offsetLeft) || 0;
   var height=parseInt(height) || 100;
   var width=parseInt(width) || 100;

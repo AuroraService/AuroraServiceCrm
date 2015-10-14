@@ -26,7 +26,7 @@ class Model {
 		$this->loadEntities();
 		//$this->loadPermissions();
 
-		$this->getResourceGen(null,103);
+		//$this->getResourceGen(null,103);
 	}
 
 	//Получение модели
@@ -429,6 +429,7 @@ class Model {
 		if (!empty($where)) $where = ' where '.$where;
 
 		$query = "select id,name,search_name,type from dim_resource ".$where;
+		//echo $query;
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
 		$lineNum = 0;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
@@ -437,6 +438,7 @@ class Model {
 			$ret[$lineNum]->items[501] = $line['name'];
 			$ret[$lineNum]->items[50100] = $line['search_name'];
 			$ret[$lineNum]->items[5051] = $line['type'];
+			$lineNum++;
 		}
 		return $ret;
 

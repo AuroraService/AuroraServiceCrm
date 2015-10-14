@@ -78,14 +78,20 @@ function eshow($id){
 }
 
 function search($json){
-$rets='<div class="popup_btn_close" onclick="click_close_btn()"></div>
+	$model = Model::getModel();
+	$type = $json[5055];
+	$results = $model->getResourceGen(null,$type);
+	//print_r($results);
+	$rets='<div class="popup_btn_close" onclick="click_close_btn()"></div>
        <input type="text" class="form-control" placeholder="Поиск" style="margin-bottom: 10px;">
        <div class="list-group" id="find_list_div" style="overflow-y: scroll; max-height:'.$json[9091].'; border: 1px solid rgb(204,204,204);">';
-    $i=0;
-    while($i<100){ 
-      $i++;
-      $rets=$rets.'<a href="#" class="list-group-item popup_find_list_item" onclick="popup_list_change_item(this)" id="popup_list<? echo $i; ?>">Тестовая запись</a>'; 
-    }
+	$i=0;
+	foreach ($results as $result ){
+		$rets=$rets.'<a href="#" class="list-group-item popup_find_list_item" onclick="popup_list_change_item(this)" id="popup_list<? echo $i; ?>">'.$result->items[501].'</a>';
+		$rets=$rets.'<a href="#" class="list-group-item popup_find_list_item" onclick="popup_list_change_item(this)" id="popup_list<? echo $i; ?>">'.$result->items[50100].'</a>';
+		$i++;
+	}
+	//echo $type;
 $rets=$rets.'</div>';
 return $rets;
 }
