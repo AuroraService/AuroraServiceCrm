@@ -65,7 +65,25 @@ switch ($action) {
     case '2336':
         echo search($json);
         break;
+    case '2340':
+        echo  ShowFindForm($json);
+        break;
 	return 0;
+}
+
+function ParseForSearch($str){
+  $arr= preg_split("/[\s,]+/", $str);
+  $c=0;
+  foreach ($arr as $ar ){
+  if ($c==0){
+  	$rets='%COLUMN% LIKE "%'.$ar.'%"';
+  } else {
+    if($ar!="") $rets=$rets.' AND %COLUMN% LIKE "%'.$ar.'%"';
+  }
+  $c++;
+  }
+  if ($str=="") $rets=null;
+  return $rets;
 }
 
 function eshow($id){
@@ -77,22 +95,41 @@ function eshow($id){
 	$controller->execute($params);
 }
 
+
+function ShowFindForm($json){
+$rets='<div class="popup_btn_close" onclick="click_close_btn(this)"></div>
+       <input type="text" class="form-control control_form_1" placeholder="Поиск" oninput="InputKeyUp(find_list_div, this, 2336, '.$json[5055].')" style="margin-bottom: 10px;">
+       <div class="list-group" id="find_list_div" style="overflow-y: scroll; height:'.$json[9091].'; border: 1px solid rgb(204,204,204);"></div>';
+return $rets;
+}
+
 function search($json){
+
+	function GetActive($id, $id2,$elem){
+        if ($id==$id2){
+        	$rs=" active";
+        	echo '<span style="display: none" id="window_popup_hidden" sel_elem='.$elem.'></span>';
+        } else {
+        	$rs="";
+        }
+		return $rs;
+	}
+
 	$model = Model::getModel();
 	$type = $json[5055];
-	$results = $model->getResourceGen(null,$type);
-	//print_r($results);
-	$rets='<div class="popup_btn_close" onclick="click_close_btn()"></div>
-       <input type="text" class="form-control" placeholder="Поиск" style="margin-bottom: 10px;">
-       <div class="list-group" id="find_list_div" style="overflow-y: scroll; max-height:'.$json[9091].'; border: 1px solid rgb(204,204,204);">';
+	$filters[50100]=ParseForSearch($json[9092]);
+	$results = $model->getResourceGen($filters,$type);
+
 	$i=0;
+	if (!empty($results)){ //$json[50104]
 	foreach ($results as $result ){
-		$rets=$rets.'<a href="#" class="list-group-item popup_find_list_item" onclick="popup_list_change_item(this)" id="popup_list<? echo $i; ?>">'.$result->items[501].'</a>';
-		$rets=$rets.'<a href="#" class="list-group-item popup_find_list_item" onclick="popup_list_change_item(this)" id="popup_list<? echo $i; ?>">'.$result->items[50100].'</a>';
+		$rets=$rets.'<a href="#" class="list-group-item popup_find_list_item'.GetActive($result->items[5048], $json[5099], '"popup_list'.$i.'"').'" onclick="popup_list_change_item(this)" targetId="'.$json[50104].'" itemId="'.$result->items[5048].'" val="'.$result->items[501].'" id="popup_list'.$i.'">'.$result->items[501].'<br />'.$result->items[50100].'</a>';
 		$i++;
 	}
-	//echo $type;
-$rets=$rets.'</div>';
+} else {
+	$rets='<span style="margin: 10px 0 0 10px;">Результатов нет</span>';
+}
+
 return $rets;
 }
 
