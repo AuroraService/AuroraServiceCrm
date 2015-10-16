@@ -57,8 +57,10 @@ function sendData(action, elemId) {
   });
 }
 
-function sendData2(data, elemId) {
-
+function sendData2(data, elemId, req, req_data, req_elemId) {
+  var req=req || false;
+  var req_data=req_data || null;
+  var req_elemId=req_elemId || null;
   var str = 'data='+JSON.stringify(data);
   var elemId=elemId || 'dop_form_interface';
   $.ajax({
@@ -71,6 +73,7 @@ function sendData2(data, elemId) {
       var statusElem = document.getElementById(elemId);
       //alert(data);
       statusElem.innerHTML = data;
+      if (req) sendData2(req_data, req_elemId);
       switch (data){
         case 0: ShowMessage('Сохранено');
         break;
@@ -79,7 +82,7 @@ function sendData2(data, elemId) {
   });
 }
 
-function setFormParams(selector, form, height, width, classes, offsetTop, offsetLeft, top, left){
+function setFormParams(selector, form, height, width, offsetTop, offsetLeft, classes, top, left){
   var offsetTop=parseInt(offsetTop) || 0; 
   var offsetLeft=parseInt(offsetLeft) || 0;
   var height=parseInt(height) || 100;
@@ -111,6 +114,7 @@ function setFormParams(selector, form, height, width, classes, offsetTop, offset
 
 function editProperty(propId,valCounter,value){
   data[propId][valCounter]=value;
+  //alert(propId+", "+valCounter+", "+value);
   //alert(value);
 }
 
@@ -125,39 +129,27 @@ function editField(fieldId, value){
   field.innerHTML = '123';
 }
 
-function SetFindForm()
-{
-    if (xmlHttp.readyState==4) {
-        document.getElementById('popup_window').innerHTML=xmlHttp.responseText;
-        $("#popup_list2").addClass("active");
-        window.popup_list_selected="popup_list2";
-    }
-}
-
-function RequestFindForm(offsetList)
-{
-
-  xmlHttp = new XMLHttpRequest();
-  xmlHttp.open('GET','core/ajax/edit_selector_form.php?offset='+offsetList,true);
-  xmlHttp.onreadystatechange=SetFindForm;
-  xmlHttp.send(null);
-}
-function click_close_btn(){
-  $("#popup_window").text("");
-  $("#popup_window").removeClass();
-  $("#popup_window").addClass("find_popup_dnone");
+function click_close_btn(elem){
+  var el=$("#"+elem.parentNode.id);
+  $(el).text("");
+  $(el).removeClass();
+  $(el).addClass("find_popup_dnone");
 }
 
 function popup_list_change_item(elem){ 
+  var st=$(elem).attr("targetId");
+  var targetId=String(targetId) || null;
+  if (window.popup_list_selected===undefined){
+    window.popup_list_selected=$("#window_popup_hidden").attr("sel_elem");
+  }
   $("#"+window.popup_list_selected).removeClass("active");
   elem.className="list-group-item active";
   window.popup_list_selected=elem.id;
-}
-
-function Test(){
-  alert($("#find_list_div").attr("id"));
-    $("#find_list_div").text("fdsfds");
-  //document.getElementById('find_list_div').innerHTML='fds';
+  //alert(String(targetId));
+  $("#"+st).text($(elem).attr("val"));
+  //
+  //alert();
+  editProperty(st.substring(0,st.indexOf("_")), st.substring(st.indexOf("_")+1), $(elem).attr("itemId"));
 }
 
 function RemoveMessage(){
@@ -175,25 +167,40 @@ function ShowMessage(text, type, position){
   window.timerId=setInterval("RemoveMessage()", 3000);
 }
 
+function InputKeyUp(resId, elem, action, domain){
+  var form_data=[];
+  form_data['5055']=domain;
+  form_data['5058']=action;
+  form_data['9092']=elem.value;
+
+  sendData2(form_data, resId.id);
+}
+
 $(document).ready(function(){
 
 $(".interface_edit").click(function(){
-
-
   var form_data=[];
+  var form_data_req=[];
   form_data['5055']=$(this).attr("domain");
   form_data['5099']=$(this).attr("selectid");
-  form_data['5058']="2336";
+  form_data['50104']=$(this).attr("item-id");
+  //alert($(this).attr("item-id"));
+  form_data['5058']="2340";
   form_data['9091']="235";
-  setFormParams($(this), $("#popup_window"), $(this).attr("win_height"), $(this).attr("win_width"));
-  //alert($(this).attr("id"));
-  sendData2(form_data, "popup_window");
+  form_data['9092']=null;
   
+  setFormParams($(this), $("#popup_window"), $(this).attr("win_height"), $(this).attr("win_width"), 10,10);
+ // sendData2(form_data, "popup_window");
+  form_data_req['5055']=$(this).attr("domain");
+  form_data_req['5099']=$(this).attr("selectid");
+  form_data_req['9091']="235";
+  form_data_req['9092']=null;
+  form_data_req['5058']="2336";
+  form_data_req['50104']=$(this).attr("item-id");
+  sendData2(form_data, "popup_window", true, form_data_req, "find_list_div");
+ // sendData2(form_data, "find_list_div");
 });
 
-//$('body').click(function() {
-//    ShowMessage('frew');
-//});
 
 });
 
