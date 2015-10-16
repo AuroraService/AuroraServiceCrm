@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="517f09d9-f9a5-43c3-9282-40864178b07a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/ext_show.controller.php" afterPath="$PROJECT_DIR$/core/ext_show.controller.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.php" afterPath="$PROJECT_DIR$/index.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/ajax/interface.php" afterPath="$PROJECT_DIR$/core/ajax/interface.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/model.php" afterPath="$PROJECT_DIR$/core/model.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/show.controller.php" afterPath="$PROJECT_DIR$/core/show.controller.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/main.controller.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_sql/Создание и заполнение таблиц.sql" afterPath="$PROJECT_DIR$/_sql/Создание и заполнение таблиц.sql" />
     </list>
@@ -491,7 +487,13 @@
       <option name="project" value="LOCAL" />
       <updated>1444988437944</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Вынес главный контроллер&#10;">
+      <created>1445004638426</created>
+      <option name="number" value="00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1445004638426</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TodoView">
@@ -505,9 +507,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23773988" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23773988" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962137" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25501114" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -554,7 +556,8 @@
     <MESSAGE value="Изменен механизм фильтров" />
     <MESSAGE value="Merge branch 'master' of https://github.com/AuroraService/AuroraServiceCrm&#10;&#10;# Conflicts:&#10;#&#9;core/ajax/interface.php&#10;" />
     <MESSAGE value="Контроллер настройки действия&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Контроллер настройки действия&#10;" />
+    <MESSAGE value="Вынес главный контроллер&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Вынес главный контроллер&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
