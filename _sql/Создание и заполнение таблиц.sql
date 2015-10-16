@@ -1,12 +1,16 @@
 -- Создание справочника ресурсов
 drop table if exists dim_resource;
 create table dim_resource(
-  id	bigint,
-  name       	varchar(256),
-  search_name  varchar(1024),
-  type       	bigint,
-  start_date   datetime default '2015-11-01',
-  end_date     datetime default '9999-01-01',
+  id	                  bigint,
+  name                	varchar(256),
+  search_name           varchar(1024),
+  present_name          varchar(1024),
+  name_template         varchar(256),
+  search_name_template  varchar(256),
+  present_name_template varchar(256),
+  type                 	bigint,
+  start_date            datetime default '2015-11-01',
+  end_date              datetime default '9999-01-01',
   PRIMARY KEY(id,end_date)
 );
 
@@ -30,6 +34,21 @@ insert into dim_resource(id,name,type) values(1012,'Заявка на изъят
 insert into dim_resource(id,name,type) values(1013,'Адрес',10);
 insert into dim_resource(id,name,type) values(1014,'Телефон',10);
 
+insert into dim_resource(id,name,type) values(10,'Ресурс с расположением в своей таблице ',132);
+insert into dim_resource(id,name,type) values(12,'Отображатель',11);
+insert into dim_resource(id,name,type) values(14,'Контроллер',11);
+insert into dim_resource(id,name,type) values(23,'Действие',132);
+insert into dim_resource(id,name,type) values(113,'Меню',11);
+insert into dim_resource(id,name,type) values(161,'Фильтр',11);
+insert into dim_resource(id,name,type) values(162,'Поле фильтра',11);
+insert into dim_resource(id,name,type) values(163,'Фильтр действия',11);
+insert into dim_resource(id,name,type) values(164,'Сообщение',11);
+insert into dim_resource(id,name,type) values(168,'Сессия',11);
+insert into dim_resource(id,name,type) values(1511,'Свойство сущности',50);
+
+insert into dim_resource(id,name,type) values(134,'Текст',133);
+insert into dim_resource(id,name,type) values(135,'Число',133);
+insert into dim_resource(id,name,type) values(136,'Дата',133);
 
 
 
@@ -149,6 +168,11 @@ insert into dim_resource(id,name,type) values(11514,'Форма создания
 insert into dim_resource(id,name,type) values(11515,'Форма создания заявки на изъятие техники',115);
 insert into dim_resource(id,name,type) values(11516,'Форма создания адреса',115);
 
+
+-- Набор параметров
+insert into dim_resource(id,name,type) values(15211,'Параметр 1',1611);
+insert into triplets(subj_id, prop_id,obj_id) values(15211,5058,231);
+
 -- 1119,11110,1157,1158 / 1013,104
 -- Создание таблицы высказываний
 drop table if exists triplets;
@@ -233,6 +257,7 @@ insert into triplets(subj_id, prop_id,obj_id) values(1117,507,106);
 insert into triplets(subj_id, prop_id,obj_id) values(1118,507,107);
 insert into triplets(subj_id, prop_id,obj_id) values(1119,507,1013);
 insert into triplets(subj_id, prop_id,obj_id) values(11110,507,104);
+insert into triplets(subj_id, prop_id,obj_id) values(11111,507,168);
 
 insert into triplets(subj_id, prop_id,obj_id) values(1151,507,102);
 insert into triplets(subj_id, prop_id,obj_id) values(1152,507,101);
@@ -427,6 +452,8 @@ insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2311);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2312);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2313);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2335);
+insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2338);
+insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2341);
 
 
 -- 15012.Лобанов Станислав
@@ -974,6 +1001,24 @@ insert into sColumns(id, name, position, property, alias, domain, type, template
   values(112380, 'Разделитель', 2, null, ''' ''', null, 1,NULL,1,null,null,112370,0,121);
 insert into sColumns(id, name, position, property, alias, domain, type, template,editable,location,form,pid,external,viewer) 
   values(112381, 'Фамилия', 3, 508, 'second_name', null, 1,NULL,1,null,null,112370,0,121);
+  
+-- 11111 Просмотр сессий
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112436, 'Id', 1, 0, NULL,0,11111,NULL,1210,1511128);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112437,'Дата создания',2, 0, NULL,1,11111,NULL,1210,1511129);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112438,'Идентификатор сессии',3, 1, NULL,1,11111,NULL,1210,1511130);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112439,'Сотрудник',4,0, NULL,0,11111,NULL,129,1511131);
+ 
+ 
+insert into sColumns(id, name, position, property, alias, domain, type, template,editable,location,form,pid,external,viewer) 
+  values(112440, 'Имя', 1, 509, 'first_name', null, 1,NULL,1,null,null,112439,0,121);
+insert into sColumns(id, name, position, property, alias, domain, type, template,editable,location,form,pid,external,viewer) 
+  values(112441, 'Разделитель', 2, null, ''' ''', null, 1,NULL,1,null,null,112439,0,121);
+insert into sColumns(id, name, position, property, alias, domain, type, template,editable,location,form,pid,external,viewer) 
+  values(112442, 'Фамилия', 3, 508, 'second_name', null, 1,NULL,1,null,null,112439,0,121);
 
 -- 1151
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
@@ -1291,6 +1336,7 @@ insert into sColumns(id, name, position, type, template,editable,form,pid,viewer
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
  values( 112207,'Номер',2,1, NULL,1,1159,NULL,121,1511114);
  
+ 
 -- 11510 Создание пользователя
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
   values(112291,'Фамилия',2,1, NULL,1,11510,NULL,121,151146);
@@ -1429,7 +1475,7 @@ insert into sColumns(id, name, position,  type, template,editable,form,pid,viewe
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(112435,'Дата выезда',11,1, NULL,1,11515,NULL,121,151189);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112436,'Комментарий',12,1, NULL,1,11515,NULL,121,151165);
+  values(112443,'Комментарий',12,1, NULL,1,11515,NULL,121,151165);
 
  
 select max(id) from sColumns;
@@ -1483,7 +1529,7 @@ insert into buttons(id,name,link,pid,action,position,level) values(15055,'Кли
 insert into buttons(id,name,link,pid,action,position,level) values(15056,'Сотрудники',null,15052,null,null,3);
 insert into buttons(id,name,link,pid,action,position,level) values(15057,'Отчёты',null,15052,null,null,3);
 
-insert into buttons(id,name,link,pid,action,position,level,type) values(15058,'Заявки на сервис','index.php?action=231',15054,null,1,4,1);
+insert into buttons(id,name,link,pid,action,position,level,type) values(15058,'Заявки на сервис','index.php?action=2341&param=15211',15054,null,1,4,1);
 insert into buttons(id,name,link,pid,action,position,level,type) values(15059,'Заявки на заказ запчасти','index.php?action=232',15054,null,2,4,1);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150510,'Заявки на доставку','index.php?action=233',15054,null,3,4,1);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150511,'Заявки на изъятие техники','index.php?action=234',15054,null,4,4,1);
@@ -1505,6 +1551,8 @@ insert into buttons(id,name,link,pid,action,position,level,type) values(150522,'
 insert into buttons(id,name,link,pid,action,position,level,type) values(150523,'Разделитель',null,15056,null,2,4,2);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150524,'Создание',null,15056,null,3,4,3);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150525,'Новый сотрудник','index.php?action=2314',15056,null,4,4,1);
+
+insert into buttons(id,name,link,pid,action,position,level,type) values(150530,'Сессии','index.php?action=2338',15057,2338,4,4,1);
 
 insert into buttons(id,name,link,pid,action,position,level,type) values(150526,'user_name',null,15053,null,1,4,1);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150527,'Выход','/logout',15053,null,2,4,1);
@@ -1566,6 +1614,9 @@ insert into entities(id, location,namespace,counter) values(162, 'sFilterFields'
 insert into entities(id, location,namespace,counter) values(163, 'actionFilters',null,10);
 insert into entities(id, location,namespace,counter) values(50, 'dim_resource',null,10);
 
+insert into entities(id, location,namespace,counter) values(168, 'sessions',1519,10);
+
+insert into entities(id, location,namespace,counter) values(164, 'messages',1520,10);
 -- Создание таблицы свойств сущности
 drop table if exists ent_properties;
 create table ent_properties(
@@ -1576,6 +1627,7 @@ create table ent_properties(
   domain    bigint,
   external  int default 0,
   editable  int default 1,
+  auto      int default 0,
   start_date datetime default '2015-11-01',
   end_date   datetime default '9999-01-01',
   PRIMARY KEY(id,end_date)
@@ -1622,7 +1674,7 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151128,1511,5055,'domain',132,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151129,1511,5084,'external',135,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151190,1511,5052,'editable',135,0);
-
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511132,1511,50108,'auto',135,0);
 -- 112.Столбец формы
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151130,112,5048,'id',112,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151131,112,501,'name',134,0);
@@ -1738,13 +1790,169 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511119,162
 -- 163.Фильтр действия
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511120,163,5095,'filter_id',161);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511121,163,5082,'prop_id',50);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511122,163,5058,'action',161);
+-- insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511122,163,5058,'action',161);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511122,163,50109,'param_id',1611);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511123,163,5094,'default_value',161);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511124,163,504,'position',161);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511127,163,501,'name',134);
 -- 50.Свойство
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511125,162,5048,'id',50,0,0);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511126,163,501,'name',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511125,50,5048,'id',50,0,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511126,50,501,'name',134);
+
+-- 168.Сессия
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511128,168,5048,'id',168,0,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,editable,auto) values(1511129,168,5022,'creation_time',136,0,1);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,editable) values(1511130,168,50103,'session_id',134,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,editable) values(1511131,168,5079,'user_id',102,0);
+
+-- 164.Сообщение 
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511133,164,5048,'id',164,0,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511134,164,5066,'value',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511135,164,5051,'type',164);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,auto) values(1511136,164,5022,'creation_time',136,1);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511137,164,50101,'life_time',135);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511138,164,50103,'session_id',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,auto) values(1511139,164,5079,'user_id',136,1);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,auto) values(1511140,164,5057,'pid',136,1);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,auto) values(1511141,164,50105,'dialog',136,1);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,auto) values(1511142,164,50106,'flag',136,1);
+
+-- Создание таблицы свойств
+drop table if exists properties;
+create table properties(
+  id         bigint,
+  name       varchar(256),
+  alias      varchar(256),
+  start_date datetime default '2015-11-01',
+  end_date   datetime default '9999-01-01',
+  PRIMARY KEY(id,end_date)
+);
+
+insert into properties(id,name,alias) values(501,'Название','name');
+insert into properties(id,name,alias) values(502,'Часть','');
+insert into properties(id,name,alias) values(503,'Местоположение','location');
+insert into properties(id,name,alias) values(504,'Позиция','position');
+insert into properties(id,name,alias) values(505,'Атрибут','');
+insert into properties(id,name,alias) values(506,'Псевдоним','alias');
+insert into properties(id,name,alias) values(507,'Представление','present');
+insert into properties(id,name,alias) values(508,'Фамилия','second_name');
+insert into properties(id,name,alias) values(509,'Имя','first_name');
+insert into properties(id,name,alias) values(5010,'Отчество','patronymic');
+insert into properties(id,name,alias) values(5011,'Право','grant');
+insert into properties(id,name,alias) values(5012,'Осуществление','');
+insert into properties(id,name,alias) values(5013,'Объект','');
+insert into properties(id,name,alias) values(5014,'Исполнитель','performer_id');
+insert into properties(id,name,alias) values(5015,'Представитель','');
+insert into properties(id,name,alias) values(5016,'Должность','position');
+insert into properties(id,name,alias) values(5017,'Телефон','tel');
+insert into properties(id,name,alias) values(5018,'Адресс','address');
+insert into properties(id,name,alias) values(5019,'День рождения','birthday');
+insert into properties(id,name,alias) values(5020,'Состояние','state');
+insert into properties(id,name,alias) values(5021,'Комментарий','comment');
+insert into properties(id,name,alias) values(5022,'Дата создания','creation_time');
+insert into properties(id,name,alias) values(5024,'Клиент','client_id');
+insert into properties(id,name,alias) values(5025,'Телефон','tel');
+insert into properties(id,name,alias) values(5026,'Адрес','address');
+insert into properties(id,name,alias) values(5027,'Состояние','state');
+insert into properties(id,name,alias) values(5028,'Результат','result');
+insert into properties(id,name,alias) values(5029,'Возможные проблемы','poss_problem');
+insert into properties(id,name,alias) values(5030,'Время выезда','dep_time');
+insert into properties(id,name,alias) values(5031,'Дата выезда','dep_date');
+insert into properties(id,name,alias) values(5032,'Модель','model');
+insert into properties(id,name,alias) values(5033,'Стоимость','cost');
+insert into properties(id,name,alias) values(5034,'Стоимость ремонта','rep_cost');
+insert into properties(id,name,alias) values(5035,'Дата заказа','order_date');
+insert into properties(id,name,alias) values(5036,'Дата прихода','recept_date');
+insert into properties(id,name,alias) values(5037,'Код запчасти','comp_code');
+insert into properties(id,name,alias) values(5038,'Поставщик','provider_id');
+insert into properties(id,name,alias) values(5039,'Цена покупки','buy_cost');
+insert into properties(id,name,alias) values(5040,'Цена продажи','sell_cost');
+insert into properties(id,name,alias) values(5041,'Цена доставки','dep_cost');
+insert into properties(id,name,alias) values(5042,'Редактирование','');
+insert into properties(id,name,alias) values(5043,'Логин','');
+insert into properties(id,name,alias) values(5044,'IP','');
+insert into properties(id,name,alias) values(5045,'Дата и время действия','datetime');
+insert into properties(id,name,alias) values(5046,'Описание действия','');
+insert into properties(id,name,alias) values(5047,'Объект','');
+insert into properties(id,name,alias) values(5048,'Идентификатор','id');
+insert into properties(id,name,alias) values(5049,'Является обратным','');
+insert into properties(id,name,alias) values(5050,'Предистория','');
+insert into properties(id,name,alias) values(5051,'Тип','type');
+insert into properties(id,name,alias) values(5052,'Редактируемость','editable');
+insert into properties(id,name,alias) values(5053,'Открываемость','');
+insert into properties(id,name,alias) values(5054,'Изменяемость','');
+insert into properties(id,name,alias) values(5055,'Домен','domain');
+insert into properties(id,name,alias) values(5056,'Ссылка','link');
+insert into properties(id,name,alias) values(5057,'Идентификатор родителя','pid');
+insert into properties(id,name,alias) values(5058,'Действие','action');
+insert into properties(id,name,alias) values(5059,'Внешний идентификатор','resource_id');
+insert into properties(id,name,alias) values(5060,'Уровень','level');
+insert into properties(id,name,alias) values(5061,'Подкласс','');
+insert into properties(id,name,alias) values(5062,'Идентификатор действия','action_id');
+insert into properties(id,name,alias) values(5063,'Контроллер','contr_id');
+insert into properties(id,name,alias) values(5064,'Роль','role');
+insert into properties(id,name,alias) values(5065,'Форма','form');
+insert into properties(id,name,alias) values(5066,'Значение','value');
+insert into properties(id,name,alias) values(5067,'Номер','number');
+insert into properties(id,name,alias) values(5068,'Страна','country');
+insert into properties(id,name,alias) values(5069,'Область','region');
+insert into properties(id,name,alias) values(5070,'Район','destrict');
+insert into properties(id,name,alias) values(5071,'Населенный пункт','town');
+insert into properties(id,name,alias) values(5072,'Улица','street');
+insert into properties(id,name,alias) values(5073,'Дом','home');
+insert into properties(id,name,alias) values(5074,'Корпус','housing');
+insert into properties(id,name,alias) values(5075,'Квартира','flat');
+insert into properties(id,name,alias) values(5076,'Телефон1','tel1');
+insert into properties(id,name,alias) values(5077,'Телефон2','tel2');
+insert into properties(id,name,alias) values(5079,'Сотрудник','user_id');
+insert into properties(id,name,alias) values(5080,'Продолжительность','duration');
+insert into properties(id,name,alias) values(5081,'Тип звонка','call_type');
+insert into properties(id,name,alias) values(5082,'Идентификатор свойства','prop_id');
+insert into properties(id,name,alias) values(5083,'Идентификатор сущности','ent_id');
+insert into properties(id,name,alias) values(5084,'Флаг внешнего свойства','external');
+insert into properties(id,name,alias) values(5085,'Шаблон','template');
+insert into properties(id,name,alias) values(5086,'Просмотрщик','viewer');
+insert into properties(id,name,alias) values(5087,'Свойство сущности','ent_prop_id');
+insert into properties(id,name,alias) values(5088,'Номер значения','');
+insert into properties(id,name,alias) values(5089,'Пространство имен','namespace');
+insert into properties(id,name,alias) values(5090,'Счётчик','counter');
+insert into properties(id,name,alias) values(5091,'Поисковый запрос','');
+insert into properties(id,name,alias) values(5092,'Флаг поиска','');
+insert into properties(id,name,alias) values(5093,'Столбец','column');
+insert into properties(id,name,alias) values(5094,'Значение по умолчанию','default_value');
+insert into properties(id,name,alias) values(5095,'Фильтр','filter_id');
+insert into properties(id,name,alias) values(5096,'SQL','sql_code');
+insert into properties(id,name,alias) values(5097,'Фильтр','filter');
+insert into properties(id,name,alias) values(5098,'Отображаемость','showable');
+insert into properties(id,name,alias) values(5099,'Выбранный элемент','');
+insert into properties(id,name,alias) values(50100,'Поисковое имя','search_name');
+insert into properties(id,name,alias) values(50101,'Время жизни','life_time');
+insert into properties(id,name,alias) values(50102,'Сессия','session');
+insert into properties(id,name,alias) values(50103,'Идентификатор сессии','session_id');
+insert into properties(id,name,alias) values(50104,'Идентификатор объекта документа','');
+
+insert into properties(id,name,alias) values(50109,'Идентификатор  параметра','param_id');
+
+
+
+select p.id, p.name, p.alias, ep.ent_id, e.name entity_name, d.name domain from properties p
+  left join ent_properties ep on p.id = ep.prop_id 
+  left join dim_resource e on e.id = ep.ent_id
+  left join dim_resource d on d.id = ep.domain
+order by p.id, ep.ent_id;
+
+select id,name from properties;
+
+select name,id from properties;
+
+select ep.ent_id, e.name entity_name, p.id, p.name, p.alias, d.name domain 
+from properties p
+  left join ent_properties ep on p.id = ep.prop_id 
+  left join dim_resource e on e.id = ep.ent_id
+  left join dim_resource d on d.id = ep.domain
+where ep.ent_id is not null
+order by e.name, p.name;
+
 
 -- Создание таблицы действий
 drop table if exists dim_actions;
@@ -1775,6 +1983,8 @@ insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(238,2
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2330,2316,'Просмотр адресов',null,1013,1119,2316);
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2331,2316,'Просмотр звонков',null,104,11110,2316);
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2335,2316,'Просмотр отчётов',null,null,null,2316);
+insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2338,2316,'Просмотр сессий',null,168,11111,2316);
+insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2341,2341,'Настроенный просмотр сущностей класса',149,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2315,2315,'Просмотр сущности',145,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2317,2315,'Просмотр заявки',null,103,2315);
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2321,2315,'Просмотр сервисной заявки',null,109,1153,2317);
@@ -1797,11 +2007,12 @@ insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2314,
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2319,2319,'Удаление сущности',null,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2333,2333,'Поиск сущностей',146,132,23);
 
+select * from dim_actions;
 
 -- Создание таблицы элементов CRM
 drop table if exists actionFilters;
 create table actionFilters(
-  action bigint,
+  param_id bigint,
   filter_id bigint,
   name    varchar(256),
   prop_id      bigint,  -- Привязка к свойству
@@ -1811,7 +2022,7 @@ create table actionFilters(
 );
 
 
-insert into actionFilters(action,filter_id,name,prop_id,default_value,position,showable) values(231,15171,'Дата выезда:',5031,15181,1,1);
+insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15211,15171,'Дата выезда:',5031,15181,1,1);
 
 select * from actionFilters;
 
@@ -1835,6 +2046,8 @@ insert into sCrmElements(id,name,location,type) values(145, 'EntityController', 
 insert into sCrmElements(id,name,location,type) values(146, 'SearchController', 'core/search.controller.php',14);
 insert into sCrmElements(id,name,location,type) values(147, 'CreateController', 'core/create.controller.php',14);
 insert into sCrmElements(id,name,location,type) values(148, 'FilterController', 'core/filter.controller.php',14);
+insert into sCrmElements(id,name,location,type) values(149, 'ExtShowController', 'core/ext_show.controller.php',14);
+
 
 insert into sCrmElements(id,name,location,type) values(121,'TextViewer','core/viewers/text.viewer.php',12);
 insert into sCrmElements(id,name,location,type) values(122,'DateTimeViewer','core/viewers/datetime.viewer.php',12);
@@ -1979,13 +2192,41 @@ insert into sFilterFields(id,name,sql_code,filter_id) values(15182,'На зав�
 insert into sFilterFields(id,name,sql_code,filter_id) values(15183,'На неделю','YEAR(%COLUMN%) = YEAR(NOW()) AND WEEK(%COLUMN%, 1) = WEEK(NOW(), 1)',15171);
 insert into sFilterFields(id,name,sql_code,filter_id) values(15184,'За всё время','1=1',15171);
 
+-- Создание таблицы сессий
+drop table if exists sessions;
+create table sessions(
+  id         bigint,
+  session_id varchar(256),
+  creation_time timestamp default CURRENT_TIMESTAMP,
+  user_id    bigint,
+  PRIMARY KEY(id)
+);
+
+-- Создание таблицы сессий
+drop table if exists messages;
+create table messages(
+ id bigint,
+ value varchar(1024),
+ type bigint,
+ creation_time timestamp default CURRENT_TIMESTAMP,
+ life_time int,
+ session bigint,
+ start_date datetime default '2015-11-01',
+ end_date   datetime default '9999-01-01',
+ PRIMARY KEY(id,end_date)
+);
+
 
 select * from sFilterFields;
 
 select * from entities;
-select now();
 
 
 select id,name,search_name,type from dim_resource;
 
-update dim_resource set name = search_name where name is null
+update dim_resource set name = search_name where name is null;
+update dim_resource set search_name = name where search_name is null;
+
+select * from sessions;
+
+select id,ent_id,prop_id,alias,domain,external,editable,auto from ent_properties where id=1511131;

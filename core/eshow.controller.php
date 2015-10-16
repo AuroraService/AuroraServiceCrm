@@ -70,6 +70,7 @@ class EshowController {
         //echo '</div>';
         echo '</div></div>';
 		}
+		echo '<a onclick="sendData(2334);">Сохранить</a>';
 
 	}
 	

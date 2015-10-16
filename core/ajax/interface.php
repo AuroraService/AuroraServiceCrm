@@ -35,6 +35,7 @@ switch ($action) {
 		//$filters = $model->getResource();
 		require_once('core/set.controller.php');
 		$controller = new SetController();
+		//print_r($params);
 		$controller->execute($params);
 		break;
 	case '2333':
@@ -80,6 +81,8 @@ function eshow($id){
 function search($json){
 	$model = Model::getModel();
 	$type = $json[5055];
+	$selectedId = $json[5099];
+	echo $selectedId;
 	$results = $model->getResourceGen(null,$type);
 	//print_r($results);
 	$rets='<div class="popup_btn_close" onclick="click_close_btn()"></div>

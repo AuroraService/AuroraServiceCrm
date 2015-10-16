@@ -29,14 +29,54 @@ class Model {
 		//$this->getResourceGen(null,103);
 	}
 
+	public function checkPermission($actionId, $domain = null){
+		//12354
+		$actId = $this->actions[$actionId]->items[5062];
+		if (empty($domain)) $domain = $this->actions[$actionId]->items[5055];
+		//echo 'domain'.$domain.','.$actId.','.$actionId.',';
+		if ($this->perm[$actId][$domain]['perm'] == '1') return 1;
+		else return 0;
+	}
+
+	private function estimateControllers(){
+		foreach ($this->actions as $action){
+			if (!empty($action->items[5057]) && empty($action->items[5063])) $action->items[5063] = $this->findController($action->items[5057]);
+		}
+
+		foreach ($this->actions as $action){
+			$this->perm[$action->items[5062]][$action->items[5055]]['contr']=$this->controllers[$action->items[5063]];
+		}
+	}
+
+	public function find($text, $domain){
+		$text = strtoupper($text);
+		$query = 'delete from find';
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$query = 'insert into find(id,type) select id,type from dim_resource where Upper(name) LIKE "%'.$text.'%" and type = '.$domain;
+		//echo $query;
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+	}
+
+	private function findController($actionId){
+		if (!empty($this->actions[$actionId]->items[5063])) return $this->actions[$actionId]->items[5063];
+		else if (!empty($this->actions[$actionId]->items[5057])) return $this->findController($this->actions[$actionId]->items[5057]);
+		else return '';
+	}
+
+	public function generateCode($length=6) {
+		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789";
+		$code = "";
+		$clen = strlen($chars) - 1;
+		while (strlen($code) < $length) {
+			$code .= $chars[mt_rand(0,$clen)];
+		}
+		return $code;
+	}
+
 	//Получение модели
 	public static function getModel(){
 		if (empty(Model::$model)) Model::$model = new Model();
 		return Model::$model;
-	}
-	
-	public function search($classId, $query){
-		
 	}
   
 	public function getViewer($id, $params = null, $model = null){
@@ -55,66 +95,195 @@ class Model {
 		return $id;
 	}
 
-	private function loadEntities(){
-		//$filters[5051] = 12;
-		$entities = $this->getResource(10);
-		foreach ($entities as $entity){
-			$this->entities[$entity->items[5048]]=$entity;
-		}
-		//print_r($this->entities);
+	public function getAction($actionId){
+		return $this->actions[$actionId];
 	}
-  
-	private function loadVievers(){
-		$filters[5051] = '%COLUMN%='.'12';
-		$viewers = $this->getResource(12, $filters);
-		foreach ($viewers as $viewer){
-			$this->viewers[$viewer->items[5048]]=$viewer;
+
+	private function getChildColumns($columnId){
+		$query =
+			"select alias from sColumns
+         where pid = $columnId order by CAST(position AS SIGNED)";
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
+			$columns = $columns . ',' .$line['alias'];
+		}
+		mysqli_free_result($result);
+		$columns = substr($columns,1);
+		return $columns;
+	}
+
+	//Получение массива свойств класса (Transitive)
+	public function getClassProperties($classId,&$props){
+		$filters[5083]='%COLUMN% = '.$classId;
+		$ret = $this->getResource(1511, $filters);
+		$props = array_merge($props,$ret);
+		$pClassId = $this->getResProperty($classId,5061,0); //5061.Подкласс
+		if (!empty($pClassId)){
+			$this->getClassProperties($pClassId,$props);
 		}
 	}
 
-	private function loadActions(){
-		$actions = $this->getResource(23, null);
-		foreach ($actions as $action){
-			$this->actions[$action->items[5048]] = $action;
-			$this->perm[$action->items[5062]][$action->items[5055]]['action']=$action;
+	public function getColumns($formId) {
+		$lineNum=0;
+		$retval = new Table();
+		$query =
+			"select id, name, position, property, alias, domain, type, template , editable, location, pid, external, viewer
+       from sColumns
+       where form = $formId order by CAST(position AS SIGNED)";
+		// print_r($query);
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
+			$col = new Column($line['id'],$line['name'],$line['position'],$line['property'],$line['alias'],$line['domain'],$line['type'],$line['template'],$line['editable'],$line['location'],$line['parentId'],$line['external']);
+			//echo $lineNum . ":";
+			//print_r($this->viewers[$line['viewer']]);
+			//$vFactory = $this->viewers[$line['viewer']];
+			$params[5055] = $line['domain'];
+			//$col->viewer = $vFactory->getViewer($params,$this);
+			$col->viewer = $this->getViewer($line['viewer'],$params,$this);
+			$retval->cols[$lineNum]=$col;
+			$lineNum++;
 		}
-		//print_r($actions);
+		mysqli_free_result($result);
+		$retval->colsNum = $lineNum;
+		//print_r($retval);
+		return $retval;
 	}
-	
-	private function loadControllers(){
-		$filters[5051] = '%COLUMN%='.'14';
-		$controllers = $this->getResource(14, $filters);
-		foreach ($controllers as $controller){
-			$this->controllers[$controller->items[5048]]=$controller;
-			//$this->actions[]
+
+	public function getColumns2($formId) {
+		$lineNum=0;
+		$retval = new Table();
+
+		$filters[5065] = '%COLUMN%='.$formId; $orders[504] = 1;
+		$columns = $this->getResource(112, $filters, $orders);
+		if (!empty($columns)) foreach ($columns as $line){
+			$col = new Column($line->items['5048'],$line->items['501'],$line->items['504'],null,null,null,$line->items['5051'],$line->items['5085'],$line->items['5052'],null,$line->items['5057'],null);
+			$filters2[5048] = '%COLUMN%='.$line->items[5087];
+			$property = $this->getResource(1511, $filters2);
+			$col->property = $property[0]->items[5082];
+			$col->alias = $property[0]->items[506];
+			$col->domain = $property[0]->items[5055];
+			//echo 'domain'.$col->domain;
+			$col->external = $property[0]->items[5084];
+			//echo 'external'.$col->external;
+			$col->viewer = $line->items['5086'];
+			$retval->cols[$lineNum]=$col;
+			$lineNum++;
 		}
-		//print_r($controllers);
+		return $retval;
 	}
-	
-	public function loadPermissions(){
-		$perms = $this->getResProperty2($this->user_id,5011,0); //5011.Право
-		if (!empty($perms)) foreach ($perms as $perm){
-			$domain = $this->actions[$perm]->items[5055];
-			$actionId = $this->actions[$perm]->items[5062];
-			$this->perm[$actionId][$domain]['perm'] = 1;
+
+	function getComboItems($boxId){
+		$query = "select r.id id, r.name from triplets t
+                  join dim_resource r on t.subj_id = r.id
+                where t.obj_id = $boxId and t.prop_id = 502";
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$lineNum = 0;
+		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
+			$items[$lineNum] = new Cell($line[id], $line[name]);
+			$lineNum++;
 		}
-		//print_r($this->perm[2316]);
+		mysqli_free_result($result);
+		return $items;
 	}
-	
-	private function findController($actionId){
-		if (!empty($this->actions[$actionId]->items[5063])) return $this->actions[$actionId]->items[5063];
-		else if (!empty($this->actions[$actionId]->items[5057])) return $this->findController($this->actions[$actionId]->items[5057]);
-		else return '';
-	}
-	
+
 	public function getController($actionId){
 		$actId = $this->actions[$actionId]->items[5062];
 		$domain = $this->actions[$actionId]->items[5055];
 		return $this->perm[$actId][$domain]['contr'];
 	}
-	
-	public function getAction($actionId){
-		return $this->actions[$actionId];
+
+	public function getDataSet($table, $formId, $id, $filters = null){
+		$entId = $this->getResProperty($formId,507,0); //507.Представление
+		$tableName = $this->getResProperty($entId,503,0,0); //503.Местоположение
+		foreach ($table->cols as $line)  {
+			if (!empty($filters[$line->property])){
+				//echo $filters[$line[prop_id]];
+				$filter = str_replace('%COLUMN%',$line->alias,$filters[$line->property]);
+				//if (($line[domain] == 134) || ($line[domain] == 136)) $filter = $line[alias]." = '".$filters[$line[prop_id]]."'"; else $filter = $line[alias]." = ".$filters[$line[prop_id]];
+				$where2 = $where2 ." and ". $filter;
+			}
+			if ($line->external == '0'){
+				if ($line->type == 0){
+					$childCols = $this->getChildColumns($line->id);
+					$location = $this->getResProperty($line->domain,503);
+					if (!empty($childCols)) $columns = $columns . ", " . "(select concat($childCols) from $location where $location .id = $tableName.$line->alias) ".$line->alias."_value";
+					else $columns = $columns . ", " . $line->alias . " ".$line->alias."_value";
+				}
+				if ($line->type == 3) $column = "DATE_FORMAT(".$line->alias.",'".$line->template."') ".$line->alias; else $column = $line->alias;
+				$columns = $columns . ", " . $column;
+			} else {
+
+				if ($line->external == 1) {$relation = 'subj_id'; $relation2 = 'obj_id'; $property = $line->property;} else {$relation = 'obj_id'; $relation2 = 'subj_id'; $property = $this->getResProperty($line->property,5049,0);} //5049.Явдяется обратным
+				if (!empty($id)) $where = "and triplets.".$relation." = ".$id; else $where = '';
+				$childCols = $this->getChildColumns($line->id);
+				if (empty($childCols)) $childCols = "id";
+				//echo $query;
+				$location = $this->getResProperty($line->domain,503);
+				//echo $line->domain.$location;
+				$query = "select triplets.$relation id ,triplets.$relation2 ext_id,".$location.".id val_id, concat(".$childCols.") value from triplets
+                    join $location on ".$location.".id  = triplets.$relation2
+                    where triplets.prop_id = $property ".$where;
+				//echo $query.'<br>'.$line->property;
+				$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+				$valNum = 0;
+				while ($res = mysqli_fetch_array($result, MYSQL_ASSOC)) {
+					if ($prevProp != $line->property) $valNum = 0; else $valNum++;
+					$cell = new Cell($res[val_id],$res[value]); $cell->id = $res[ext_id];
+					$table->ext[$res[id]][$line->property][$valNum] = $cell;
+					$prevProp = $line->property;
+				}
+			}
+		}
+		$filter = null;
+		$filterNum = 0;
+		if (!empty($id)) {
+			if ($id == 1) $filter[$filterNum] = "id in (select id from find) "; else $filter[$filterNum] = "id = '".$id."'";
+			$filterNum++;
+		}
+		$classId = $this->getResProperty($formId,507,0);
+		$tableClassId = $this->getStorageClass($tableName);
+		if (!empty($tableClassId) && $classId != $tableClassId) {
+			$filter[$filterNum] = "type = '".$classId."'";
+			$filterNum++;
+		}
+		if ($filterNum != 0) {
+			$where = " where ";
+			foreach ($filter as $condition) {
+				$where = $where . $condition ." and ";
+			}
+			$where = substr($where,0,strlen($where)-5);
+		}
+		if (!empty($where2)) if (!empty($where))$where = $where . ' and '. substr($where2,5); else $where = ' where '.substr($where2,5);
+		//if (!empty($where)) $where = $where . ' and '. substr($where2,5); else if (!empty($where2)) $where = ' where '.substr($where2,5);
+		$columns = substr($columns,2);
+		$query = "select $columns from $tableName".$where;
+		//echo $query;
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$lineNum = 0;
+		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
+			$flag=1;
+			$colNum = 0;
+			foreach ($line as $col_value) {
+				if (($table->cols[$colNum]->type == 0) && ($flag == 0)) {
+					$table->data[$lineNum][$colNum]->id = $col_value;
+					$flag = 1; $colNum++;
+				} else {
+
+					$table->data[$lineNum][$colNum]=new Cell($col_value,$col_value);
+					if($table->cols[$colNum]->type != 0) $colNum++; else $flag = 0;
+					if($table->cols[$colNum]->external > 0) $colNum++;
+				}
+			}
+			$lineNum++;
+		}
+		mysqli_free_result($result);
+		return $table;
+	}
+
+	function getForm($actionId, $domain = null){
+		if (empty($domain)) $action = $this->getAction($actionId);
+		else $action = $this->getLeafAction($actionId,$domain);
+		return $action->items[5065];
 	}
 
 	public function getLeafAction($actionId,$domain){
@@ -127,25 +296,7 @@ class Model {
 		$realAction = $this->perm[$action->items[5062]][$domain]['action'];
 		return $realAction;
 	}
-	
-	private function estimateControllers(){
-		foreach ($this->actions as $action){
-			if (!empty($action->items[5057]) && empty($action->items[5063])) $action->items[5063] = $this->findController($action->items[5057]);
-		}
-		
-		foreach ($this->actions as $action){
-			$this->perm[$action->items[5062]][$action->items[5055]]['contr']=$this->controllers[$action->items[5063]];
-		}
-	}
 
-	public function checkPermission($actionId, $domain = null){
-		//12354
-		$actId = $this->actions[$actionId]->items[5062];
-		if (empty($domain)) $domain = $this->actions[$actionId]->items[5055];
-		//echo 'domain'.$domain.','.$actId.','.$actionId.',';
-		if ($this->perm[$actId][$domain]['perm'] == '1') return 1;
-		else return 0;
-	}
 
 	public function getResProperty($id,$propId,$direct = 0,$resource = 1){
 		$res = $this->getResProperty2($id,$propId,$direct,$resource);
@@ -162,15 +313,6 @@ class Model {
 			$this->getResPropertyTransitive($pClassId,$propId,$direct,$resource,$props);
 		};
 		return $props;
-	}
-
-	//Получить все подклассы данного класса
-	public function getSubClass($resourceId, &$result){
-		$ret = $this->getResProperty2($resourceId,5061,1);
-		if (!empty($ret)) $result = array_merge($result,$ret);
-		if (!empty($ret)) foreach($ret as $child){
-			$this->getSubClass($child,$result);
-		}
 	}
 
 	//Получение значений свойств ресурса
@@ -200,156 +342,8 @@ class Model {
 		mysqli_free_result($result);
 		return $ret;
 	}
-  
-  public function getColumns($formId) {
-	$lineNum=0;
-	$retval = new Table();
-	$query = 
-      "select id, name, position, property, alias, domain, type, template , editable, location, pid, external, viewer
-       from sColumns
-       where form = $formId order by CAST(position AS SIGNED)";
-	  // print_r($query);
-	$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
-    while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
-	  $col = new Column($line['id'],$line['name'],$line['position'],$line['property'],$line['alias'],$line['domain'],$line['type'],$line['template'],$line['editable'],$line['location'],$line['parentId'],$line['external']);
-	  //echo $lineNum . ":";
-	  //print_r($this->viewers[$line['viewer']]);
-	  //$vFactory = $this->viewers[$line['viewer']];
-	  $params[5055] = $line['domain'];
-	  //$col->viewer = $vFactory->getViewer($params,$this);
-	  $col->viewer = $this->getViewer($line['viewer'],$params,$this);
-	  $retval->cols[$lineNum]=$col;
-	  $lineNum++;
-    }
-	mysqli_free_result($result);
-	$retval->colsNum = $lineNum;
-	//print_r($retval);
-	return $retval;
-  }
-  
-  public function getColumns2($formId) {
-	$lineNum=0;
-	$retval = new Table();
-	
-	$filters[5065] = '%COLUMN%='.$formId; $orders[504] = 1;
-	$columns = $this->getResource(112, $filters, $orders);
-	if (!empty($columns)) foreach ($columns as $line){
-		$col = new Column($line->items['5048'],$line->items['501'],$line->items['504'],null,null,null,$line->items['5051'],$line->items['5085'],$line->items['5052'],null,$line->items['5057'],null);
-		$filters2[5048] = '%COLUMN%='.$line->items[5087];
-		$property = $this->getResource(1511, $filters2);
-		$col->property = $property[0]->items[5082];
-		$col->alias = $property[0]->items[506];
-		$col->domain = $property[0]->items[5055];
-		//echo 'domain'.$col->domain;
-		$col->external = $property[0]->items[5084];
-		//echo 'external'.$col->external;
-		$col->viewer = $line->items['5086'];
-		$retval->cols[$lineNum]=$col;
-		$lineNum++;
-	}
-	return $retval;
-  }
-  
-  public function getDataSet($table, $formId, $id, $filters = null){
-	$entId = $this->getResProperty($formId,507,0); //507.Представление
-	$tableName = $this->getResProperty($entId,503,0,0); //503.Местоположение
-	foreach ($table->cols as $line)  {
-		if (!empty($filters[$line->property])){
-			//echo $filters[$line[prop_id]];
-			$filter = str_replace('%COLUMN%',$line->alias,$filters[$line->property]);
-			//if (($line[domain] == 134) || ($line[domain] == 136)) $filter = $line[alias]." = '".$filters[$line[prop_id]]."'"; else $filter = $line[alias]." = ".$filters[$line[prop_id]];
-			$where2 = $where2 ." and ". $filter;
-		}
-	if ($line->external == '0'){
-	  if ($line->type == 0){
-		$childCols = $this->getChildColumns($line->id);
-		$location = $this->getResProperty($line->domain,503);
-		if (!empty($childCols)) $columns = $columns . ", " . "(select concat($childCols) from $location where $location .id = $tableName.$line->alias) ".$line->alias."_value";
-		else $columns = $columns . ", " . $line->alias . " ".$line->alias."_value";
-	  }
-	  if ($line->type == 3) $column = "DATE_FORMAT(".$line->alias.",'".$line->template."') ".$line->alias; else $column = $line->alias;
-	  $columns = $columns . ", " . $column;
-	  } else {
-		  
-		  if ($line->external == 1) {$relation = 'subj_id'; $relation2 = 'obj_id'; $property = $line->property;} else {$relation = 'obj_id'; $relation2 = 'subj_id'; $property = $this->getResProperty($line->property,5049,0);} //5049.Явдяется обратным
-		  if (!empty($id)) $where = "and triplets.".$relation." = ".$id; else $where = '';
-		  $childCols = $this->getChildColumns($line->id);
-		  if (empty($childCols)) $childCols = "id";
-		  //echo $query;
-		  $location = $this->getResProperty($line->domain,503); 
-		  //echo $line->domain.$location;
-		  $query = "select triplets.$relation id ,triplets.$relation2 ext_id,".$location.".id val_id, concat(".$childCols.") value from triplets 
-                    join $location on ".$location.".id  = triplets.$relation2
-                    where triplets.prop_id = $property ".$where;
-		//echo $query.'<br>'.$line->property;
-		  $result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
-		  $valNum = 0;
-          while ($res = mysqli_fetch_array($result, MYSQL_ASSOC)) {
-			  if ($prevProp != $line->property) $valNum = 0; else $valNum++;
-			  $cell = new Cell($res[val_id],$res[value]); $cell->id = $res[ext_id];
-			  $table->ext[$res[id]][$line->property][$valNum] = $cell;
-			  $prevProp = $line->property;
-		  }
-	  }
-    }
-	  $filter = null;
-	$filterNum = 0;
-	if (!empty($id)) {
-		if ($id == 1) $filter[$filterNum] = "id in (select id from find) "; else $filter[$filterNum] = "id = '".$id."'";
-		$filterNum++;
-	}
-	$classId = $this->getResProperty($formId,507,0);
-	$tableClassId = $this->getStorageClass($tableName);
-	if (!empty($tableClassId) && $classId != $tableClassId) {
-		$filter[$filterNum] = "type = '".$classId."'";
-		$filterNum++;
-	}
-	if ($filterNum != 0) {
-		$where = " where ";
-		foreach ($filter as $condition) {
-		  $where = $where . $condition ." and ";
-		}
-		$where = substr($where,0,strlen($where)-5);
-	}
-	  if (!empty($where2)) if (!empty($where))$where = $where . ' and '. substr($where2,5); else $where = ' where '.substr($where2,5);
-	  //if (!empty($where)) $where = $where . ' and '. substr($where2,5); else if (!empty($where2)) $where = ' where '.substr($where2,5);
-	$columns = substr($columns,2);
-	$query = "select $columns from $tableName".$where;
-	//echo $query;
-	$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
-	$lineNum = 0;
-    while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
-  	  $flag=1;
-	  $colNum = 0;
-      foreach ($line as $col_value) {
-		if (($table->cols[$colNum]->type == 0) && ($flag == 0)) {
-			$table->data[$lineNum][$colNum]->id = $col_value;
-			$flag = 1; $colNum++;
-		} else {
-			
-			$table->data[$lineNum][$colNum]=new Cell($col_value,$col_value);
-			if($table->cols[$colNum]->type != 0) $colNum++; else $flag = 0;
-			if($table->cols[$colNum]->external > 0) $colNum++;
-		}
-      }
-  	$lineNum++;
-    }
-    mysqli_free_result($result);
-	return $table;
-  }
 
-	private function getChildColumns($columnId){
-	  $query = 
-        "select alias from sColumns  
-         where pid = $columnId order by CAST(position AS SIGNED)";
-	  $result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
-      while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
-		  $columns = $columns . ',' .$line['alias'];
-	  }
-	  mysqli_free_result($result);
-	  $columns = substr($columns,1);
-	  return $columns;
-	}
+
   
   //Получение идентификатора элемента интерфейса для просмотра единичной сущности по идентификатору класса
 	/*
@@ -364,34 +358,9 @@ class Model {
 	return $line['elem_id'];
   }
 	*/
-	function getForm($actionId, $domain = null){
-		if (empty($domain)) $action = $this->getAction($actionId);
-		else $action = $this->getLeafAction($actionId,$domain);
-		return $action->items[5065];
-	}
-  //Получение класса хранимых сущностей таблицы
-	function getStorageClass($tableName){
-	$query = "select class_id from sTables t 
-              where t.name = '".$tableName."'";
-	$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
-	$line = mysqli_fetch_array($result, MYSQL_ASSOC);
-	mysqli_free_result($result);
-	return $line['class_id'];
-  }
+
   
-	function getComboItems($boxId){
-	$query = "select r.id id, r.name from triplets t 
-                  join dim_resource r on t.subj_id = r.id
-                where t.obj_id = $boxId and t.prop_id = 502";
-	$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
-	$lineNum = 0;
-	while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
-	  $items[$lineNum] = new Cell($line[id], $line[name]);
-	  $lineNum++;
-	}
-	mysqli_free_result($result);
-	return $items;
-  }
+
   /*
 	function getControllerName($elemId){
 	if (empty($elemId)) return $retval;
@@ -487,10 +456,64 @@ class Model {
 		mysqli_free_result($result);
 		return $ret;
 	}
+
+	//Получение класса хранимых сущностей таблицы
+	function getStorageClass($tableName){
+		$query = "select class_id from sTables t
+              where t.name = '".$tableName."'";
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$line = mysqli_fetch_array($result, MYSQL_ASSOC);
+		mysqli_free_result($result);
+		return $line['class_id'];
+	}
+
+	//Получить все подклассы данного класса
+	public function getSubClass($resourceId, &$result){
+		$ret = $this->getResProperty2($resourceId,5061,1);
+		if (!empty($ret)) $result = array_merge($result,$ret);
+		if (!empty($ret)) foreach($ret as $child){
+			$this->getSubClass($child,$result);
+		}
+	}
+
+	//Создание сущности
+	public function insert($resource2){
+		//print_r($resource2);
+		$props = array();
+		$domain = $resource2->items[5055][0];
+		//echo 'Domain:'.$resource2->items[5055][0];
+		$this->getClassProperties($domain,$props);
+		$columns = '';
+		$values = '';
+		$id = $this->getId($domain);
+		foreach ($props as $propId => $prop){
+			//echo $prop->items[506];
+			if (($prop->items[50108] != 1) && (!empty($resource2->items[$prop->items[5082]][0]))){
+				$columns = $columns.','.$prop->items[506];
+				$values = $values.','.$this->quotation($resource2->items[$prop->items[5082]][0],$prop->items[5055]);
+			}
+		}
+		$columns = 'id'.$columns;
+		$values = $id.$values;
+		$tableName = $this->getResProperty($domain,503,0,0);
+
+		$query = 'insert into '.$tableName.' ('.$columns.') values('.$values.')';
+		//echo $query;
+
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+	}
+
+	public function insertGlobal($resource2){
+		$id = $this->insert($resource2);
+		$query = 'insert into dim_resource(id,type) values ('.$id.','.$resource2->items[5055][0].')';
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		return $id;
+	}
 	
 	public function isSubclassOf($classId,$pClassId){
 		if ($pClassId == 133) if ($classId == 134 || $classId == 135 || $classId == 136) return 1; else return 0;
 	}
+
 
 	//Сохраняет изменения в переданной сущности
 	public function update($resource2){
@@ -507,48 +530,7 @@ class Model {
 			}
 		}
 	}
-	//Создание сущности
-	public function insert($resource2){
-		//print_r($resource2);
-		$props = array();
-		$domain = $resource2->items[5055][0];
-		//echo 'Domain:'.$resource2->items[5055][0];
-		$this->getClassProperties($domain,$props);
-		$columns = '';
-		$values = '';
-		$id = $this->getId($domain);
-		foreach ($props as $propId => $prop){
-			//echo $prop->items[506];
-			if (($prop->items[5052] != 0) && (!empty($resource2->items[$prop->items[5082]][0]))){
-				$columns = $columns.','.$prop->items[506];
-				$values = $values.','.$this->quotation($resource2->items[$prop->items[5082]][0],$prop->items[5055]);
-			}
-		}
-		$columns = 'id'.$columns;
-		$values = $id.$values;
-		$tableName = $this->getResProperty($domain,503,0,0);
 
-		$query = 'insert into '.$tableName.' ('.$columns.') values('.$values.')';
-		//echo $query;
-
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
-		$query = 'insert into dim_resource(id,type) values ('.$id.','.$domain.')';
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
-
-	}
-
-    private function quotation($value, $domain){
-		if (($domain == 134)||($domain == 136)) $value = '"'.$value.'"';
-		return $value;
-	}
-	public function find($text, $domain){
-		$text = strtoupper($text);
-		$query = 'delete from find';
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
-		$query = 'insert into find(id,type) select id,type from dim_resource where Upper(name) LIKE "%'.$text.'%" and type = '.$domain;
-		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
-	}
 	//Изменение свойства сущности
 	public function updateProperty($entId,$prop,$propValue,$oldValue = null){
 		$type = $this->getResProperty($entId,5051,0,0);
@@ -561,39 +543,78 @@ class Model {
 		//	$query = 'update triplets set '.$col.' = '.$value.' where subj_id = '.$entId.' and prop_id = '.$propId;
 		//}
 		//file_put_contents ('log', $prop[0]->items[5084].$query,FILE_APPEND);
-			echo $query;
+			//echo $query;
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
 		}
 	}
+	//Изменение свойства сущности с передачей идентификатора свойства
+	public function updateProperty2($entId,$propId,$propValue,$oldValue = null){
+		$filters[5048] = '%COLUMN%='.$propId;
+		$prop = $this->model->getResource(50,$filters[5048]);
+		$this->updateProperty($entId,$prop,$propValue,$oldValue);
+	}
 
-	//Получение массива свойств класса (Transitive)
-	public function getClassProperties($classId,&$props){
-		$filters[5083]='%COLUMN% = '.$classId;
-		$ret = $this->getResource(1511, $filters);
-		$props = array_merge($props,$ret);
-		$pClassId = $this->getResProperty($classId,5061,0); //5061.Подкласс
-		if (!empty($pClassId)){
-			$this->getClassProperties($pClassId,$props);
+	private function quotation($value, $domain){
+		if (($domain == 134)||($domain == 136)) $value = '"'.$value.'"';
+		return $value;
+	}
+
+	private function loadEntities(){
+		//$filters[5051] = 12;
+		$entities = $this->getResource(10);
+		foreach ($entities as $entity){
+			$this->entities[$entity->items[5048]]=$entity;
+		}
+		//print_r($this->entities);
+	}
+
+	private function loadVievers(){
+		$filters[5051] = '%COLUMN%='.'12';
+		$viewers = $this->getResource(12, $filters);
+		foreach ($viewers as $viewer){
+			$this->viewers[$viewer->items[5048]]=$viewer;
 		}
 	}
 
-public function generateCode($length=6) {
-    $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789";
-    $code = "";
-    $clen = strlen($chars) - 1;  
-    while (strlen($code) < $length) {
-            $code .= $chars[mt_rand(0,$clen)];  
-    }
-    return $code;
-}
+	private function loadActions(){
+		$actions = $this->getResource(23, null);
+		foreach ($actions as $action){
+			$this->actions[$action->items[5048]] = $action;
+			$this->perm[$action->items[5062]][$action->items[5055]]['action']=$action;
+		}
+		//print_r($actions);
+	}
+
+	private function loadControllers(){
+		$filters[5051] = '%COLUMN%='.'14';
+		$controllers = $this->getResource(14, $filters);
+		foreach ($controllers as $controller){
+			$this->controllers[$controller->items[5048]]=$controller;
+			//$this->actions[]
+		}
+		//print_r($controllers);
+	}
+
+	public function loadPermissions(){
+		$perms = $this->getResProperty2($this->user_id,5011,0); //5011.Право
+		if (!empty($perms)) foreach ($perms as $perm){
+			$domain = $this->actions[$perm]->items[5055];
+			$actionId = $this->actions[$perm]->items[5062];
+			$this->perm[$actionId][$domain]['perm'] = 1;
+		}
+		//print_r($this->perm[2316]);
+	}
+
 	public function CheckLogin(){
 		$uid=$_SESSION['id'];
 		$uhash=$_SESSION['hash'];
+
 		if ($uhash=="") { $uhash='432423423';}
 		$query = "select hash from users where id = '".$uid."'";
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
 		$line = mysqli_fetch_array($result, MYSQL_ASSOC);
 		$this->user_id = $uid;
+
 		return ($uhash==$line['hash']);
 	}
 
@@ -609,6 +630,15 @@ public function generateCode($length=6) {
 			$result = mysqli_query($this->link, $query);
 			$row_cnt = $result->num_rows;
 			$line = mysqli_fetch_array($result, MYSQL_ASSOC);
+			//Maxim Chernov 2015-10-15 START
+			$apacheSessionId = session_id();
+			$session = new Resource2(null);
+			$session->items[50103][0]=$apacheSessionId;
+			$session->items[5079][0]=$line['id'];
+			//echo $apacheSessionId.' '.$line['id'];
+			$session->items[5055][0]=168;
+			$_SESSION['session_id'] = $sessionId = $this->insert($session);
+			//Maxim Chernov 2015-10-15 END
 			if (($upswd!=$line['paswd']) or ($row_cnt<1)){
 				return "102"; // Ошибка - неправильный логин или пароль
 			} else {
@@ -623,6 +653,7 @@ public function generateCode($length=6) {
 			}
 		}
 	}
+
 	}
 
 	public function ClearSession(){
