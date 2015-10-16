@@ -7,12 +7,13 @@ class ExtShowController {
 
 			//$formId = $action->items[5065];             //5065.Форма
 		//} else $formId = $params[5065];
-		$paramSetId = $params[50110];
+		$paramSetId = $params[50109];
 		$actionId = $model->getResProperty($paramSetId,5058); //5058.Действие
-		$filters[50110]='%COLUMN%='.$paramSetId; //5058.Действие
+		$filters[50109]='%COLUMN%='.$paramSetId; //5058.Действие
 		$orders[504]=1;
+		//print_r($filters);
 		$actionFilters = $model->getResource(163, $filters, $orders);
-		echo '<script language ="JavaScript">var data = []; data[5058] = '.$actionId.'</script>';
+		echo '<script language ="JavaScript">var data = []; data[50109] = '.$paramSetId.'; data[5058] = '.$actionId.'; </script>';
 		if (!empty($actionFilters)) {
 			echo ' <script language ="JavaScript">var filters = []; data[5095] = filters;</script>';
 			foreach ($actionFilters as $aFilter) {

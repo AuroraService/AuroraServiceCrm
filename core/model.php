@@ -201,6 +201,7 @@ class Model {
 				$filter = str_replace('%COLUMN%',$line->alias,$filters[$line->property]);
 				//if (($line[domain] == 134) || ($line[domain] == 136)) $filter = $line[alias]." = '".$filters[$line[prop_id]]."'"; else $filter = $line[alias]." = ".$filters[$line[prop_id]];
 				$where2 = $where2 ." and ". $filter;
+				//echo $filter;
 			}
 			if ($line->external == '0'){
 				if ($line->type == 0){

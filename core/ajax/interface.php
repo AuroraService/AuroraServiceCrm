@@ -19,23 +19,33 @@ switch ($action) {
         eshow($id);
         break;
 	case '2316':
+		require_once('main.controller.php');
+		$mainContriller = Controller::getController();
 		$params[5058] = $json[5058];
 		$params[5095] = $json[5095];
-		$f1[5058] = '%COLUMN%='.$params[5058];
+		$params[50109] = $json[50109];
+		$f1[50109] = '%COLUMN%='.$params[50109];
+		//echo $params[50109];
+		//echo $params[5058];
 		$filters = $model->getResource(163,$f1);
+		//echo "Point2";
 		foreach($filters as $filter){
+			//echo "PointN";
 			$f2[5048] = '%COLUMN%='.$params[5095][$filter->items[5095]];
 			$field = $model->getResource(162,$f2);
 			$expFilters[$filter->items[5082]]=$field[0]->items[5096];
 			//echo $params[5095][$filter->items[5095]];
-			print_r( $field->items[5096]);
+			//print_r( $field->items[5096]);
 		}
+		//echo "PointEnd";
+		//print_r($expFilters);
 		$params[5095] = $expFilters;
+		$mainContriller -> executeAction(2316, $params);
 		//print_r($params[5095]);
 		//$filters = $model->getResource();
-		require_once('core/set.controller.php');
-		$controller = new SetController();
-		$controller->execute($params);
+
+		//$controller = new SetController();
+		//$controller->execute($params);
 		break;
 	case '2333':
 		//echo "123";

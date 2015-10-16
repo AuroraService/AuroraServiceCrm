@@ -171,7 +171,7 @@ insert into dim_resource(id,name,type) values(11516,'Форма создания
 
 -- Набор параметров
 insert into dim_resource(id,name,type) values(15211,'Параметр 1',1611);
-insert into triplets(subj_id, prop_id,obj_id) values(15211,5058,231);
+insert into dim_resource(id,name,type) values(15212,'Параметр 2',1611);
 
 -- 1119,11110,1157,1158 / 1013,104
 -- Создание таблицы высказываний
@@ -188,6 +188,10 @@ create table triplets(
 );
 
 select * from triplets;
+
+-- Действия для параметров
+insert into triplets(subj_id, prop_id,obj_id) values(15211,5058,231);
+insert into triplets(subj_id, prop_id,obj_id) values(15212,5058,2338);
 
 
 -- Иерархия классов заявок
@@ -1552,7 +1556,7 @@ insert into buttons(id,name,link,pid,action,position,level,type) values(150523,'
 insert into buttons(id,name,link,pid,action,position,level,type) values(150524,'Создание',null,15056,null,3,4,3);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150525,'Новый сотрудник','index.php?action=2314',15056,null,4,4,1);
 
-insert into buttons(id,name,link,pid,action,position,level,type) values(150530,'Сессии','index.php?action=2338',15057,2338,4,4,1);
+insert into buttons(id,name,link,pid,action,position,level,type) values(150530,'Сессии','index.php?action=2341&param=15212',15057,2338,4,4,1);
 
 insert into buttons(id,name,link,pid,action,position,level,type) values(150526,'user_name',null,15053,null,1,4,1);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150527,'Выход','/logout',15053,null,2,4,1);
@@ -1931,7 +1935,7 @@ insert into properties(id,name,alias) values(50102,'Сессия','session');
 insert into properties(id,name,alias) values(50103,'Идентификатор сессии','session_id');
 insert into properties(id,name,alias) values(50104,'Идентификатор объекта документа','');
 
-insert into properties(id,name,alias) values(50109,'Идентификатор  параметра','param_id');
+insert into properties(id,name,alias) values(50109,'Идентификатор набора параметра','param_id');
 
 
 
@@ -2008,23 +2012,6 @@ insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2319,2319,
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2333,2333,'Поиск сущностей',146,132,23);
 
 select * from dim_actions;
-
--- Создание таблицы элементов CRM
-drop table if exists actionFilters;
-create table actionFilters(
-  param_id bigint,
-  filter_id bigint,
-  name    varchar(256),
-  prop_id      bigint,  -- Привязка к свойству
-  default_value bigint,  -- Поле по умолчанию
-  position      int,     -- Позиция
-  showable  int default 1 -- 0-не отображать, 1-отображать
-);
-
-
-insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15211,15171,'Дата выезда:',5031,15181,1,1);
-
-select * from actionFilters;
 
 -- Создание таблицы элементов CRM
 drop table if exists sCrmElements;
@@ -2172,6 +2159,26 @@ create table sFilters(
 );
 
 insert into sFilters(id) values(15171);
+insert into sFilters(id) values(15172);
+
+-- Создание таблицы фильтров действий
+drop table if exists actionFilters;
+create table actionFilters(
+  param_id bigint,
+  filter_id bigint,
+  name    varchar(256),
+  prop_id      bigint,  -- Привязка к свойству
+  default_value bigint,  -- Поле по умолчанию
+  position      int,     -- Позиция
+  showable  int default 1 -- 0-не отображать, 1-отображать
+);
+
+
+insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15211,15171,'Дата выезда:',5031,15181,1,1);
+
+insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15212,15172,'Время создания:',5022,15183,1,1);
+
+select * from actionFilters;
 
 -- Создание таблицы значений фильтра
 drop table if exists sFilterFields;
@@ -2186,11 +2193,18 @@ create table sFilterFields(
 );
 
 
-
+-- 15171. Дата выезда
 insert into sFilterFields(id,name,sql_code,filter_id) values(15181,'На сегодня','DATE_FORMAT(%COLUMN%, "%Y-%m-%d") = CURDATE()',15171);
 insert into sFilterFields(id,name,sql_code,filter_id) values(15182,'На завтра','DATE_FORMAT(%COLUMN%, "%Y-%m-%d") = DATE_ADD(CURDATE(),INTERVAL 1 DAY)',15171);
 insert into sFilterFields(id,name,sql_code,filter_id) values(15183,'На неделю','YEAR(%COLUMN%) = YEAR(NOW()) AND WEEK(%COLUMN%, 1) = WEEK(NOW(), 1)',15171);
 insert into sFilterFields(id,name,sql_code,filter_id) values(15184,'За всё время','1=1',15171);
+
+-- 1572. Сессии
+insert into sFilterFields(id,name,sql_code,filter_id) values(15185,'За сегодня','DATE_FORMAT(%COLUMN%, "%Y-%m-%d") = CURDATE()',15172);
+insert into sFilterFields(id,name,sql_code,filter_id) values(15186,'За неделю','%COLUMN% > NOW() - INTERVAL 7 DAY',15172);
+insert into sFilterFields(id,name,sql_code,filter_id) values(15187,'За всё время','1=1',15172);
+
+insert into sFilterFields(id,name,sql_code,filter_id) values(15188,'Тест','1=1',15173);
 
 -- Создание таблицы сессий
 drop table if exists sessions;
@@ -2230,3 +2244,7 @@ update dim_resource set search_name = name where search_name is null;
 select * from sessions;
 
 select id,ent_id,prop_id,alias,domain,external,editable,auto from ent_properties where id=1511131;
+
+select obj_id res
+			from triplets
+			where subj_id = 15211 and prop_id = 5058
