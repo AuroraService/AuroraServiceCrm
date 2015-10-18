@@ -5,21 +5,13 @@ class EshowController {
 		$id = $iParams[5048] ; //5048.Идентификатор
         $elemId = $iParams[5014]; //5014.Исполнитель
 		$actionId = $iParams[5058];
-		//echo 'ElemId:'.$elemId;
 		if (empty($elemId) && !empty($id)) {
 			$domain = $model->getResProperty($id,5051,0); //5051.Type
-			//$elemId=$model->getEShowElement($domain[0]);
 			$elemId=$model->getForm($actionId,$domain);
-			//echo "ElemId:".$elemId.$domain.$actionId;
 		}
-		//echo 'ID:'.$id.','.$elemId;
-		//echo '123';
-		echo ' <script language ="JavaScript">var data = [];</script>';
+		echo ' <script language ="JavaScript">var data = []; data[5065] = '.$elemId.';</script>';
 		$this->printJavaScript(5055,$iParams[5055],0,0);
 		$val = $model->getColumns2($elemId);
-		//echo $elemId;
-		if (!empty($id)) $data = $model->getDataSet($val, $elemId, $id);
-		//echo "123";
 		$req_flag=1;
 		if ($req_flag){
 		echo '<div class="row" style="width: 100%;">
@@ -27,33 +19,34 @@ class EshowController {
 		}
 		echo '<div class="table-responsive"><table class="table table-condensed">';
 		$lineNum = 0;
+		$resource2 = $model->getCurrentResource2($id);
+
 		if (!empty($val->cols)) foreach ($val->cols as $col_value) {
 			echo "<tr>";
 			echo "<td>".$col_value->name."</td>";
 			echo "<td>";
 			
-			$params[5042] = $col_value->editable; //Редактируемость
-			$params[507] = $col_value->domain;
-			$params[5082] = $col_value->property;
-			$params[5088] = 0;
+			$params[5042] = $col_value->editable; //5042.Редактируемость
+			$params[507] = $col_value->domain; //507.Представление
+			$params[5082] = $col_value->property; //5082.Идентификатор свойства
+			$params[5088] = 0; //5088.Номер значение
 			
-			$params2[5055] = $col_value->domain;
+			$params2[5055] = $col_value->domain; //5055.Домен
 			
 			$viewer = $model->getViewer($col_value->viewer,$params2,$model);
-			//echo '123';
-			$valueCounter = 0;
-			if ($col_value->external == 0 ) {
-				echo $viewer->show($data->data[0][$lineNum],$params);
-				$this->printJavaScript($col_value->property,$data->data[0][$lineNum]->id,$lineNum+1,$valueCounter);
-			}else {
-				
-				if (!empty($val->ext[$id][$col_value->property])) foreach ($val->ext[$_REQUEST['id']][$col_value->property] as $inner){
-					$params[5088] = $valueCounter;
-					echo $viewer->show($inner,$params);
-					$this->printJavaScript($col_value->property,$inner->id,$lineNum+1,$valueCounter);
-					$valueCounter++;
-			  }
-			  echo '<a href="/" class="test"><span class="glyphicon glyphicon-plus" style="color:black; margin-right: 5px;"></span>Добавить</a>';
+			$propId = $col_value->property;
+			foreach ($idValue = $resource2->items[$propId] as $valueCounter =>$propValue) {
+					$propId = $col_value->property;
+					if ($col_value->type == 0) {
+						$idValue = $resource2->items[$propId][$valueCounter];
+						$value = $model->getResourceValue($idValue, $col_value->value_template);
+					} else {
+						$value = $resource2->items[$propId][$valueCounter];
+						$idValue = $value;
+					}
+					$cell = new Cell($idValue, $value);
+					echo $viewer->show($cell, $params);
+					$this->printJavaScript($col_value->property, $idValue, $lineNum + 1, $valueCounter);
 			}
 			echo "</td></tr>";
 			$lineNum++;
@@ -62,12 +55,6 @@ class EshowController {
 		if ($req_flag){
 		echo '</div>
               <div class="col-md-4" id="dop_form_interface">';
-        //echo '<div class="win_inform">';
-        //require_once("inc/client.php");
-        //echo'</div><div style="height:10px;"></div>
-        //     <div class="win_inform">';
-        //require_once("inc/comments.php"); 
-        //echo '</div>';
         echo '</div></div>';
 		}
 		echo '<a onclick="sendData(2334);">Сохранить</a>';

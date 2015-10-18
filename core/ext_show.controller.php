@@ -12,7 +12,7 @@ class ExtShowController {
 		$filters[50109]='%COLUMN%='.$paramSetId; //5058.Действие
 		$orders[504]=1;
 		//print_r($filters);
-		$actionFilters = $model->getResource(163, $filters, $orders);
+		$actionFilters = $model->getResources(163, $filters, $orders);
 		echo '<script language ="JavaScript">var data = []; data[50109] = '.$paramSetId.'; data[5058] = '.$actionId.'; </script>';
 		if (!empty($actionFilters)) {
 			echo ' <script language ="JavaScript">var filters = []; data[5095] = filters;</script>';
@@ -23,7 +23,7 @@ class ExtShowController {
 				//echo $property[0]->items[501];
 				echo $aFilter->items[501];
 				$filters4[5048] = '%COLUMN% = 148';
-				$contr = $model->getResource(14, $filters4);
+				$contr = $model->getResources(14, $filters4);
 				//print_r($contr);
 				//echo substr($contr->items[503],5);
 				require_once(substr($contr[0]->items[503], 5));   //503.Местоположение
@@ -34,7 +34,7 @@ class ExtShowController {
 
 				$filters2[5048] = '%COLUMN%=' . $aFilter->items[5094];
 				//echo $aFilter->items[5094];
-				$defValue = $model->getResource(162, $filters2);
+				$defValue = $model->getResources(162, $filters2);
 				$filters3[$aFilter->items[5082]] = $defValue[0]->items[5096];
 				//echo $aFilter->items[5082];
 				//print_r($defValue);

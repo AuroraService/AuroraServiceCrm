@@ -3,9 +3,7 @@
 	
 class Controller{
 	static $controller;
-	function __construct(){
-		//Controller::$controller = this;
-	}
+
 	public static function getController(){
 		if (empty(Controller::$controller)) Controller::$controller = new Controller();
 		return Controller::$controller;
@@ -68,14 +66,6 @@ class Controller{
 		} else echo "Нет прав";
 	}
 }
-
-	private function generateClassName($name, $type){
-		return ucfirst($name).$type;
-	}
-	
-	private function generateScriptName($name, $type){
-		return $name.'.'.$type.'.php';
-	}
 }
 
 ?>

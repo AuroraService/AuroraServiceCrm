@@ -3,7 +3,7 @@ class MenuController {
 	public function execute($menuId, $viewer){
 		$model = Model::getModel();
 		$filters[5048]='%COLUMN%=15051';
-		$result = $model->getResource(113,$filters);
+		$result = $model->getResources(113,$filters);
 		$this->show($result[0]);
 	}
 	
@@ -32,7 +32,7 @@ class MenuController {
 
 			$filters[5057] = '%COLUMN%='.$res->items[5048]; //child->pid = id
 			$orders[504] = 1;
-			$result = $model->getResource(113, $filters, $orders);
+			$result = $model->getResources(113, $filters, $orders);
 			if (!empty($result)) foreach ($result as $child) {
 				$this->show($child);
 			}

@@ -27,12 +27,12 @@ switch ($action) {
 		$f1[50109] = '%COLUMN%='.$params[50109];
 		//echo $params[50109];
 		//echo $params[5058];
-		$filters = $model->getResource(163,$f1);
+		$filters = $model->getResources(163,$f1);
 		//echo "Point2";
 		foreach($filters as $filter){
 			//echo "PointN";
 			$f2[5048] = '%COLUMN%='.$params[5095][$filter->items[5095]];
-			$field = $model->getResource(162,$f2);
+			$field = $model->getResources(162,$f2);
 			$expFilters[$filter->items[5082]]=$field[0]->items[5096];
 			//echo $params[5095][$filter->items[5095]];
 			//print_r( $field->items[5096]);
@@ -68,7 +68,7 @@ switch ($action) {
         //eshow($id);
 		//file_put_contents ('log', 'stepx'.$json[5048][0],FILE_APPEND);
 		$resource2 = new Resource2($json);
-		if (!empty($json[5048][0])) $model->update($resource2);
+		if (!empty($json[5048][0])) $model->update($resource2,$json[5065]);
 		else $model->insert($resource2);
 		//entityEdit($json,$model);
         break;
@@ -128,7 +128,7 @@ function search($json){
 	$model = Model::getModel();
 	$type = $json[5055];
 	$filters[50100]=ParseForSearch($json[9092]);
-	$results = $model->getResourceGen($filters,$type);
+	$results = $model->getResourcesGen($filters,$type);
 
 	$i=0;
 	if (!empty($results)){ //$json[50104]

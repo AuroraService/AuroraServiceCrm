@@ -195,6 +195,7 @@ insert into triplets(subj_id, prop_id,obj_id) values(15212,5058,2338);
 
 
 -- Иерархия классов заявок
+insert into triplets(subj_id, prop_id,obj_id) values(103,5061,1612);
 insert into triplets(subj_id, prop_id,obj_id) values(109,5061,103);
 insert into triplets(subj_id, prop_id,obj_id) values(1010,5061,103);
 insert into triplets(subj_id, prop_id,obj_id) values(1011,5061,103);
@@ -592,6 +593,8 @@ insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address
 insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time) values(15035,'12.08.2015', 'test4',1012,15023,15014,15095,15082, '10000','12.08.2010',1203,1208);
 insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time) values(15036,'12.10.2015', 'la-la-la',109,15021,15012,15091,15082, '10000','2015-10-12',1203,1208);
 
+
+
 insert into dim_resource(id,name,search_name,type) values(15031,'Заявка №15031','15031 Лобанов Станислав Дмитриевич Илья Бобошко Александрович +7(909)925-77-54 Железнодорожная 12-15',109);
 insert into dim_resource(id,name,search_name,type) values(15032,'Заявка №15032','15032 Чернов Максим Михайлович Валентин Коткин Николаевич +7(906)313-75-54 Красная 16-54',1010);
 insert into dim_resource(id,name,search_name,type) values(15033,'Заявка №15033','15033 Лобанов Станислав Дмитриевич Елена Ерохина Владимировна +7(913)160-49-42 Красная 16-54',1011);
@@ -659,6 +662,7 @@ create table sColumns(
   pid       bigint,          -- Идентификатор родительского столбца
   external  int default 0, -- Свойство в таблице (0) или triplets (1)
   viewer    bigint,
+  value_template varchar(256), -- Шаблон отображения ресурса
   ent_prop_id bigint,
   start_date datetime default '2015-11-01',
   end_date   datetime default '9999-01-01',
@@ -1026,7 +1030,7 @@ insert into sColumns(id, name, position, property, alias, domain, type, template
 
 -- 1151
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112103, 'Id', 1, 0, NULL,0,1151,NULL,121,151145);
+  values(112103, 'Id', 1, 1, NULL,0,1151,NULL,121,151145);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(112108,'Фамилия',2,1, NULL,1,1151,NULL,121,151146);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
@@ -1048,7 +1052,7 @@ insert into sColumns(id, name, position,  type, template,editable,form,pid,viewe
 
 -- 1152
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112104, 'Id', 1,  0, NULL,0,1152,NULL,121,151140);
+  values(112104, 'Id', 1,  1, NULL,0,1152,NULL,121,151140);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
  values( 112117,'Фамилия',2,1, NULL,1,1152,NULL,121,151141);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
@@ -1059,22 +1063,22 @@ insert into sColumns(id, name, position,  type, template,editable,form,pid,viewe
  values( 112120,'Комментарий',5,1, NULL,1,1152,NULL,121,151144);
  
 -- 1153
-insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(11294, 'Id', 1, 0, NULL,0,1153,NULL,121,151155);
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,value_template) 
+  values(11294, 'Id', 1, 1, NULL,0,1153,NULL,121,151155,'%5048%');
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(11279, 'Дата создания', 2, 3, '%Y-%m-%d %H:%i:%s',0,1153,NULL,122,151156);
-insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(11281, 'Исполнитель', 3, 0,NULL,1,1153,NULL,123,151157);
-insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(11282, 'Клиент', 4, 0, NULL,1,1153,NULL,123,151158);
-insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(11283, 'Телефон', 5, 0, NULL,1,1153,NULL,123,151159);
-insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(11284, 'Адрес', 6, 0, NULL,1,1153,NULL,123,151160);
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,value_template) 
+  values(11281, 'Исполнитель', 3, 0,NULL,1,1153,NULL,123,151157,'%508% %509%');
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,value_template) 
+  values(11282, 'Клиент', 4, 0, NULL,1,1153,NULL,123,151158,'%508% %509%');
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,value_template) 
+  values(11283, 'Телефон', 5, 0, NULL,1,1153,NULL,123,151159,'%5067%');
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,value_template) 
+  values(11284, 'Адрес', 6, 0, NULL,1,1153,NULL,123,151160,'%5066%');
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(11285, 'Состояние', 7, 4, NULL,1,1153,NULL,124,151161);
-insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(11286, 'Результат', 8,  0, NULL,1,1153,NULL,123,151162);
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,value_template) 
+  values(11286, 'Результат', 8,  0, NULL,1,1153,NULL,123,151162,'Заявка №%5048%');
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(11287, 'Возможные проблемы', 9, 1, NULL,1,1153,NULL,121,151163);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
@@ -1089,8 +1093,8 @@ insert into sColumns(id, name, position,  type, template,editable,form,pid,viewe
   values(11292, 'Стоимость ремонта', 14, 1, NULL,1,1153,NULL,121,151171);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(11293, 'Комментарий', 15, 1, NULL,1,1153,NULL,121,151165);
-insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112168, 'Предистория', 16, 0, NULL,1,1153,NULL,123,151164);
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,value_template) 
+  values(112168, 'Предистория', 16, 0, NULL,1,1153,NULL,123,151164,'Заявка №%5048%');
   
 insert into sColumns(id, name, position, property, alias, domain, type, template,editable,location,form,pid,external,viewer) 
   values(112163, 'Имя', 1, 509, 'first_name', null, 1,NULL,1,null,null,11281,0,121);
@@ -1126,7 +1130,7 @@ insert into sColumns(id, name, position, property, alias, domain, type, template
 
 -- 1154
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112300, 'Id', 1, 0, NULL,0,1154,NULL,121,151155);
+  values(112300, 'Id', 1, 1, NULL,0,1154,NULL,121,151155);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(112301,'Дата создания',2,1, NULL,1,1154,NULL,121,151156);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
@@ -1180,7 +1184,7 @@ insert into sColumns(id, name, position, property, alias, domain, type, template
 
 -- 1155
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112323, 'Id', 1, 0, NULL,0,1155,NULL,121,151155);
+  values(112323, 'Id', 1, 1, NULL,0,1155,NULL,121,151155);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(112324,'Дата создания',2, 1, NULL,0,11115,NULL,121,151156);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
@@ -1234,7 +1238,7 @@ insert into sColumns(id, name, position, property, alias, domain, type, template
 
 -- 1156
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112347, 'Id', 1, 0, NULL,0,1156,NULL,123,151155);
+  values(112347, 'Id', 1, 1, NULL,0,1156,NULL,123,151155);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(112348,'Дата создания',2, 1, NULL,1,1156,NULL,121,151156);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
@@ -1278,7 +1282,7 @@ insert into sColumns(id, name, position, property, alias, domain, type, template
   
 -- 1157
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112186, 'Id', 1, 0, NULL,0,1157,NULL,123,151195);
+  values(112186, 'Id', 1, 1, NULL,0,1157,NULL,123,151195);
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
  values( 112197,'Страна',2,1, NULL,1,1157,NULL,121,151196);
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
@@ -1299,7 +1303,7 @@ insert into sColumns(id, name, position, type, template,editable,form,pid,viewer
  values( 112205,'Полный',10,1, NULL,1,1157,NULL,121,1511104);
 -- 1158
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112187, 'Id', 1, 0, NULL,0,1158,NULL,123,1511105);
+  values(112187, 'Id', 1, 1, NULL,0,1158,NULL,123,1511105);
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
  values( 112215,'Телефон1',2, 0, NULL,1,1158,NULL,123,1511106);
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
@@ -1336,7 +1340,7 @@ insert into sColumns(id, name, position, property, alias, domain, type, template
  
 -- 1159
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112206, 'Id', 1, 0, NULL,0,1159,NULL,123,1511113);
+  values(112206, 'Id', 1, 1, NULL,0,1159,NULL,123,1511113);
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
  values( 112207,'Номер',2,1, NULL,1,1159,NULL,121,1511114);
  
@@ -1632,6 +1636,8 @@ create table ent_properties(
   external  int default 0,
   editable  int default 1,
   auto      int default 0,
+  virtual   int default 0,
+  cardinal  int default 1,
   start_date datetime default '2015-11-01',
   end_date   datetime default '9999-01-01',
   PRIMARY KEY(id,end_date)
@@ -1639,7 +1645,7 @@ create table ent_properties(
  
 
 select * from ent_properties;
--- Menu
+-- 113.Menu
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(15111,113,5048,'id',113,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15112,113,501,'name',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15113,113,5056,'link',134,0);
@@ -1649,13 +1655,13 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15117,113,5060,'level',135,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15118,113,5051,'type',135,0);
 
--- Viewers
+-- 12.Viewers
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(15119,12,5048,'id',12,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151110,12,501,'name',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151111,12,503,'location',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151112,12,5051,'type',12,0);
 
--- Controllers
+-- 14.Controllers
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151113,14,5048,'id',14,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151114,14,501,'name',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151115,14,503,'location',134,0);
@@ -1679,6 +1685,8 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151129,1511,5084,'external',135,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151190,1511,5052,'editable',135,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511132,1511,50108,'auto',135,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511143,1511,50110,'virtual',135,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511144,1511,50111,'cardinal',135,0);
 -- 112.Столбец формы
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151130,112,5048,'id',112,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151131,112,501,'name',134,0);
@@ -1690,6 +1698,8 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151137,112,5057,'pid',112,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151138,112,5086,'viewer',12,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151139,112,5087,'ent_prop_id',1511,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511145,112,50112,'value_template',134,0);
+
 
 -- 101.Клиент
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151140,101,5048,'id',101,0,0);
@@ -1718,10 +1728,11 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151159,103,5025,'tel',1014,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151160,103,5026,'address',1013,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151161,103,5027,'state',1191,0);
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151162,103,5028,'result',103,1);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,cardinal) values(151162,103,5028,'result',103,1,-1);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151163,103,5029,'poss_problem',134,0);
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151164,103,5050,'prehistory',103,2);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,virtual,cardinal) values(151164,103,5050,'prehistory',103,1,1,-1);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151165,103,5021,'comment',134,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511148,103,5051,'type',103,0);
 -- 109.Заявка на сервис
 -- insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151166,109,5048,'id',109,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151167,109,5030,'dep_time',1192,0);
@@ -1820,6 +1831,15 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,auto) values(151113
 insert into ent_properties(id, ent_id, prop_id, alias,domain,auto) values(1511140,164,5057,'pid',136,1);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,auto) values(1511141,164,50105,'dialog',136,1);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,auto) values(1511142,164,50106,'flag',136,1);
+
+-- 1612.Версионная сущность
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511146,1612,50113,'start_date',136);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511147,1612,50114,'end_date',136);
+
+
+
+
+select * from ent_properties;
 
 -- Создание таблицы свойств
 drop table if exists properties;
