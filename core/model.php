@@ -56,7 +56,7 @@ class Model {
 				$propId = $prop->items[5082]; //5082.Идентификатор свойства
 
 				if ($prop->items[50111] == 1) {//50111.Кардинальность
-					//echo '<br>' . $propId . ',' . $resource1->items[$propId][0] . ',' . $resource2->items[$propId][0] . '<br>';
+					echo '<br>' . $propId . ',' . $resource1->items[$propId][0] . ',' . $resource2->items[$propId][0] . '<br>';
 					if ($resource1->items[$propId][0] != $resource2->items[$propId][0]) return 0;
 				} else {
 
@@ -274,7 +274,8 @@ class Model {
 	public function getDataSet($table, $formId, $id, $filters = null){
 		$entId = $this->getResProperty($formId,507,0); //507.Представление
 		$tableName = $this->getResProperty($entId,503,0,0); //503.Местоположение
-		$where2 = ' and end_date = "9999-01-01"'; $columns = '';
+		if ($this->isSubclassOf($entId,1612)) $where2 = ' and end_date = "9999-01-01"'; //1612.Версионная сущность
+		$columns = '';
 		foreach ($table->cols as $line)  {
 			if (!empty($filters[$line->property])){
 				//echo $filters[$line[prop_id]];
@@ -338,7 +339,7 @@ class Model {
 		//if (!empty($where)) $where = $where . ' and '. substr($where2,5); else if (!empty($where2)) $where = ' where '.substr($where2,5);
 		$columns = substr($columns,2);
 		$query = "select $columns from $tableName".$where;
-		//echo $query;
+		echo $query;
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
 		$lineNum = 0;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
@@ -414,7 +415,7 @@ class Model {
 			where $relation1 = $id and prop_id = $propId";
 		}
 		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'ResourceId='.$id.', PropId='.$propId.','. mysqli_error());
 		$colNum = 0;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
 			$ret[$colNum] = $line['res'];
@@ -549,7 +550,7 @@ class Model {
 		if (!empty($order)) $order = " order by ".substr($order,1); else $order = "";
 		$query = "select ".$columns." from ".$tableName.$where.$order;
 		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'Query:'.$query.','. mysqli_error());
 		$lineNum = 0;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
 			$res = new Resource();
@@ -649,12 +650,13 @@ class Model {
 
 	//Создание сущности
 	public function insert($resource2, $oldResource2 = null, $type = null){
-
+		echo $type;
 		//print_r($resource2);
 		$props = array();
 		if (empty($type)) $type = $resource2->items[5055][0];
 		//echo 'Domain:'.$resource2->items[5055][0];
 		$this->getClassPropertiesTransitive($type,$props);
+		//print_r($props);
 		$columns = '';
 		$values = '';
 		if (empty($resource2->items[5048][0])) $resource2->items[5048][0] = $this->getId($type);
@@ -664,6 +666,7 @@ class Model {
 				($prop->items[50110] != 1) &&
 				($prop->items[5084] != 1) &&
 				(!empty($resource2->items[$prop->items[5082]][0]))){//50108.Автозаполняемое, 5082.Идентификатор свойства,50110.Флаг виртуального свойства
+				//echo 'Step';
 				$columns = $columns.','.$prop->items[506];
 				$values = $values.','.$this->quotation($resource2->items[$prop->items[5082]][0],$prop->items[5055]);
 			}
@@ -676,18 +679,20 @@ class Model {
 		echo $query;
 
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		return $resource2->items[5048][0];
 	}
 
 	//Создание глобальной сущности
-	public function insertGlobal($resource2){
-		$id = $this->insert($resource2);
+	public function insertGlobal($resource2, $oldResource2 = null, $type = null){
+		$id = $this->insert($resource2, $oldResource2, $type);
 		$query = 'insert into dim_resource(id,type) values ('.$id.','.$resource2->items[5055][0].')';
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
 		return $id;
 	}
 	
 	public function isSubclassOf($classId,$pClassId){
-		if ($pClassId == 133) if ($classId == 134 || $classId == 135 || $classId == 136) return 1; else return 0;
+		if ($pClassId == 133) {if ($classId == 134 || $classId == 135 || $classId == 136) return 1; else return 0;}
+		if ($pClassId == 1612) {if (($classId == 103) || ($classId == 109)|| ($classId == 1010) || ($classId == 1011) || ($classId == 1012)) return 1; else return 0;};
 	}
 
 	public function closeCurrentVersion($resourceId, $type = null, $table = null){
@@ -708,7 +713,7 @@ class Model {
 	public function update($resource2, $formId){
 		$resourceId = $resource2->items[5048][0];//5048.Идентификатор
 		$type = $this->getResProperty($resourceId,5051);//5051.Тип
-		$oldResource = $this->getResource2($resource2->items[5048][0],$type);
+		$oldResource = $this->getCurrentResource2($resource2->items[5048][0],$type);
 		$compareFlag = $this->compare($resource2,$oldResource, $formId);
 		if ($compareFlag != 1) {
 			$close_date = $this->closeCurrentVersion($resourceId, $type);

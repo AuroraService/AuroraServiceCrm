@@ -603,6 +603,8 @@ insert into dim_resource(id,name,search_name,type) values(15035,'Заявка �
 insert into dim_resource(id,name,search_name,type) values(15036,'Заявка №15031','15031 Лобанов Станислав Дмитриевич Илья Бобошко Александрович +7(909)925-77-54 Железнодорожная 12-15',109);
 
 select * from requests;
+select id id_value, id, creation_time creation_time_value, creation_time, session_id, (select concat(first_name,' ',second_name) from users where users .id = sessions.user_id) user_id_value, user_id from sessions where end_date = "9999-01-01" and creation_time > NOW() - INTERVAL 7 DAY;
+
 
 select r.id, concat(r.id,' ',IFNULL(u.second_name,''),' ',IFNULL(u.first_name,''),' ',IFNULL(u.patronymic,''),' ',IFNULL(c.second_name,''),' ',IFNULL(c.first_name,''),' ',IFNULL(c.patronymic,''),' ',IFNULL(t.number,''),' ',IFNULL(a.value,''))
 from requests r
