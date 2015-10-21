@@ -68,8 +68,8 @@ switch ($action) {
         //eshow($id);
 		//file_put_contents ('log', 'stepx'.$json[5048][0],FILE_APPEND);
 		$resource2 = new Resource2($json);
-		if (!empty($json[5048][0])) $model->update($resource2,$json[5065]);
-		else $model->insert($resource2);
+		if (!empty($json[5048][0])) $model->update($resource2,$json[5065]);//5065.Форма
+		else $model->insertGlobal($resource2, null, $json[5055][0]); //5055.Домен
 		//entityEdit($json,$model);
         break;
     case '2336':

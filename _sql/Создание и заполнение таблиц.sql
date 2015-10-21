@@ -2196,7 +2196,7 @@ create table actionFilters(
 
 insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15211,15171,'Дата выезда:',5031,15181,1,1);
 
-insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15212,15172,'Время создания:',5022,15186,1,1);
+insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15212,15172,'Время создания:',5022,15185,1,1);
 
 select * from actionFilters;
 
@@ -2250,21 +2250,3 @@ create table messages(
  PRIMARY KEY(id,end_date)
 );
 
-
-select * from sFilterFields;
-
-select * from entities;
-
-
-select id,name,search_name,type from dim_resource;
-
-update dim_resource set name = search_name where name is null;
-update dim_resource set search_name = name where search_name is null;
-
-select * from sessions;
-
-select id,ent_id,prop_id,alias,domain,external,editable,auto from ent_properties where id=1511131;
-
-select obj_id res
-			from triplets
-			where subj_id = 15211 and prop_id = 5058

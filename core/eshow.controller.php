@@ -2,7 +2,7 @@
 class EshowController {
 	public function execute($iParams){
 		$model = Model::getModel();
-		$id = $iParams[5048] ; //5048.Идентификатор
+		$id = $iParams[5048]; //5048.Идентификатор
         $elemId = $iParams[5014]; //5014.Исполнитель
 		$actionId = $iParams[5058];
 		if (empty($elemId) && !empty($id)) {
@@ -10,7 +10,8 @@ class EshowController {
 			$elemId=$model->getForm($actionId,$domain);
 		}
 		echo ' <script language ="JavaScript">var data = []; data[5065] = '.$elemId.';</script>';
-		$this->printJavaScript(5055,$iParams[5055],0,0);
+		$this->printJavaScript(5055,$iParams[5055],0,0);//5055.Домен
+		//$this->printJavaScript(5055,$iParams[5055],0,0);//5055.Домен
 		$val = $model->getColumns2($elemId);
 		$req_flag=1;
 		if ($req_flag){
@@ -19,7 +20,8 @@ class EshowController {
 		}
 		echo '<div class="table-responsive"><table class="table table-condensed">';
 		$lineNum = 0;
-		$resource2 = $model->getCurrentResource2($id);
+		if (!empty($id)) $resource2 = $model->getCurrentResource2($id);
+		else {echo '<script language ="JavaScript">data[5051] = mas0;</script>';}
 
 		if (!empty($val->cols)) foreach ($val->cols as $col_value) {
 			echo "<tr>";
@@ -35,8 +37,8 @@ class EshowController {
 			
 			$viewer = $model->getViewer($col_value->viewer,$params2,$model);
 			$propId = $col_value->property;
-			foreach ($idValue = $resource2->items[$propId] as $valueCounter =>$propValue) {
-					$propId = $col_value->property;
+			if (!empty($resource2->items[$propId])) foreach ($resource2->items[$propId] as $valueCounter =>$propValue) {
+					//$propId = $col_value->property;
 					if ($col_value->type == 0) {
 						$idValue = $resource2->items[$propId][$valueCounter];
 						$value = $model->getResourceValue($idValue, $col_value->value_template);
@@ -47,6 +49,10 @@ class EshowController {
 					$cell = new Cell($idValue, $value);
 					echo $viewer->show($cell, $params);
 					$this->printJavaScript($col_value->property, $idValue, $lineNum + 1, $valueCounter);
+			} else {
+				$this->printJavaScript($col_value->property, null, $lineNum + 1, 0);
+				$cell = new Cell(null,null);
+				echo $viewer->show($cell, $params);
 			}
 			echo "</td></tr>";
 			$lineNum++;
