@@ -2249,4 +2249,3 @@ create table messages(
  end_date   datetime default '9999-01-01',
  PRIMARY KEY(id,end_date)
 );
-
