@@ -38,7 +38,7 @@ class Model {
 		else return 0;
 	}
 
-	public function compare($resource1, $resource2, $formId = null){
+	public function compare($resource1, $resource2, $formId = null, $localFlag = 0){
 		//print_r($resource2);
 		if (!empty($formId)){
 			$filters[5065] = '%COLUMN%='.$formId;
@@ -52,6 +52,7 @@ class Model {
 		$this->getClassPropertiesTransitive($type,$props);
 		//$compareFlag = 1;
 		foreach ($props as $prop){
+			if ($localFlag && ($prop->items[5084]==1)) continue; //5084.Флаг внешнего свойства
 			if ((empty($formId)) || ($formPropsIds[$prop->items[5048]])) {
 				$propId = $prop->items[5082]; //5082.Идентификатор свойства
 
@@ -60,17 +61,17 @@ class Model {
 					if ($resource1->items[$propId][0] != $resource2->items[$propId][0]) return 0;
 				} else {
 
-					foreach ($resource1->items[$propId] as $valueCounter1 => $propValue1) {
+					if (!empty($resource1->items[$propId])) foreach ($resource1->items[$propId] as $valueCounter1 => $propValue1) {
 						$compareFlag = 0;
-						foreach($resource2->items[$propId] as $valueCounter2 => $propValue2){
+						if (!empty($resource2->items[$propId])) foreach($resource2->items[$propId] as $valueCounter2 => $propValue2){
 							//echo '<br>' . $propId . ',' . $resource1->items[$propId][$valueCounter1] . ',' . $resource2->items[$propId][$valueCounter2] . '<br>';
 							if ($resource1->items[$propId][$valueCounter1] == $resource2->items[$propId][$valueCounter2]) {$compareFlag = 1; break;}
 						}
 						if ($compareFlag == 0) return 0;
 					}
-					foreach ($resource2->items[$propId] as $valueCounter1 => $propValue1) {
+					if (!empty($resource2->items[$propId])) foreach ($resource2->items[$propId] as $valueCounter1 => $propValue1) {
 						$compareFlag = 0;
-						foreach($resource1->items[$propId] as $valueCounter2 => $propValue2){
+						if (!empty($resource1->items[$propId])) foreach($resource1->items[$propId] as $valueCounter2 => $propValue2){
 							//echo '<br>' . $propId . ',' . $resource2->items[$propId][$valueCounter1] . ',' . $resource1->items[$propId][$valueCounter2] . '<br>';
 							if ($resource2->items[$propId][$valueCounter1] == $resource1->items[$propId][$valueCounter2]) {$compareFlag = 1; break;}
 						}
@@ -81,6 +82,22 @@ class Model {
 			}
 		}
 		return 1;
+	}
+
+	public function compareProperties($props1,$props2){
+		$lineNum = 0;
+		if (!empty($props1)) foreach ($props1 as $value1){
+			$existFlag = 0;
+			if (!empty($props2)) foreach ($props2 as $value2){
+				if ($value1 == $value2) {$existFlag = 1; break;}
+			}
+			if ($existFlag == 0){
+				echo 'Compare:'.$lineNum.',' .$value1.'<br>';
+				if (!empty($value1)) $ret[$lineNum] = $value1;
+				$lineNum++;
+			}
+		}
+		return $ret;
 	}
 
 	private function estimateControllers(){
@@ -339,7 +356,7 @@ class Model {
 		//if (!empty($where)) $where = $where . ' and '. substr($where2,5); else if (!empty($where2)) $where = ' where '.substr($where2,5);
 		$columns = substr($columns,2);
 		$query = "select $columns from $tableName".$where;
-		echo $query;
+		//echo $query;
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
 		$lineNum = 0;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
@@ -412,7 +429,7 @@ class Model {
 			$query = 
 			"select $relation2 res
 			from triplets
-			where $relation1 = $id and prop_id = $propId";
+			where $relation1 = $id and prop_id = $propId and end_date='9999-01-01'";
 		}
 		//echo $query;
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'ResourceId='.$id.', PropId='.$propId.','. mysqli_error());
@@ -518,31 +535,36 @@ class Model {
 	}
 
 	//Получение массива ресурсов
-	function getResources($entId, $filters = null, $orders = null){
+	function getResources($entId, $filters = null, $orders = null, $resultSet = 0){
 		$tableName = $this->getResProperty($entId,503,0,0); //503.Местоположение
 		if (empty($tableName)) return null;
 
 		$entProps = array();
 		$this->getClassPropertiesTransitive($entId, $entProps); //1511.Свойство сущности
 		$propNum = 0; $where = ''; $order = ''; $columns = '';
+		$innerVirtualFlag = 0;
 		foreach ($entProps as $entProp) {
 			if ($entProp->items[5084] == 0) { //5084.Флаг внешнего свойства
-				$propId = $entProp->items[5082]; //5082.Идентификатор свойства
-				$propAlias = $entProp->items[506]; //506.Псевдоним
-				$props[$propNum]['id'] = $propId;
-				$props[$propNum]['alias'] = $propAlias;
-				if (!empty($filters[$propId])) {
-					//echo $filters[$line[prop_id]];
-					$filter = str_replace('%COLUMN%', $propAlias, $filters[$propId]);
-					//if (($line[domain] == 134) || ($line[domain] == 136)) $filter = $line[alias]." = '".$filters[$line[prop_id]]."'"; else $filter = $line[alias]." = ".$filters[$line[prop_id]];
-					$where = $where . " and " . $filter;
-				}
+				if ($entProp->items[50110] == 1) { //50110.Флаг виртуального свойства
+					$innerVirtualFlag=1;
+				} else {
+					$propId = $entProp->items[5082]; //5082.Идентификатор свойства
+					$propAlias = $entProp->items[506]; //506.Псевдоним
+					$props[$propNum]['id'] = $propId;
+					$props[$propNum]['alias'] = $propAlias;
+					if (!empty($filters[$propId])) {
+						//echo $filters[$line[prop_id]];
+						$filter = str_replace('%COLUMN%', $propAlias, $filters[$propId]);
+						//if (($line[domain] == 134) || ($line[domain] == 136)) $filter = $line[alias]." = '".$filters[$line[prop_id]]."'"; else $filter = $line[alias]." = ".$filters[$line[prop_id]];
+						$where = $where . " and " . $filter;
+					}
 
-				if (!empty($orders[$propId])) {
-					$order = $order . "," . $propAlias;
+					if (!empty($orders[$propId])) {
+						$order = $order . "," . $propAlias;
+					}
+					$columns = $columns . ',' . $propAlias;
+					$propNum++;
 				}
-				$columns = $columns . ',' . $propAlias;
-				$propNum++;
 			}
 		}
 		$columns = substr($columns,1);
@@ -552,11 +574,30 @@ class Model {
 		//echo $query;
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'Query:'.$query.','. mysqli_error());
 		$lineNum = 0;
+		if ($innerVirtualFlag == 1) $resultSet = 1;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
 			$res = new Resource();
 			foreach ($props as $prop) $res->items[$prop['id']] = $line[$prop['alias']];
-			$ret[$lineNum] = $res;
+			if ($resultSet == 1) $ret[$res->items[5048]] = $res;//5048.Идентификатор
+			else $ret[$lineNum] = $res;
 			$lineNum++;
+		}
+		if ($innerVirtualFlag == 1){
+			foreach ($entProps as $entProp) {
+				if ($entProp->items[50110] == 1) { //50110.Флаг виртуального свойства
+					//echo $entProp->items[5082];
+					$inversePropId = $this->getResProperty($entProp->items[5082],5049); //5082.Идентификатор свойства, 5049.Является обратным
+					$propId = $entProp->items[5082];
+					echo 'PropId = '.$propId.'<BR>';
+					//$inversePropId = $inverseProp[0];
+					echo 'InverseProp = '.$inversePropId.'<BR>';
+					foreach ($ret as $line){
+						echo 'ParentId = '.$line->items[$inversePropId].', ChildId = '.$line->items[5048].'<br>';
+						$prop = $ret[$line->items[$inversePropId]]->items[$propId];
+						$ret[$line->items[$inversePropId]]->items[$propId][count($prop)] = $line->items[5048] ;//5082.Идентификатор свойства,5048.Идентификатор
+					}
+				}
+			}
 		}
 		mysqli_free_result($result);
 		return $ret;
@@ -589,7 +630,7 @@ class Model {
 			*/
 			foreach ($entProps as $extProp){
 				if ($extProp->items[5084] == 1) { //5084.Флаг внешнего свойства
-					if ($extProp->items[50110] == 1) {
+					if ($extProp->items[50110] == 1) {//50110.Флаг виртуального свойства
 						$direct = 1;
 						$propId = $this->getResProperty($extProp->items[5082], 5049, 0); //5082.Идентификатор свойства, 5049.Явдяется обратным
 					} else {
@@ -665,7 +706,7 @@ class Model {
 			if (($prop->items[50108] != 1) &&
 				($prop->items[50110] != 1) &&
 				($prop->items[5084] != 1) &&
-				(!empty($resource2->items[$prop->items[5082]][0]))){//50108.Автозаполняемое, 5082.Идентификатор свойства,50110.Флаг виртуального свойства
+				(!empty($resource2->items[$prop->items[5082]][0]))){//50108.Автозаполняемое, 5084.Флаг внешнего свойства,50110.Флаг виртуального свойства
 				//echo 'Step';
 				$columns = $columns.','.$prop->items[506];
 				$values = $values.','.$this->quotation($resource2->items[$prop->items[5082]][0],$prop->items[5055]);
@@ -689,6 +730,38 @@ class Model {
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
 		return $id;
 	}
+
+	public function insertTriplets($subj_id,$prop_id,$value, $oldValue,$isResource = 1, $close_date = null){
+		if ($isResource) {
+			//$oldValue = $this->getResProperty($subj_id,$prop_id);
+			$value_name = 'obj_id';
+		}
+		else {
+			//$oldValue = $this->getResProperty($subj_id,$prop_id,0,0);
+			$value_name = 'value';
+		}
+
+
+		if (empty($close_date)){
+			$close_date = date("Y-m-d H:i:s");
+		}
+
+
+		if ($oldValue != $value){
+			if (!empty($oldValue)) $close_date = $this->closeCurrentVersionTriplet($subj_id,$prop_id, $oldValue, $isResource, $close_date);
+			//Рассчёт времени START
+			$start_date = new DateTime($close_date);
+			$start_date->add(new DateInterval('PT1S'));
+			$start_date = $start_date->format("Y-m-d H:i:s");
+			//Рассчёт времени END
+
+			$query = "insert into triplets(subj_id,prop_id,".$value_name.",start_date,end_date) values(".$subj_id.",".$prop_id.",".$value.",'".$start_date."','9999-01-01')";
+			$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'Query='.$query. mysqli_error());
+		}
+		return $close_date;
+
+
+	}
 	
 	public function isSubclassOf($classId,$pClassId){
 		if ($pClassId == 133) {if ($classId == 134 || $classId == 135 || $classId == 136) return 1; else return 0;}
@@ -708,6 +781,14 @@ class Model {
 		return $close_date;
 	}
 
+	public function closeCurrentVersionTriplet($subj_id,$prop_id, $value, $isResource=1, $close_date = null){
+		if ($isResource) $value_name = 'obj_id'; else {$value_name = 'value'; $value = '\''.$value.'\'';}
+		$query = "update triplets set end_date = '".$close_date."' where subj_id = ".$subj_id." and prop_id = ".$prop_id." and ".$value_name."=".$value." and end_date = '9999-01-01'";
+		echo $query;
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		return $close_date;
+	}
+
 
 	//Сохраняет изменения в переданной сущности
 	public function update($resource2, $formId){
@@ -715,7 +796,8 @@ class Model {
 		$type = $this->getResProperty($resourceId,5051);//5051.Тип
 		$oldResource = $this->getCurrentResource2($resource2->items[5048][0],$type);
 		$compareFlag = $this->compare($resource2,$oldResource, $formId);
-		if ($compareFlag != 1) {
+		$localCompareFlag = $this->compare($resource2,$oldResource, $formId,1);
+		if ($localCompareFlag != 1) {
 			$close_date = $this->closeCurrentVersion($resourceId, $type);
 			//$close_date = date("Y-m-d H:i:s");
 			$close_date = new DateTime($close_date);
@@ -744,26 +826,51 @@ class Model {
 
 			$resource2->items[50113][0] = $close_date; //50113.StartDate
 			$resource2->items[50114][0] = '9999-01-01'; //50114.CloseDate
-			$this->insert($resource2, null,$type);
+
+			$this->insert($resource2, $oldResource,$type);
+		}
+		if ($compareFlag != 1){
+			if (empty($resource2->items[50113][0])){
+				$resource2->items[50113][0] = date("Y-m-d H:i:s");
+			}
+			$entProps = array();
+			$this->getClassPropertiesTransitive($type,$entProps);
+			foreach ($entProps as $propId => $prop) {
+				if (($prop->items[5084] == 1)) {
+					echo 'PropId='.$prop->items[5082];
+					$propId = $prop->items[5082];
+					if ($prop->items[50110] == 1) {
+						$insertPropId = $this->getResProperty($propId, 5049);//5049.Является обратным
+					} else {
+						$insertPropId = $propId;
+					}
+					$ret = $this->compareProperties($resource2->items[$prop->items[5082]], $oldResource->items[$prop->items[5082]]);
+					if (!empty($ret)) foreach ($ret as $value) {
+						if ($prop->items[50110] != 1) {
+							$subj_id = $resource2->items[5048][0];
+							$obj_id = $value;
+						} else {
+							$subj_id = $value;
+							$obj_id = $resource2->items[5048][0];
+						}
+						$this->insertTriplets($subj_id, $insertPropId, $obj_id,null, 1, $resource2->items[50113][0]);
+					}
+					$ret = $this->compareProperties($oldResource->items[$prop->items[5082]], $resource2->items[$prop->items[5082]]);
+					if (!empty($ret)) foreach ($ret as $value) {
+						if ($prop->items[50110] != 1) {
+							$subj_id = $resource2->items[5048][0];
+							$obj_id = $value;
+						} else {
+							$subj_id = $value;
+							$obj_id = $resource2->items[5048][0];
+						}
+						$this->closeCurrentVersionTriplet($subj_id, $insertPropId, $obj_id, 1, $resource2->items[50113][0]);
+					}
+				}
+			}
 		}
 		//print_r($oldResource);
 		echo 'CompareFlag='.$compareFlag;
-/*
-		$props = array();
-		//$type = $this->getResProperty($resource2->items[5048][0],5051,0,0);
-		$this->getClassPropertiesTransitive($type,$props);
-		foreach ($props as $prop){
-			$valCounter = 0;
-			$propId = $prop->items[5082];
-			//echo $propId.',';
-			//echo $prop->items[5052];
-			if (($prop->items[5052] != 0) && (!empty($resource2->items[$propId]))) foreach ($resource2->items[$propId] as $val){ //5052.Редактируемость, 5082.Идентификатор свойства
-				//echo 'Вставка';
-				if (!empty($val)) $this->updateProperty($resource2->items[5048][0],$prop,$val);
-				$valCounter++;
-			}
-		}
-		*/
 	}
 
 

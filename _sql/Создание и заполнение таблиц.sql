@@ -202,6 +202,7 @@ insert into triplets(subj_id, prop_id,obj_id) values(1011,5061,103);
 insert into triplets(subj_id, prop_id,obj_id) values(1012,5061,103);
 -- Отношения между свойствами
 insert into triplets(subj_id, prop_id,obj_id) values(5050,5049,5028);
+insert into triplets(subj_id, prop_id,obj_id) values(50120,5049,5057);
 -- Выпадающие списки
 insert into triplets(subj_id, prop_id,obj_id) values(1191,1515,119);
 insert into triplets(subj_id, prop_id,obj_id) values(1192,1515,119);
@@ -1605,6 +1606,9 @@ insert into entities(id, location) values(1192, 'dim_resource');
 insert into entities(id, location) values(1191, 'dim_resource');
 insert into entities(id, location) values(10, 'entities');
 
+
+
+
 -- insert into entities(id, location) values(104, 'calls');
 -- insert into entities(id, location) values(106, 'actions');
 -- insert into entities(id, location) values(107, 'logins');
@@ -1625,6 +1629,7 @@ insert into entities(id, location,namespace,counter) values(50, 'dim_resource',n
 insert into entities(id, location,namespace,counter) values(168, 'sessions',1519,10);
 
 insert into entities(id, location,namespace,counter) values(164, 'messages',1520,10);
+insert into entities(id, location,namespace,counter) values(1613, 'layout_elements',1522,10);
 -- Создание таблицы свойств сущности
 drop table if exists ent_properties;
 create table ent_properties(
@@ -1836,6 +1841,16 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,auto) values(151114
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511146,1612,50113,'start_date',136);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511147,1612,50114,'end_date',136);
 
+-- 1613.Элемент верстки
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511156,1613,5048,'id',1613,0,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511157,1613,501,'name',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511149,1613,5057,'pid',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511150,1613,50116,'elem_type',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511151,1613,50117,'width',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511152,1613,50118,'height',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511153,1613,504,'position',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511154,1613,50119,'style',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,virtual) values(1511155,1613,50120,'',134,1);
 
 
 
@@ -2249,3 +2264,34 @@ create table messages(
  end_date   datetime default '9999-01-01',
  PRIMARY KEY(id,end_date)
 );
+
+-- Создание таблицы элементов макета
+drop table if exists layout_elements;
+create table layout_elements(
+  id bigint,
+  name varchar(256),
+  pid bigint,
+  elem_type varchar(256),
+  width int,
+  height int,
+  position int,
+  style varchar(256),
+  PRIMARY KEY(id)
+);
+
+insert into layout_elements(id,pid,elem_type,width,height,position,style) values(15221,null,'xxx',100,100,1,'xxx');
+insert into layout_elements(id,pid,elem_type,width,height,position,style) values(15222,15221,'xxx',100,100,1,'xxx');
+insert into layout_elements(id,pid,elem_type,width,height,position,style) values(15223,15221,'xxx',100,100,1,'xxx');
+insert into layout_elements(id,pid,elem_type,width,height,position,style) values(15224,15222,'xxx',100,100,1,'xxx');
+insert into layout_elements(id,pid,elem_type,width,height,position,style) values(15225,15224,'xxx',100,100,1,'xxx');
+
+insert into dim_resource(id,type) values(15221,1613);
+insert into dim_resource(id,type) values(15222,1613);
+insert into dim_resource(id,type) values(15223,1613);
+insert into dim_resource(id,type) values(15224,1613);
+insert into dim_resource(id,type) values(15225,1613);
+
+select * from requests;
+select * from triplets;
+
+update triplets set end_date = '' where subj_id = 15031 and prop_id = 5028 and obj_id=15031 and end_date = '9999-01-01'

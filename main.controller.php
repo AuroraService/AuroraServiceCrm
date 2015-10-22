@@ -28,6 +28,8 @@ class Controller{
 	//$filters[5083] = 1511;
 	//$props = $model->getResource(112);
 	//print_r($props); echo 111;
+		//$layout_elements = $model->getResources(1613);//1613.Элемент макета
+		//print_r($layout_elements[15221]);
 	
 	if ($model->CheckLogin()!=1){
 		$clogin=$model->LogIn();
