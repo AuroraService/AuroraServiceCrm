@@ -12,11 +12,13 @@ class Model {
 	private $controllers;  //Массив контроллеров [contr_id]
 	private $entities;
   
-	private $user_id;
+	public $user_id;
   
 	private $viewers;      //Массив отображателей [viewer_id]
 	
 	function __construct(){
+		if (empty($this->user_id)) $this->user_id = $_SESSION['id'];
+		//echo 'UserId"'.$this->user_id;
 		$this->link = mysqli_connect($this->db_host, $this->db_user, $this->db_passwd, 'kb1');
 		if (!$this->link) die('Ошибка соединения: ' . mysqli_error());  
 		$this->loadVievers();
@@ -24,18 +26,17 @@ class Model {
 		$this->loadControllers();
 		$this->estimateControllers();
 		$this->loadEntities();
-		//$this->loadPermissions();
-
-		//$this->getResourceGen(null,103);
 	}
 
 	public function checkPermission($actionId, $domain = null){
-		//12354
-		$actId = $this->actions[$actionId]->items[5062];
+		$actId = $this->actions[$actionId]->items[5062];//5062.Идентификатор действия
 		if (empty($domain)) $domain = $this->actions[$actionId]->items[5055];
 		//echo 'domain'.$domain.','.$actId.','.$actionId.',';
 		if ($this->perm[$actId][$domain]['perm'] == '1') return 1;
-		else return 0;
+		//echo 'Permision:'.$this->perm['2342']['132']['perm'];
+		if ($this->perm[$actId][132]['perm'] == '1') return 1;//132.Ресурс
+
+		return 0;
 	}
 
 	public function compare($resource1, $resource2, $formId = null, $localFlag = 0){
@@ -116,7 +117,7 @@ class Model {
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
 		$query = 'insert into find(id,type) select id,type from dim_resource where Upper(name) LIKE "%'.$text.'%" and type = '.$domain;
 		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'Query:'.$query. mysqli_error());
 	}
 
 	private function findController($actionId){
@@ -196,7 +197,7 @@ class Model {
 		from ent_properties
 		where ent_id = $classId";
 		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
 
 		$propNum = 0;
 		$props = array();
@@ -295,11 +296,8 @@ class Model {
 		$columns = '';
 		foreach ($table->cols as $line)  {
 			if (!empty($filters[$line->property])){
-				//echo $filters[$line[prop_id]];
 				$filter = str_replace('%COLUMN%',$line->alias,$filters[$line->property]);
-				//if (($line[domain] == 134) || ($line[domain] == 136)) $filter = $line[alias]." = '".$filters[$line[prop_id]]."'"; else $filter = $line[alias]." = ".$filters[$line[prop_id]];
 				$where2 = $where2 ." and ". $filter;
-				//echo $filter;
 			}
 			if ($line->external == '0'){
 				if ($line->type == 0){
@@ -733,11 +731,9 @@ class Model {
 
 	public function insertTriplets($subj_id,$prop_id,$value, $oldValue,$isResource = 1, $close_date = null){
 		if ($isResource) {
-			//$oldValue = $this->getResProperty($subj_id,$prop_id);
 			$value_name = 'obj_id';
 		}
 		else {
-			//$oldValue = $this->getResProperty($subj_id,$prop_id,0,0);
 			$value_name = 'value';
 		}
 
@@ -939,13 +935,16 @@ class Model {
 	}
 
 	public function loadPermissions(){
+		$apacheSessionId = session_id();
+		//echo 'SessionId:'.$apacheSessionId;
 		$perms = $this->getResProperty2($this->user_id,5011,0); //5011.Право
 		if (!empty($perms)) foreach ($perms as $perm){
 			$domain = $this->actions[$perm]->items[5055];
 			$actionId = $this->actions[$perm]->items[5062];
 			$this->perm[$actionId][$domain]['perm'] = 1;
+			//if (empty($domain)) $this->perm[$actionId][132]['perm'] = 1;
 		}
-		//print_r($this->perm[2316]);
+		//print_r($this->perm[2315]);
 	}
 
 	public function CheckLogin(){

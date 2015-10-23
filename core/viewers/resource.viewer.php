@@ -22,7 +22,8 @@ class ResourceViewer{
 		if ($flag_edit) $link2='<a href="#" class="hrf_nmrg interface_edit" id="select_form" domain="'.$this->params[5055].'" selectid="'.$cell->id.'" item-id="'.$id.'" win_width="600" win_height="300"><span class="glyphicon glyphicon-pencil" style="color:black"></span></a>';
 		if ($flag_delete) $link3='<a class="hrf_nmrg" onclick="editField(\''.$id.'\', \'\');"><span class="glyphicon glyphicon-remove" style="color:black"></span></a>';
 		$val='<div class="res_value_link" id = "'.$id.'">'.$cell->value.'</div>';
-		return '<div style="margin-bottom: 15px" onclick="load_data(2315, '.$this->params[5055].', '.$cell->id.')">'.$val.'</div>'.$link1.$link2.$link3;
+		//return '<div style="margin-bottom: 15px" onclick="load_data(2315, '.$this->params[5055].', '.$cell->id.')">'.$val.'</div>'.$link1.$link2.$link3;
+		return '<div style="margin-bottom: 15px" onclick="data[50128]='.$cell->id.'; sendData(2315)">'.$val.'</div>'.$link1.$link2.$link3;
 	}
 }
 

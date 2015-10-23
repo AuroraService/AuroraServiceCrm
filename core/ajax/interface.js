@@ -47,6 +47,7 @@ function sendData(action, elemId) {
     success: function(data,status,xhr) {
       var statusElem = document.getElementById(elemId);
       statusElem.innerHTML = data;
+      alert(data);
       if ( data == 0  ) statusElem.innerHTML = 'Change save';
       else {
         statusElem.innerHTML = 'Safe error';
@@ -112,8 +113,8 @@ function setFormParams(selector, form, height, width, offsetTop, offsetLeft, cla
   $(form).addClass(classes); 
 }
 
-function editProperty(propId,valCounter,value){
-  data[propId][valCounter]=value;
+function editProperty(form,propId,valCounter,value){
+  data[form][propId][valCounter]=value;
   //alert(propId+", "+valCounter+", "+value);
   //alert(value);
 }
@@ -122,13 +123,13 @@ function editFilter(filterId,value){
   data[5095][filterId]=value;
   //alert(value);
 }
-
+/*
 function editField(fieldId, value){
   alert(fieldId);
   var field = document.getElementById(fieldId);
   field.innerHTML = '123';
 }
-
+*/
 function click_close_btn(elem){
   var el=$("#"+elem.parentNode.id);
   $(el).text("");
@@ -188,6 +189,9 @@ $(".interface_edit").click(function(){
   form_data['5058']="2340";
   form_data['9091']="235";
   form_data['9092']=null;
+  form_data['50126']=[];
+  form_data['50126']['5079']=data[50126][5079];
+  form_data['50126']['50127']=data[50126][50127];
   
   setFormParams($(this), $("#popup_window"), $(this).attr("win_height"), $(this).attr("win_width"), 10,10);
  // sendData2(form_data, "popup_window");
@@ -197,6 +201,9 @@ $(".interface_edit").click(function(){
   form_data_req['9092']=null;
   form_data_req['5058']="2336";
   form_data_req['50104']=$(this).attr("item-id");
+  form_data_req['50126']=[];
+  form_data_req['50126']['5079']=data[50126][5079];
+  form_data_req['50126']['50127']=data[50126][50127];
   sendData2(form_data, "popup_window", true, form_data_req, "find_list_div");
  // sendData2(form_data, "find_list_div");
 });

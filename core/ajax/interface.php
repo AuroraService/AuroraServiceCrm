@@ -7,70 +7,50 @@ $action = $_REQUEST['action'];
 $domain = $_REQUEST['domain']; 
 $id =  $_REQUEST['id'];
 $json = json_decode($_POST['data'], true);
+//echo 'Hash ='.$json[50126][50127];
 if ($action==""){
 	$action=$json[5058];
 }
-//echo "123";
-//$json = json_decode($_POST['data'], true);
-//if (!empty($json[5058])) $action = $json[5058];
-//file_put_contents ('log', 'Search',FILE_APPEND);
+
+//echo 'Sel:'.$json[50128];
+
+require_once('main.controller.php');
+$mainController = Controller::getController();
+//echo 'UserId = '.$json[50126][5079];
+$mainController->loadPermissions($json[50126][5079]);
 switch ($action) {
     case '2315':
-        eshow($id);
+		$params[5048] = $json[50128]; //5048.Идентификатор
+		$params[50130] = $json[50130]; //50130.Счетчик форм
+		$params[5058] = 2315; //5058.Действие, 2315.Просмотр сущности
+		$mainController -> executeAction(2315, $params);//2315.Просмотр сущности
         break;
 	case '2316':
-		require_once('main.controller.php');
-		$mainContriller = Controller::getController();
-		$params[5058] = $json[5058];
-		$params[5095] = $json[5095];
-		$params[50109] = $json[50109];
-		$f1[50109] = '%COLUMN%='.$params[50109];
-		//echo $params[50109];
-		//echo $params[5058];
-		$filters = $model->getResources(163,$f1);
-		//echo "Point2";
+		//echo 'Step';
+		$params[5058] = $json[5058];//5058.Действие
+		$params[5095] = $json[5095];//5095.Фильтр
+		$params[5055] = $json[5055];//5055.Домен
+
+		$f1[50109] = '%COLUMN%='.$json[50109];//50109.Идентификатор набора параметра
+		$filters = $model->getResources(163,$f1);//163.Фильтр
 		foreach($filters as $filter){
-			//echo "PointN";
-			$f2[5048] = '%COLUMN%='.$params[5095][$filter->items[5095]];
-			$field = $model->getResources(162,$f2);
+			$f2[5048] = '%COLUMN%='.$params[5095][$filter->items[5095]];//5095.Фильтр [5095]->[$filterId]->[$fieldId]
+			$field = $model->getResources(162,$f2);//162.Поле фильтра
 			$expFilters[$filter->items[5082]]=$field[0]->items[5096];
-			//echo $params[5095][$filter->items[5095]];
-			//print_r( $field->items[5096]);
 		}
-		//echo "PointEnd";
-		//print_r($expFilters);
-		$params[5095] = $expFilters;
-		$mainContriller -> executeAction(2316, $params);
-		//print_r($params[5095]);
-		//$filters = $model->getResource();
-
-		//$controller = new SetController();
-		//$controller->execute($params);
-		break;
-	case '2333':
-		//echo "123";
-		//echo $json[5055][0];
-		$domain = $model->getResProperty($json[5055][0],507); //507.Ïðåäñòàâëåíèå
-		$model->find($json[5091][0], $domain);
-
-		require_once('core/show.controller.php');
-		$controller = new ShowController();
-		$action = $model->getLeafAction(2316, $domain);
-		//print_r($action);
-		//$formId = $model->getEShowElement($domain);
-		$params[5058] = $action->items[5048];
-		$params[5091] = 1;
-		$controller->execute($params);
-		//echo "123";
-		//file_put_contents ('log', 'Search',FILE_APPEND);
+		$params[5095] = $expFilters;//5095.Фильтр
+		$mainController -> executeAction(2316, $params);//2316.Просмотр сущностей класса
 		break;
 	case '2334':
-        //eshow($id);
-		//file_put_contents ('log', 'stepx'.$json[5048][0],FILE_APPEND);
-		$resource2 = new Resource2($json);
-		if (!empty($json[5048][0])) $model->update($resource2,$json[5065]);//5065.Форма
-		else $model->insertGlobal($resource2, null, $json[5055][0]); //5055.Домен
-		//entityEdit($json,$model);
+
+		$selectedForm = $json[50129];
+		echo 'Form:'.$selectedForm;
+		$resource2 = new Resource2($json[$selectedForm]);
+		print_r($resource2);
+		$params[5013] = $resource2;//5013.Объект
+		$params[5065] = $json[$selectedForm][5065];//5065.Форма
+		$params[5055] = $json[$selectedForm][5055][0];//5055.Домен
+		$mainController -> executeAction(2334, $params);//2334.Изменение сущности
         break;
     case '2336':
         echo search($json);
@@ -78,6 +58,15 @@ switch ($action) {
     case '2340':
         echo  ShowFindForm($json);
         break;
+	case '2342':
+		//echo 'Step';
+		$model = Model::getModel();
+		$domain = $model->getResProperty($json[5055][0],507); //507.Представление
+		$params[5055] = $domain; //5055.Домен
+		$params[5091] = $json[5091][0]; //5091.Поисковый запрос
+		$params[5058] = 2342;
+		$mainController -> executeAction(2342, $params);//2342.Поиск сущностей(обработка запроса)
+		break;
 	return 0;
 }
 
@@ -94,15 +83,6 @@ function ParseForSearch($str){
   }
   if ($str=="") $rets=null;
   return $rets;
-}
-
-function eshow($id){
-	require_once('core/eshow.controller.php');
-	$controller = new EshowController();
-	$params[5048] = $id;
-	$params[5058] = 2315;
-	//$params[5014] = $elemId;
-	$controller->execute($params);
 }
 
 
