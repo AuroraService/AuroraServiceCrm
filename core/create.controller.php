@@ -12,6 +12,8 @@ class CreateController {
         $params2[5048] = $id;//5048.Идентификатор
         $params2[5014] = $elemId;//5014.Исполнитель
         $params2[5055] =  $domain;//5055.Домен
+        $params2[15132] = 1;//15132.Флаг создания
+        //echo 'Form:'.$elemId;
 
         require_once('eshow.controller.php');
         $contr = new EshowController();

@@ -47,7 +47,7 @@ function sendData(action, elemId) {
     success: function(data,status,xhr) {
       var statusElem = document.getElementById(elemId);
       statusElem.innerHTML = data;
-      alert(data);
+      //alert(data);
       if ( data == 0  ) statusElem.innerHTML = 'Change save';
       else {
         statusElem.innerHTML = 'Safe error';
@@ -114,8 +114,9 @@ function setFormParams(selector, form, height, width, offsetTop, offsetLeft, cla
 }
 
 function editProperty(form,propId,valCounter,value){
+  alert(form+", "+propId+", "+valCounter+", "+value);
   data[form][propId][valCounter]=value;
-  //alert(propId+", "+valCounter+", "+value);
+
   //alert(value);
 }
 
@@ -150,7 +151,7 @@ function popup_list_change_item(elem){
   $("#"+st).text($(elem).attr("val"));
   //
   //alert();
-  editProperty(st.substring(0,st.indexOf("_")), st.substring(st.indexOf("_")+1), $(elem).attr("itemId"));
+  editProperty(1,st.substring(0,st.indexOf("_")), st.substring(st.indexOf("_")+1), $(elem).attr("itemId"));
 }
 
 function RemoveMessage(){

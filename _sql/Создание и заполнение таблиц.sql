@@ -264,6 +264,9 @@ insert into triplets(subj_id, prop_id,obj_id) values(1118,507,107);
 insert into triplets(subj_id, prop_id,obj_id) values(1119,507,1013);
 insert into triplets(subj_id, prop_id,obj_id) values(11110,507,104);
 insert into triplets(subj_id, prop_id,obj_id) values(11111,507,168);
+insert into triplets(subj_id, prop_id,obj_id) values(11112,507,1614);
+insert into triplets(subj_id, prop_id,obj_id) values(11113,507,1016);
+insert into triplets(subj_id, prop_id,obj_id) values(11114,507,1017);
 
 insert into triplets(subj_id, prop_id,obj_id) values(1151,507,102);
 insert into triplets(subj_id, prop_id,obj_id) values(1152,507,101);
@@ -461,8 +464,12 @@ insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2335);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2338);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2341);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2342);
-
-select * from triplets where obj_id = 2326;
+insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2334);
+insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2344);
+insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2345);
+insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2346);
+insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2347);
+select * from triplets where obj_id = 2315;
 
 
 -- 15012.Лобанов Станислав
@@ -563,12 +570,13 @@ insert into dim_resource(id,name,search_name,type) values(15023,'Ерохина 
 drop table if exists requests;
 create table requests(
   id            bigint,
-  creation_time datetime,
+  creation_time timestamp default current_timestamp,
   client_id     bigint,
   user_id       bigint,
   tel           varchar(256),
   address       varchar(256),
-  state         varchar(256),
+  state         bigint,
+  version_state bigint,
   result        long,
   poss_problem  varchar(256),
   dep_time      varchar(256),
@@ -590,12 +598,12 @@ create table requests(
   PRIMARY KEY(id,end_date)
 );
 
-insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time) values(15031,'12.10.2015', 'la-la-la',109,15021,15012,15091,15082, '10000','201510-12',1203,1208);
-insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time) values(15032,'12.08.2011', 'test1',1010,15022,15011,15092,15081, '10000','12.08.2010',1203,1208);
-insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time) values(15033,'12.08.2012', 'test2',1011,15023,15012,15093,15081, '10000','12.08.2010',1203,1208);
-insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time) values(15034,'12.08.2015', 'test3',1011,15023,15013,15094,15082, '10000','12.08.2010',1203,1208);
-insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time) values(15035,'12.08.2015', 'test4',1012,15023,15014,15095,15082, '10000','12.08.2010',1203,1208);
-insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time) values(15036,'12.10.2015', 'la-la-la',109,15021,15012,15091,15082, '10000','2015-10-12',1203,1208);
+insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time,version_state) values(15031,'12.10.2015', 'la-la-la',109,15021,15012,15091,15082, '10000','201510-12',1203,1208,15241);
+insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time,version_state) values(15032,'12.08.2011', 'test1',1010,15022,15011,15092,15081, '10000','12.08.2010',1203,1208,15242);
+insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time,version_state) values(15033,'12.08.2012', 'test2',1011,15023,15012,15093,15081, '10000','12.08.2010',1203,1208,15243);
+insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time,version_state) values(15034,'12.08.2015', 'test3',1011,15023,15013,15094,15082, '10000','12.08.2010',1203,1208,15244);
+insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time,version_state) values(15035,'12.08.2015', 'test4',1012,15023,15014,15095,15082, '10000','12.08.2010',1203,1208,15245);
+insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time,version_state) values(15036,'12.10.2015', 'la-la-la',109,15021,15012,15091,15082, '10000','2015-10-12',1203,1208,15246);
 
 
 
@@ -709,7 +717,7 @@ insert into sColumns(id, name, position, type, template,editable,form,pid,viewer
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(11296, 'Id', 1, 0, NULL,0,1112,NULL,129,151140);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(11210,'Фамилия',2,1, NULL,1,11112,NULL,1210,151141);
+  values(11210,'Фамилия',2,1, NULL,1,1112,NULL,1210,151141);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(11211,'Имя',3,1, NULL,1,1112,NULL,1210,151142);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
@@ -1031,6 +1039,75 @@ insert into sColumns(id, name, position, property, alias, domain, type, template
   values(112441, 'Разделитель', 2, null, ''' ''', null, 1,NULL,1,null,null,112439,0,121);
 insert into sColumns(id, name, position, property, alias, domain, type, template,editable,location,form,pid,external,viewer) 
   values(112442, 'Фамилия', 3, 508, 'second_name', null, 1,NULL,1,null,null,112439,0,121);
+  
+-- 11112 Просмотр выполнений действий
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112444, 'Id', 1, 0, NULL,0,11112,NULL,1210,1511158);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112445,'Пользователь',2, 0, NULL,1,11112,NULL,129,1511159);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112446,'Действие',3, 0, NULL,1,11112,NULL,1210,1511160);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112447,'Объект',4, 0, NULL,1,11112,NULL,129,1511161);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112448,'Домен',5, 0, NULL,1,11112,NULL,1210,1511162);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112449,'Состояние 1',6, 0, NULL,1,11112,NULL,1210,1511163);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112450,'Состояние 2',7, 0, NULL,1,11112,NULL,1210,1511164);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112451,'Родительское действие',8, 0, NULL,1,11112,NULL,1210,1511165);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112452,'Время начала',9, 0, NULL,1,11112,NULL,1210,1511166);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112453,'Время окончания',10, 0, NULL,1,11112,NULL,1210,1511167);
+  
+insert into sColumns(id, name, position, property, alias, domain, type, template,editable,location,form,pid,external,viewer) 
+  values(112454, 'Имя', 1, 509, 'first_name', null, 1,NULL,1,null,null,112445,0,121);
+insert into sColumns(id, name, position, property, alias, domain, type, template,editable,location,form,pid,external,viewer) 
+  values(112455, 'Разделитель', 2, null, ''' ''', null, 1,NULL,1,null,null,112445,0,121);
+insert into sColumns(id, name, position, property, alias, domain, type, template,editable,location,form,pid,external,viewer) 
+  values(112456, 'Фамилия', 3, 508, 'second_name', null, 1,NULL,1,null,null,112445,0,121);
+  
+insert into sColumns(id, name, position, property, alias, domain, type, template,editable,location,form,pid,external,viewer) 
+  values(112457, 'Название', 1, 509, 'name', null, 1,NULL,1,null,null,112446,0,121);
+  
+insert into sColumns(id, name, position, property, alias, domain, type, template,editable,location,form,pid,external,viewer) 
+  values(112458, 'Название', 1, 509, 'name', null, 1,NULL,1,null,null,112447,0,121);
+  
+insert into sColumns(id, name, position, property, alias, domain, type, template,editable,location,form,pid,external,viewer) 
+  values(112459, 'Название', 1, 509, 'name', null, 1,NULL,1,null,null,112448,0,121);
+
+select * from sColumns where form = 11112;
+
+-- 11113
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112460, 'Id', 1, 0, NULL,0,11113,NULL,1210,1511173);
+  
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112461,'Артикул',3, 0, NULL,1,11113,NULL,1210,1511174);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112462,'Наименование',3, 0, NULL,1,11113,NULL,1210,1511175);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112463,'Производитель',3, 0, NULL,1,11113,NULL,1210,1511176);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112464,'Поставщик',3, 0, NULL,1,11113,NULL,1210,1511177);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112465,'Цена покупки',3, 0, NULL,1,11113,NULL,1210,1511179);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112466,'Цена продажи',3, 0, NULL,1,11113,NULL,1210,1511180);
+  
+
+
+-- 11114
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112467, 'Id', 1, 0, NULL,0,11114,NULL,1210,1511182);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112468,'Наименование',2, 0, NULL,1,11114,NULL,1210,1511183);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112469,'Родительская категория',3, 0, NULL,1,11114,NULL,1210,1511184);
+
+
 
 -- 1151
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
@@ -1447,10 +1524,11 @@ insert into buttons(id,name,link,pid,action,position,level) values(15051,'Гла
 insert into buttons(id,name,link,pid,action,position,level,type) values(15052,'Главное меню.Левый бар',null,15051,null,1,2,1);
 insert into buttons(id,name,link,pid,action,position,level,type) values(15053,'Главное меню.Правый бар',null,15051,null,2,2,2);
 
-insert into buttons(id,name,link,pid,action,position,level) values(15054,'Обзор',null,15052,null,null,3);
-insert into buttons(id,name,link,pid,action,position,level) values(15055,'Клиенты',null,15052,null,null,3);
-insert into buttons(id,name,link,pid,action,position,level) values(15056,'Сотрудники',null,15052,null,null,3);
-insert into buttons(id,name,link,pid,action,position,level) values(15057,'Отчёты',null,15052,null,null,3);
+insert into buttons(id,name,link,pid,action,position,level) values(15054,'Обзор',null,15052,null,1,3);
+insert into buttons(id,name,link,pid,action,position,level) values(15055,'Клиенты',null,15052,null,2,3);
+insert into buttons(id,name,link,pid,action,position,level) values(15056,'Сотрудники',null,15052,null,3,3);
+insert into buttons(id,name,link,pid,action,position,level) values(15057,'Отчёты',null,15052,null,4,3);
+insert into buttons(id,name,link,pid,action,position,level) values(150532,'Магазины',null,15052,null,5,3);
 
 insert into buttons(id,name,link,pid,action,position,level,type) values(15058,'Заявки на сервис','index.php?action=2341&param=15211',15054,null,1,4,1);
 insert into buttons(id,name,link,pid,action,position,level,type) values(15059,'Заявки на заказ запчасти','index.php?action=232',15054,null,2,4,1);
@@ -1475,7 +1553,11 @@ insert into buttons(id,name,link,pid,action,position,level,type) values(150523,'
 insert into buttons(id,name,link,pid,action,position,level,type) values(150524,'Создание',null,15056,null,3,4,3);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150525,'Новый сотрудник','index.php?action=2314',15056,null,4,4,1);
 
-insert into buttons(id,name,link,pid,action,position,level,type) values(150530,'Сессии','index.php?action=2341&param=15212',15057,2338,4,4,1);
+insert into buttons(id,name,link,pid,action,position,level,type) values(150530,'Сессии','index.php?action=2341&param=15212',15057,2338,1,4,1);
+insert into buttons(id,name,link,pid,action,position,level,type) values(150531,'Действия','index.php?action=2344',15057,2344,2,4,1);
+
+insert into buttons(id,name,link,pid,action,position,level,type) values(150533,'Продукты','index.php?action=2346',150532,2345,2,4,1);
+insert into buttons(id,name,link,pid,action,position,level,type) values(150534,'Категории продуктов','index.php?action=2347',150532,2346,2,4,1);
 
 insert into buttons(id,name,link,pid,action,position,level,type) values(150526,'user_name',null,15053,null,1,4,1);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150527,'Выход','/logout',15053,null,2,4,1);
@@ -1487,22 +1569,26 @@ create table entities(
   id  bigint,
   location     varchar(256),
   namespace    bigint,
+  name_template varchar(1024),
+  search_name_template varchar(1024),
+  present_name_template varchar(1024),
   counter      bigint,
   start_date datetime default '2015-11-01',
   end_date   datetime default '9999-01-01',
   PRIMARY KEY(id,end_date)
 );  
 
+insert into entities(id, location) values(132, 'dim_resource');
 insert into entities(id, location) values(113, 'buttons');
 insert into entities(id, location,namespace,counter) values(101, 'clients',1502,10);
 insert into entities(id, location,namespace,counter) values(102, 'users',1501,10);
 insert into entities(id, location) values(106, 'actions');
 insert into entities(id, location) values(107, 'logins');
 insert into entities(id, location) values(103, 'requests');
-insert into entities(id, location,namespace,counter) values(109, 'requests',1512,10);
-insert into entities(id, location,namespace,counter) values(1010, 'requests',1513,10);
-insert into entities(id, location,namespace,counter) values(1011, 'requests',1514,10);
-insert into entities(id, location,namespace,counter) values(1012, 'requests',1515,10);
+insert into entities(id, location,namespace,counter,name_template,search_name_template,present_name_template) values(109, 'requests',1512,10,'Заявка №%5048%','%5048% %5022% %5014% %5024% %5025% %5026% %5029%','Дата создания:%5022%, Исполнитель:%5014%, Клиент:%5024%, Телефон:%5025%, Адрес:%5026%');
+insert into entities(id, location,namespace,counter,name_template,search_name_template,present_name_template) values(1010, 'requests',1513,10,'Заявка №%5048%','%5048%','%5048%');
+insert into entities(id, location,namespace,counter,name_template,search_name_template,present_name_template) values(1011, 'requests',1514,10,'Заявка №%5048%','%5048%','%5048%');
+insert into entities(id, location,namespace,counter,name_template,search_name_template,present_name_template) values(1012, 'requests',1515,10,'Заявка №%5048%','%5048%','%5048%');
 
 insert into entities(id, location) values(12, 'sCrmElements');
 insert into entities(id, location) values(14, 'sCrmElements');
@@ -1538,12 +1624,19 @@ insert into entities(id, location,namespace,counter) values(108, 'providers',151
 insert into entities(id, location,namespace,counter) values(161, 'sFilters',1517,10);
 insert into entities(id, location,namespace,counter) values(162, 'sFilterFields',1518,10);
 insert into entities(id, location,namespace,counter) values(163, 'actionFilters',null,10);
-insert into entities(id, location,namespace,counter) values(50, 'dim_resource',null,10);
+insert into entities(id, location,namespace,counter) values(50, 'properties',null,10);
 
 insert into entities(id, location,namespace,counter) values(168, 'sessions',1519,10);
 
 insert into entities(id, location,namespace,counter) values(164, 'messages',1520,10);
 insert into entities(id, location,namespace,counter) values(1613, 'layout_elements',1522,10);
+
+insert into entities(id, location,namespace,counter) values(1614, 'executions',1523,10);
+insert into entities(id, location,namespace,counter) values(1615, 'states',1524,10);
+
+insert into entities(id, location,namespace,counter) values(1016, 'products',1526,30000);
+insert into entities(id, location,namespace,counter) values(1017, 'product_categories',1525,1000);
+
 -- Создание таблицы свойств сущности
 drop table if exists ent_properties;
 create table ent_properties(
@@ -1594,7 +1687,6 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151121,23,5055,'domain',132,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151122,23,5057,'pid',23,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151123,23,5065,'form',111,0);
-
 -- 1511.Свойство сущности
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151124,1511,5048,'id',1501,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151125,1511,5083,'ent_id',23,0);
@@ -1686,6 +1778,10 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151193,10,5089,'namespace',135,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151194,10,5090,'counter',135,0);
 
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511170,10,50133,'name_template',135,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511171,10,50134,'search_name_template',135,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511172,10,50135,'present_name_template',135,0);
+
 -- 104.Звонок
 insert into ent_properties(id, ent_id, prop_id, alias,domain,editable) values(1511105,104,5048,'id',104,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,editable) values(1511106,104,5076,'tel1',1014,0);
@@ -1732,6 +1828,8 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511127,163
 -- 50.Свойство
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511125,50,5048,'id',50,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511126,50,501,'name',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511169,50,506,'alias',134);
+
 
 -- 168.Сессия
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511128,168,5048,'id',168,0,0);
@@ -1754,6 +1852,7 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,auto) values(151114
 -- 1612.Версионная сущность
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511146,1612,50113,'start_date',136);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511147,1612,50114,'end_date',136);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511168,1612,50131,'version_state',1615);
 
 -- 1613.Элемент верстки
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511156,1613,5048,'id',1613,0,0);
@@ -1765,8 +1864,35 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511152,161
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511153,1613,504,'position',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511154,1613,50119,'style',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,virtual) values(1511155,1613,50120,'',134,1);
+-- 1614.Исполнение действия
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511158,1614,5048,'id',1614,0,0);
 
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511159,1614,5079,'user_id',102);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511160,1614,5062,'action_id',23);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511161,1614,5013,'object_id',132);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511162,1614,5055,'domain',132);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511163,1614,50123,'state1',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511164,1614,50124,'state2',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511165,1614,5057,'pid',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511166,1614,50121,'start_time',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511167,1614,50122,'end_time',134);
 
+-- 1016.Продукт
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511173,1016,5048,'id',1016,0,0);
+
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511174,1016,50138,'articul',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511175,1016,50139,'show_name',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511176,1016,50137,'manufacturer_id',1020);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511177,1016,5038,'provider_id',108);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511178,1016,50140,'image',1019);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511179,1016,5039,'buy_cost',135);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511180,1016,5040,'sell_cost',135);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511181,1016,50141,'',1017,1);
+-- 1017.Категория продукта
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511182,1017,5048,'id',1017,0,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511183,1017,50139,'show_name',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511184,1017,5057,'pid',1017);
+-- 
 
 select * from ent_properties;
 
@@ -1883,8 +2009,36 @@ insert into properties(id,name,alias) values(50101,'Время жизни','life
 insert into properties(id,name,alias) values(50102,'Сессия','session');
 insert into properties(id,name,alias) values(50103,'Идентификатор сессии','session_id');
 insert into properties(id,name,alias) values(50104,'Идентификатор объекта документа','');
+insert into properties(id,name,alias) values(50105,'Диалог','dialog');
+insert into properties(id,name,alias) values(50106,'Флаг прочтения','flag');
+insert into properties(id,name,alias) values(50107,'Участник','member');
+insert into properties(id,name,alias) values(50108,'Автозаполняемое','auto');
 
 insert into properties(id,name,alias) values(50109,'Идентификатор набора параметра','param_id');
+
+insert into properties(id,name,alias) values(50110,'Флаг виртуального  свойства','virtual');
+insert into properties(id,name,alias) values(50111,'Кардинальность','cardinal');
+insert into properties(id,name,alias) values(50112,'Шаблон отображения  ресурса','value_template');
+insert into properties(id,name,alias) values(50113,'Дата открытия  записи','start_date');
+insert into properties(id,name,alias) values(50114,'Дата закрытия  записи','end_date');
+insert into properties(id,name,alias) values(50115,'Набор свойств для отображения','');
+insert into properties(id,name,alias) values(50116,'Тип элемента','elem_type');
+insert into properties(id,name,alias) values(50117,'Высота','width');
+insert into properties(id,name,alias) values(50118,'Ширина','height');
+insert into properties(id,name,alias) values(50119,'Стиль','style');
+insert into properties(id,name,alias) values(50120,'Идентификатор ребенка','');
+insert into properties(id,name,alias) values(50121,'Время начала','start_time');
+insert into properties(id,name,alias) values(50122,'Время окончания','end_time');
+insert into properties(id,name,alias) values(50123,'Начальное состояние','state1');
+insert into properties(id,name,alias) values(50124,'Конечное состояние','state2');
+insert into properties(id,name,alias) values(50125,'Флаг поискового запроса','');
+insert into properties(id,name,alias) values(50126,'Технические параметры','');
+insert into properties(id,name,alias) values(50127,'Хеш пользователя','');
+insert into properties(id,name,alias) values(50128,'Выделенное поле','');
+insert into properties(id,name,alias) values(50129,'Выделенная форма','');
+insert into properties(id,name,alias) values(50130,'Счетчик форм','');
+insert into properties(id,name,alias) values(50131,'Версионное состояние','version_state');
+
 
 
 
@@ -1937,6 +2091,9 @@ insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2330,
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2331,2316,'Просмотр звонков',null,104,11110,2316);
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2335,2316,'Просмотр отчётов',null,null,null,2316);
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2338,2316,'Просмотр сессий',null,168,11111,2316);
+insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2344,2316,'Просмотр выполнений действий',null,1614,11112,2316);
+insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2346,2316,'Просмотр товаров',null,1016,11113,2316);
+insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2347,2316,'Просмотр категорий товаров',null,1017,11114,2316);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2341,2341,'Настроенный просмотр сущностей класса',149,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2315,2315,'Просмотр сущности',142,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2317,2315,'Просмотр заявки',null,103,2315);
@@ -1957,6 +2114,7 @@ insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2311,
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2312,2318,'Создание заявки на изъятие техники',null,1012,11515,2327);
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2313,2318,'Создание клиента',null,101,11511,2318);
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2314,2318,'Создание пользователя',null,102,11510,2318);
+insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2345,2345,'Создание сущности',1410,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2334,2334,'Изменение сущности',1410,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2319,2319,'Удаление сущности',null,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2333,2333,'Поиск сущностей(Отображение формы)',146,132,23);
@@ -2213,6 +2371,8 @@ drop table if exists executions;
 create table executions(
   id bigint,
   user_id bigint,
+  object_id bigint,
+  domain bigint,
   state1 bigint,
   state2 bigint,
   action_id bigint,
@@ -2221,8 +2381,57 @@ create table executions(
   end_time datetime,
   PRIMARY KEY(id)
 );
+/*
+-- Создание таблицы продуктов
+drop table if exists products;
+create table  products(
+  id bigint,
+  articul varchar(256),
+  show_name varchar(256),
+  manufacturer_id bigint,
+  provider_id bigint,
+  image bigint,
+  buy_cost int,
+  sell_cost int,
+  start_date datetime default '2015-10-01',
+  end_date   datetime default '9999-01-01',
+  state  bigint,
+  PRIMARY KEY(id,end_date)
+);
+  
+  
+-- Создание таблицы категорий продуктов
+drop table if exists product_categories;
+create table  product_categories(
+  id  bigint,
+  show_name  varchar(256),
+  pid  bigint,
+  start_date datetime default '2015-10-01',
+  end_date   datetime default '9999-01-01',
+  state  bigint,
+  PRIMARY KEY(id,end_date)
+);
 
+-- Создание таблицы файлов
+drop table if exists files;
+create table  files(
+  id  bigint,
+  ph_name varchar(256),
+  type  bigint,
+  start_date datetime default '2015-10-01',
+  end_date   datetime default '9999-01-01',
+  state  bigint,
+  PRIMARY KEY(id,end_date)
+);
+
+*/
 select * from requests;
 select * from triplets;
 
-update triplets set end_date = '' where subj_id = 15031 and prop_id = 5028 and obj_id=15031 and end_date = '9999-01-01'
+-- update triplets set end_date = '' where subj_id = 15031 and prop_id = 5028 and obj_id=15031 and end_date = '9999-01-01';
+select * from entities;
+select * from executions;
+select * from dim_resource;
+
+select id id_value, id, show_name show_name_value, show_name, pid pid_value, pid from product_category
+

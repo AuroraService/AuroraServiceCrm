@@ -41,12 +41,21 @@ switch ($action) {
 		$params[5095] = $expFilters;//5095.Фильтр
 		$mainController -> executeAction(2316, $params);//2316.Просмотр сущностей класса
 		break;
-	case '2334':
-
+	case '2345':
 		$selectedForm = $json[50129];
 		echo 'Form:'.$selectedForm;
 		$resource2 = new Resource2($json[$selectedForm]);
-		print_r($resource2);
+		//print_r($resource2);
+		$params[5013] = $resource2;//5013.Объект
+		$params[5065] = $json[$selectedForm][5065];//5065.Форма
+		$params[5055] = $json[$selectedForm][5055][0];//5055.Домен
+		$mainController -> executeAction(2345, $params);//2345.Создание сущности
+		break;
+	case '2334':
+		$selectedForm = $json[50129];
+		echo 'Form:'.$selectedForm;
+		$resource2 = new Resource2($json[$selectedForm]);
+		//print_r($resource2);
 		$params[5013] = $resource2;//5013.Объект
 		$params[5065] = $json[$selectedForm][5065];//5065.Форма
 		$params[5055] = $json[$selectedForm][5055][0];//5055.Домен
@@ -113,7 +122,7 @@ function search($json){
 	$i=0;
 	if (!empty($results)){ //$json[50104]
 	foreach ($results as $result ){
-		$rets=$rets.'<a href="#" class="list-group-item popup_find_list_item'.GetActive($result->items[5048], $json[5099], '"popup_list'.$i.'"').'" onclick="popup_list_change_item(this)" targetId="'.$json[50104].'" itemId="'.$result->items[5048].'" val="'.$result->items[501].'" id="popup_list'.$i.'">'.$result->items[501].'<br />'.$result->items[50100].'</a>';
+		$rets=$rets.'<a href="#" class="list-group-item popup_find_list_item'.GetActive($result->items[5048], $json[5099], '"popup_list'.$i.'"').'" onclick="popup_list_change_item(this)" targetId="'.$json[50104].'" itemId="'.$result->items[5048].'" val="'.$result->items[501].'" id="popup_list'.$i.'">'.$result->items[501].'<br />'.$result->items[50136].'</a>';
 		$i++;
 	}
 } else {

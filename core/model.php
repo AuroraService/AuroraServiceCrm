@@ -153,7 +153,7 @@ class Model {
 	public function getId($domain){
 		$next = (++$this->entities[$domain]->items[5090]);
 		$id = $this->entities[$domain]->items[5089].$next;
-		$query = 'update entities set counter = '.$next;
+		$query = 'update entities set counter = '.$next.' where id='.$domain;
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
 		return $id;
 	}
@@ -218,33 +218,7 @@ class Model {
 		//print_r($props);
 		return $props;
 	}
-/*
-	public function getColumns($formId) {
-		$lineNum=0;
-		$retval = new Table();
-		$query =
-			"select id, name, position, property, alias, domain, type, template , editable, location, pid, external, viewer
-       from sColumns
-       where form = $formId order by CAST(position AS SIGNED)";
-		// print_r($query);
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
-		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
-			$col = new Column($line['id'],$line['name'],$line['position'],$line['property'],$line['alias'],$line['domain'],$line['type'],$line['template'],$line['editable'],$line['location'],$line['parentId'],$line['external']);
-			//echo $lineNum . ":";
-			//print_r($this->viewers[$line['viewer']]);
-			//$vFactory = $this->viewers[$line['viewer']];
-			$params[5055] = $line['domain'];
-			//$col->viewer = $vFactory->getViewer($params,$this);
-			$col->viewer = $this->getViewer($line['viewer'],$params,$this);
-			$retval->cols[$lineNum]=$col;
-			$lineNum++;
-		}
-		mysqli_free_result($result);
-		$retval->colsNum = $lineNum;
-		//print_r($retval);
-		return $retval;
-	}
-*/
+
 	public function getColumns2($formId) {
 		$lineNum=0;
 		$retval = new Table();
@@ -355,7 +329,7 @@ class Model {
 		$columns = substr($columns,2);
 		$query = "select $columns from $tableName".$where;
 		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
 		$lineNum = 0;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
 			$flag=1;
@@ -430,7 +404,7 @@ class Model {
 			where $relation1 = $id and prop_id = $propId and end_date='9999-01-01'";
 		}
 		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'ResourceId='.$id.', PropId='.$propId.','. mysqli_error());
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query .', ResourceId='.$id.', PropId='.$propId.','. mysqli_error());
 		$colNum = 0;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
 			$ret[$colNum] = $line['res'];
@@ -516,9 +490,9 @@ class Model {
 		$where = substr($whereType.$filterId.$filterName.$filterSearchName,4);
 		if (!empty($where)) $where = ' where '.$where;
 
-		$query = "select id,name,search_name,type from dim_resource ".$where;
+		$query = "select id,name,search_name,present_name,name_template,search_name_template,present_name_template,type from dim_resource ".$where;
 		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
 		$lineNum = 0;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
 			$ret[$lineNum] = new Resource();
@@ -526,6 +500,10 @@ class Model {
 			$ret[$lineNum]->items[501] = $line['name'];
 			$ret[$lineNum]->items[50100] = $line['search_name'];
 			$ret[$lineNum]->items[5051] = $line['type'];
+			//$ret[$lineNum]->items[50133] = $line['name_template'];
+			//$ret[$lineNum]->items[50134] = $line['search_name_template'];
+			//$ret[$lineNum]->items[50135] = $line['present_name_template'];
+			$ret[$lineNum]->items[50136] = $line['present_name'];
 			$lineNum++;
 		}
 		return $ret;
@@ -652,6 +630,7 @@ class Model {
 	}
 
 	public function getResourceValue($resourceId,$template){
+		if (empty($resourceId)) return '';
 		$type = $this->getResProperty($resourceId,5051);
 		$resource = $this->getResource($resourceId, $type);
 		$props = array();
@@ -687,25 +666,56 @@ class Model {
 		}
 	}
 
-	//Создание сущности
-	public function insert($resource2, $oldResource2 = null, $type = null){
-		echo $type;
+	public function generateName($resourceId, $type){
+		//echo 'ResourceId = '.$resourceId;
+		$resource2 = $this->getResource2($resourceId,$type);
 		//print_r($resource2);
+		$typeResource = $this->getResource($type,10);
+		$nameTemplate = $typeResource->items[50133];//15133.Шаблон имени ресурса
+		$searchNameTemplate = $typeResource->items[50134];//15134.Шаблон строки поиска
+		$presentNameTemplate = $typeResource->items[50135];//15135.Шаблон строки  представления
+		//echo 'Templates:'.$nameTemplate.$searchNameTemplate.$presentNameTemplate;
+		$props = array();
+		$this->getClassPropertiesTransitive($type,$props);
+		foreach ($props as $prop){
+			$propId = $prop->items[5082]; //5082.Идентификатор свойства
+			$domain = $prop->items[5055];
+			if (($domain == 134) || ($domain == 135) || ($domain == 136)) $resourceFlag = 0;
+			else $resourceFlag = 1;
+			if ($resourceFlag && $propId != 5048  && !empty($resource2->items[$propId][0])){
+				$filters[5048] = '%COLUMN%='.$resource2->items[$propId][0];
+				$valueResource = $this->getResourcesGen($filters,$domain);
+				$value = $valueResource[0]->items[501];
+			} else $value = $resource2->items[$propId][0];
+
+			$nameTemplate = str_replace('%'.$propId.'%', $value, $nameTemplate);
+			$searchNameTemplate = str_replace('%'.$propId.'%', $value, $searchNameTemplate);
+			$presentNameTemplate = str_replace('%'.$propId.'%', $value, $presentNameTemplate);
+
+		}
+		$query = "update dim_resource set name = '".$nameTemplate."', search_name = '".$searchNameTemplate."', present_name = '".$presentNameTemplate."' where id = ".$resource2->items[5048][0];
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
+		//echo 'Templates:'.$nameTemplate.$searchNameTemplate.$presentNameTemplate;
+
+	}
+
+	//Создание сущности
+	public function insert($resource2, $type = null, $start_date = null){
 		$props = array();
 		if (empty($type)) $type = $resource2->items[5055][0];
-		//echo 'Domain:'.$resource2->items[5055][0];
+		if ($this->isSubclassOf($type,1612)) {
+			if (empty($start_date)) $start_date = date("Y-m-d H:i:s");
+			$resource2->items[50113][0]=$start_date;
+		} //1612.Версионная сущность, 50113.Дата открытия записи
 		$this->getClassPropertiesTransitive($type,$props);
-		//print_r($props);
 		$columns = '';
 		$values = '';
 		if (empty($resource2->items[5048][0])) $resource2->items[5048][0] = $this->getId($type);
 		foreach ($props as $propId => $prop){
-			//echo $prop->items[506].',';
-			if (($prop->items[50108] != 1) &&
+			if (//($prop->items[50108] != 1) &&
 				($prop->items[50110] != 1) &&
 				($prop->items[5084] != 1) &&
 				(!empty($resource2->items[$prop->items[5082]][0]))){//50108.Автозаполняемое, 5084.Флаг внешнего свойства,50110.Флаг виртуального свойства
-				//echo 'Step';
 				$columns = $columns.','.$prop->items[506];
 				$values = $values.','.$this->quotation($resource2->items[$prop->items[5082]][0],$prop->items[5055]);
 			}
@@ -717,15 +727,65 @@ class Model {
 		$query = 'insert into '.$tableName.' ('.$columns.') values('.$values.')';
 		echo $query;
 
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
 		return $resource2->items[5048][0];
 	}
 
+	public function insertAudit($params){
+		$executeId = $this->getId(1614);//1614.Исполнение действия
+		$items[5048][0]=$executeId;
+		$items[5079][0]=$this->user_id;//5079.Сотрудник
+		$items[5062][0]=$params[5062];//5062.Действие
+		$items[5013][0]=$params[5013];//5013.Объект
+		$items[5055][0]=$params[5055];//5055.Домен
+		$items[50123][0]=$params[50123];//50123.Состояние 1
+		$items[50124][0]=$params[50124];//50124.Состояние 2
+		$items[5057][0]=$params[5057];//5057.Идентификатор родителя
+		$items[50121][0]=date("Y-m-d H:i:s:u");
+		$items[50122][0]=null;
+		$execute = new Resource2($items);
+		$this->insert($execute,1614);//1614.Исполнение действия
+		return $executeId;
+	}
+
 	//Создание глобальной сущности
-	public function insertGlobal($resource2, $oldResource2 = null, $type = null){
-		$id = $this->insert($resource2, $oldResource2, $type);
-		$query = 'insert into dim_resource(id,type) values ('.$id.','.$resource2->items[5055][0].')';
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+	public function insertGlobal($resource2, $type = null, $start_date = null){
+		$columns = 'id,type';
+
+		if (empty($type)) $type = $resource2->items[5055][0];
+
+		$versionFlag = $this->isSubclassOf($type,1612);//1612.Версионная сущность
+		if ($versionFlag) {
+			$columns = $columns.',start_date';
+			if (empty($start_date)) $start_date = date("Y-m-d H:i:s");
+			$resource2->items[50113][0]=$start_date;//50113.Дата открытия записи
+			$newState = $this->getId(1615);
+			$resource2->items[50131][0]=$newState;//50131.Версионное состояние
+		}
+
+		$resourceId = $this->getId($type);
+		$resource2->items[5048][0] = $resourceId;
+		//audit START
+		$params[5062] = 2345; //2345.Создание сущности
+		$params[5013] = $resourceId;
+		$params[5055] = $type;
+		$params[50123] = null;//50123.Начальное состояние
+		$params[50124] = $newState; //50124.Конечное состояние
+		$params[5057] = null;
+		$executeId = $this->insertAudit($params);
+		//audit END
+
+		$id = $this->insert($resource2, $type, $start_date);
+		$values = $id.','.$resource2->items[5055][0];
+		if ($versionFlag){
+			$values = $values.',"'.$start_date.'"';
+		}
+		$query = 'insert into dim_resource('.$columns.') values ('.$values.')';
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
+
+		$end_time = date("Y-m-d H:i:s:u");
+		$this->generateName($resourceId, $type); //Генерация имен ресурса
+		if (!empty($executeId)) $this->updateProperty2($executeId,50122,$end_time,1614,null);//50122.Время окончания,1614.Исполнение действия
 		return $id;
 	}
 
@@ -791,9 +851,20 @@ class Model {
 		$resourceId = $resource2->items[5048][0];//5048.Идентификатор
 		$type = $this->getResProperty($resourceId,5051);//5051.Тип
 		$oldResource = $this->getCurrentResource2($resource2->items[5048][0],$type);
+		echo 'OldState:'.$oldResource->items[50131][0];
 		$compareFlag = $this->compare($resource2,$oldResource, $formId);
 		$localCompareFlag = $this->compare($resource2,$oldResource, $formId,1);
 		if ($localCompareFlag != 1) {
+			//audit START
+			$newState = $this->getId(1615);
+			$params[5062] = 2334; //2334.Изменение сущности
+			$params[5013] = $resourceId;
+			$params[5055] = $type;
+			$params[50123] = $oldResource->items[50131][0];
+			$params[50124] = $newState;
+			$params[5057] = null;
+			$executeId = $this->insertAudit($params);
+			//audit END
 			$close_date = $this->closeCurrentVersion($resourceId, $type);
 			//$close_date = date("Y-m-d H:i:s");
 			$close_date = new DateTime($close_date);
@@ -822,8 +893,9 @@ class Model {
 
 			$resource2->items[50113][0] = $close_date; //50113.StartDate
 			$resource2->items[50114][0] = '9999-01-01'; //50114.CloseDate
+			$resource2->items[50131][0] = $newState; //50131.Версионное состояние
 
-			$this->insert($resource2, $oldResource,$type);
+			$this->insert($resource2,$type);
 		}
 		if ($compareFlag != 1){
 			if (empty($resource2->items[50113][0])){
@@ -865,32 +937,28 @@ class Model {
 				}
 			}
 		}
-		//print_r($oldResource);
+		$end_time = date("Y-m-d H:i:s:u");
+		if (!empty($executeId)) $this->updateProperty2($executeId,50122,$end_time,1614,null);//50122.Время окончания,1614.Исполнение действия
 		echo 'CompareFlag='.$compareFlag;
 	}
 
 
 	//Изменение свойства сущности
-	public function updateProperty($entId,$prop,$propValue,$oldValue = null){
-		$type = $this->getResProperty($entId,5051,0,0);//5051.Тип
+	public function updateProperty($entId,$prop,$propValue,$type = null){
+		if (empty($type)) $type = $this->getResProperty($entId,5051,0,0);//5051.Тип
 		$tableName = $this->getResProperty($type,503,0,0); //503.Местоположение
 		if (($prop->items[5055] == 134)||($prop->items[5055] == 136)) $value = '"'.$propValue.'"'; else $value = $propValue;
 		if ($prop->items[5084] == 0) {$query = 'update '.$tableName.' set '.$prop->items[506].' = '.$value.' where id = '.$entId;
-		//else {
-		//	if ($this->isSubclassOf($prop[0]->items[5055],133) == 1) $col = ' value '; else $col = 'obj_id';
-			//if (!empty($oldValue))
-		//	$query = 'update triplets set '.$col.' = '.$value.' where subj_id = '.$entId.' and prop_id = '.$propId;
-		//}
-		//file_put_contents ('log', $prop[0]->items[5084].$query,FILE_APPEND);
-			//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
 		}
 	}
 	//Изменение свойства сущности с передачей идентификатора свойства
-	public function updateProperty2($entId,$propId,$propValue,$oldValue = null){
-		$filters[5048] = '%COLUMN%='.$propId;
-		$prop = $this->model->getResource(50,$filters[5048]);
-		$this->updateProperty($entId,$prop,$propValue,$oldValue);
+	public function updateProperty2($entId,$propId,$propValue,$type = null){
+		if (empty($type)) $type = $this->getResProperty($entId,5051,0,0);//5051.Тип
+		$filters[5082] = '%COLUMN%='.$propId;
+		$filters[5083] = '%COLUMN%='.$type;
+		$prop = $this->getResources(1511, $filters);//1511.Свойство сущности
+		$this->updateProperty($entId,$prop[0],$propValue,$type);
 	}
 
 	private function quotation($value, $domain){

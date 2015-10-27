@@ -4,8 +4,10 @@ class EshowController {
 		if (empty($iParams[50130])) $formCounter = 1; else $formCounter = ++$iParams[50130];
 		$model = Model::getModel();
 		$id = $iParams[5048]; //5048.Идентификатор
-        //$elemId = $iParams[5014]; //5014.Исполнитель
+        $elemId = $iParams[5014]; //5014.Исполнитель
 		$actionId = $iParams[5058];
+		if ($iParams[15132] == 1) $executeAction = 2345; else $executeAction = 2334;//2345.Создание сущности, 2334.Изменение сущности
+
 		if (empty($elemId) && !empty($id)) {
 			$domain = $model->getResProperty($id,5051,0); //5051.Type
 			$elemId=$model->getForm($actionId,$domain);
@@ -17,7 +19,7 @@ class EshowController {
 		$viewerData[5093] = $val->cols;
 		$lineNum = 0;
 		if (!empty($id)) $resource2 = $model->getCurrentResource2($id);
-		else {echo '<script language ="JavaScript">data['.$formCounter.'][5051] = mas0;</script>';}
+		else {echo '<script language ="JavaScript">data['.$formCounter.'][5051] = mas'.$formCounter.'_0;</script>';}
 
 		if (!empty($val->cols)) foreach ($val->cols as $col_value) {
 			$propId = $col_value->property;
