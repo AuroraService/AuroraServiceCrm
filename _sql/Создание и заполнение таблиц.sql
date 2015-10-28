@@ -2425,6 +2425,18 @@ create table  files(
 );
 
 */
+
+-- Создание таблицы накрутки
+drop table if exists add_prices;
+create table  add_prices(
+  id  bigint,
+  pruduct_category bigint,
+  start_price int,
+  end_price int,
+  add_cost int
+);
+
+
 select * from requests;
 select * from triplets;
 
@@ -2433,5 +2445,5 @@ select * from entities;
 select * from executions;
 select * from dim_resource;
 
-select id id_value, id, show_name show_name_value, show_name, pid pid_value, pid from product_category
+
 
