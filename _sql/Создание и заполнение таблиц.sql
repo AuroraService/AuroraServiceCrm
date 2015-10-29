@@ -193,6 +193,9 @@ select * from triplets;
 insert into triplets(subj_id, prop_id,obj_id) values(15211,5058,231);
 insert into triplets(subj_id, prop_id,obj_id) values(15212,5058,2338);
 
+insert into triplets(subj_id, prop_id,obj_id) values(15213,5058,2346);
+
+
 
 -- Иерархия классов заявок
 insert into triplets(subj_id, prop_id,obj_id) values(103,5061,1612);
@@ -1085,17 +1088,19 @@ insert into sColumns(id, name, position, type, template,editable,form,pid,viewer
   values(112460, 'Id', 1, 0, NULL,0,11113,NULL,1210,1511173);
   
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
- values( 112461,'Артикул',3, 0, NULL,1,11113,NULL,1210,1511174);
+ values( 112461,'Артикул',1, 0, NULL,1,11113,NULL,1210,1511174);
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
- values( 112462,'Наименование',3, 0, NULL,1,11113,NULL,1210,1511175);
+ values( 112462,'Наименование',2, 0, NULL,1,11113,NULL,1210,1511175);
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
- values( 112463,'Производитель',3, 0, NULL,1,11113,NULL,1210,1511176);
+ values( 112463,'Производитель',6, 0, NULL,1,11113,NULL,1210,1511176);
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
- values( 112464,'Поставщик',3, 0, NULL,1,11113,NULL,1210,1511177);
+ values( 112464,'Поставщик',7, 0, NULL,1,11113,NULL,1210,1511177);
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
  values( 112465,'Цена покупки',3, 0, NULL,1,11113,NULL,1210,1511179);
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
- values( 112466,'Цена продажи',3, 0, NULL,1,11113,NULL,1210,1511180);
+ values( 112470,'Наценка',3, 4, NULL,1,11113,NULL,1211,1511185);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112466,'Цена продажи',5, 0, NULL,1,11113,NULL,1210,1511180);
   
 
 
@@ -1556,7 +1561,7 @@ insert into buttons(id,name,link,pid,action,position,level,type) values(150525,'
 insert into buttons(id,name,link,pid,action,position,level,type) values(150530,'Сессии','index.php?action=2341&param=15212',15057,2338,1,4,1);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150531,'Действия','index.php?action=2344',15057,2344,2,4,1);
 
-insert into buttons(id,name,link,pid,action,position,level,type) values(150533,'Продукты','index.php?action=2346',150532,2345,2,4,1);
+insert into buttons(id,name,link,pid,action,position,level,type) values(150533,'Продукты','index.php?action=2341&param=15213',150532,2341,2,4,1);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150534,'Категории продуктов','index.php?action=2347',150532,2346,2,4,1);
 
 insert into buttons(id,name,link,pid,action,position,level,type) values(150526,'user_name',null,15053,null,1,4,1);
@@ -1887,12 +1892,13 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511177,101
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511178,1016,50140,'image',1019);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511179,1016,5039,'buy_cost',135);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511180,1016,5040,'sell_cost',135);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511185,1016,50145,'add_cost',135);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511181,1016,50141,'',1017,1);
 -- 1017.Категория продукта
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511182,1017,5048,'id',1017,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511183,1017,50139,'show_name',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511184,1017,5057,'pid',1017);
--- 
+-- 1511185
 
 select * from ent_properties;
 
@@ -2156,6 +2162,7 @@ insert into sCrmElements(id,name,location,type) values(127,'DateViewer','core/vi
 insert into sCrmElements(id,name,location,type) values(128,'MenuViewer','core/viewers/menu.viewer.php',12);
 insert into sCrmElements(id,name,location,type) values(129,'Resource2Viewer','core/viewers/resource2.viewer.php',12);
 insert into sCrmElements(id,name,location,type) values(1210,'Text2Viewer','core/viewers/text2.viewer.php',12);
+insert into sCrmElements(id,name,location,type) values(1211,'Text3Viewer','core/viewers/text3.viewer.php',12);
 
 -- Создание таблицы адресов (страна, область, район, населенный пункт, улица, дом, корпус, квартира
 drop table if exists addresses;
@@ -2288,6 +2295,8 @@ insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position
 
 insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15212,15172,'Время создания:',5022,15185,1,1);
 
+insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15213,15174,'Строк на странице:',50147,15189,1,1); -- 50146.Limit
+
 select * from actionFilters;
 
 -- Создание таблицы значений фильтра
@@ -2315,6 +2324,11 @@ insert into sFilterFields(id,name,sql_code,filter_id) values(15186,'За нед�
 insert into sFilterFields(id,name,sql_code,filter_id) values(15187,'За всё время','1=1',15172);
 
 insert into sFilterFields(id,name,sql_code,filter_id) values(15188,'Тест','1=1',15173);
+
+insert into sFilterFields(id,name,sql_code,filter_id) values(15189,'50','50',15174);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151810,'100','100',15174);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151811,'500','500',15174);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151812,'ВСЕ','',15174);
 
 -- Создание таблицы сессий
 drop table if exists sessions;
@@ -2381,6 +2395,7 @@ create table executions(
   end_time datetime,
   PRIMARY KEY(id)
 );
+
 /*
 -- Создание таблицы продуктов
 drop table if exists products;
@@ -2392,6 +2407,7 @@ create table  products(
   provider_id bigint,
   image bigint,
   buy_cost int,
+  add_cost int,
   sell_cost int,
   start_date datetime default '2015-10-01',
   end_date   datetime default '9999-01-01',
@@ -2429,7 +2445,7 @@ create table  files(
 -- Создание таблицы накрутки
 drop table if exists add_prices;
 create table  add_prices(
-  id  bigint,
+  id  bigint primary key auto_increment,
   pruduct_category bigint,
   start_price int,
   end_price int,
@@ -2445,5 +2461,10 @@ select * from entities;
 select * from executions;
 select * from dim_resource;
 
-
-
+/*
+update products p 
+  join buffer_products bp on bp.articul = p.articul
+set p.provider_id = 15161;
+*/
+insert into dim_resource(id, name,type, start_date)
+select id, show_name,1016, '2015-10-01 00:00:00' from products

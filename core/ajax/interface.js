@@ -35,9 +35,11 @@ function load_data(action, domain, id) {
 
 
 function sendData(action, elemId) {
-  //alert(data[5028]);
+  //alert(data);
   var str = 'data='+JSON.stringify(data);
+
   var elemId=elemId || 'dop_form_interface';
+  //alert(str);
   $.ajax({
     type: 'POST',
     url: '/core/ajax/interface.php?action='+action,
@@ -114,14 +116,14 @@ function setFormParams(selector, form, height, width, offsetTop, offsetLeft, cla
 }
 
 function editProperty(form,propId,valCounter,value){
-  alert(form+", "+propId+", "+valCounter+", "+value);
+  //alert(form+", "+propId+", "+valCounter+", "+value);
   data[form][propId][valCounter]=value;
 
   //alert(value);
 }
 
-function editFilter(filterId,value){
-  data[5095][filterId]=value;
+function editFilter(formId,filterId,value){
+  data[formId][5095][filterId]=value;
   //alert(value);
 }
 /*

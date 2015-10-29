@@ -327,7 +327,8 @@ class Model {
 		if (!empty($where2)) if (!empty($where))$where = $where . ' and '. substr($where2,5); else $where = ' where '.substr($where2,5);
 		//if (!empty($where)) $where = $where . ' and '. substr($where2,5); else if (!empty($where2)) $where = ' where '.substr($where2,5);
 		$columns = substr($columns,2);
-		$query = "select $columns from $tableName".$where;
+		if (!empty($filters[50147])) $limit = ' limit '.$filters[50147]; else $limit = '';
+		$query = "select SQL_CALC_FOUND_ROWS ". $columns. " from ".$tableName." ".$where . $limit;
 		//echo $query;
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
 		$lineNum = 0;
@@ -347,6 +348,12 @@ class Model {
 			}
 			$lineNum++;
 		}
+		$query = "SELECT FOUND_ROWS() count" ;
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
+		$line = mysqli_fetch_array($result, MYSQL_ASSOC);
+		$table->numRow=$line["count"];
+		//echo 'Rows:'.$return[3];
+
 		mysqli_free_result($result);
 		return $table;
 	}
@@ -1077,6 +1084,7 @@ class Table{
 	public $data;
 	public $colNum;
 	public $ext;
+	public $numRow;
 }
 
 class Column{

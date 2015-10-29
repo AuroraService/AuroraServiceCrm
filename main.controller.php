@@ -20,7 +20,8 @@ class Controller{
 			$contr = $model->getController($actionId);
 			require_once($contr->items[503]);   //503.Местоположение
 			$contrEnt = new $contr->items[501]; //501.Название
-			$contrEnt->execute($params);
+			$ret = $contrEnt->execute($params);
+			return $ret;
 		} else echo 'ActionId='.$actionId.', Domain='.$domain.',-Нет прав';
 }
 	public function execute(){
