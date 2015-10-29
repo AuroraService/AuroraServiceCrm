@@ -35,8 +35,33 @@ class ShowController {
 			$lineNum++;
 		}
 
-		echo "</tbody></table></div>";
+		echo "</tbody></table>";
 		$ret[3] = $table->numRow;
+		echo 'NewValue='.$params[50148];
+		$pCount=ceil($ret[3]/$params[5095][50147]);
+		echo '<div id="light-pagination" class="pagination"></div>';
+		echo '<script>
+              function setPage(index){
+              	data[\''.$formCounter.'\'][\'50147\']=index*'.$params[50148].';
+                sendData(2316);
+              }
+
+
+              
+              $("#light-pagination").pagination({
+                            pages: '.$pCount.',
+                            hrefTextPrefix: "#",
+                            hrefTextSuffix: "",
+                            prevText: "<<",
+                            nextText: ">>",
+                            cssStyle: "light-theme",
+                            currentPage: 2
+              });
+                   
+
+               
+              </script></div>';
+
 		return $ret;
 	}
 

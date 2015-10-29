@@ -48,12 +48,14 @@ function sendData(action, elemId) {
     data: str,
     success: function(data,status,xhr) {
       var statusElem = document.getElementById(elemId);
-      statusElem.innerHTML = data;
+      $(statusElem).text("");
+      $(statusElem).append(data);
+      //statusElem.innerHTML = data;
       //alert(data);
       if ( data == 0  ) statusElem.innerHTML = 'Change save';
       else {
         statusElem.innerHTML = 'Safe error';
-        statusElem.innerHTML = data;
+        //statusElem.innerHTML = data;
       }
       //alert(data);
     }

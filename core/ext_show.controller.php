@@ -32,11 +32,16 @@ class ExtShowController {
 		}
 		$params[5095]=$filters3;
 		$params[5058]=$actionId;
+		$params[50148]=$filters3[50147];
 		$mainController = Controller::getController();
 		$ret = $mainController->executeAction($actionId,$params);
-		echo 'Строки:'.$ret[3];
-		echo '<a onclick="data[\''.$formCounter.'\'][\'50147\']=100; sendData(2316);">1</a>';
-		echo '<a onclick="data[\''.$formCounter.'\'][\'50147\']=200; sendData(2316);">2</a>';
+
+//              echo $pCount."<br/>";
+//		echo 'Строки:'.$ret[3];
+//		echo 'Отображаемое кол-во'.$filters3[50147];
+//
+//		echo '<a onclick="data[\''.$formCounter.'\'][\'50147\']=100; sendData(2316);">1</a>';
+//		echo '<a onclick="data[\''.$formCounter.'\'][\'50147\']=200; sendData(2316);">2</a>';
 	}
 }
 ?>

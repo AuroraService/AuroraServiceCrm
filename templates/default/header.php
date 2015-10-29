@@ -13,6 +13,7 @@
     <link href="<? echo $var_pth_template; ?>css/bootstrap-theme.min.css" rel="stylesheet">
     <link href="<? echo $var_pth_template; ?>css/bootstrap-datetimepicker.min.css" rel="stylesheet">
     <link href="<? echo $var_pth_template; ?>css/style.css" rel="stylesheet">
+    <link href="<? echo $var_pth_template; ?>css/pagination.css" rel="stylesheet">
 
 
 

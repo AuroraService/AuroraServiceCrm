@@ -36,6 +36,7 @@ switch ($action) {
 		$params[5058] = $json[$formCounter][5058];//5058.Действие
 		$params[5095] = $json[$formCounter][5095];//5095.Фильтр
 		$params[5055] = $json[$formCounter][5055];//5055.Домен
+		$params[50148] = $json[$formCounter][50147];//50148.нач
 		$startRow = $json[$formCounter][50147];//50147.Ограничение строк;
 
 		//echo 'Форма:'.$params[50129];

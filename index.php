@@ -10,6 +10,7 @@ require_once($var_pth_template.$var_template_index);
 require_once($var_pth_template.$template_header);
 ?>
 <script src="/core/ajax/interface.js"></script>
+<script src="/core/ajax/paginator.js"></script>
 
 
 <?
