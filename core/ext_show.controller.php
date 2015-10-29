@@ -34,6 +34,8 @@ class ExtShowController {
 		$params[5058]=$actionId;
 		$mainController = Controller::getController();
 		$ret = $mainController->executeAction($actionId,$params);
+		
+		echo 'Отображаемое количество:'.$filters3[50147];
 		echo 'Строки:'.$ret[3];
 		echo '<a onclick="data[\''.$formCounter.'\'][\'50147\']=100; sendData(2316);">1</a>';
 		echo '<a onclick="data[\''.$formCounter.'\'][\'50147\']=200; sendData(2316);">2</a>';
