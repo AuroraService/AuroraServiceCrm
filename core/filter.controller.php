@@ -13,7 +13,7 @@ class FilterController {
 		//print_r($filter[0]);
 		echo ' <script language ="JavaScript">data["'.$formId.'"]["5095"]["'.$filterId.'"] = '.$filter[0]->items[5094].'; </script>';//5094.Значение по умолчанию
 		//echo '<script language ="JavaScript">data["'.$formId.'"]["5095"]["'.$filterId.'"]=</script>';
-		echo "<select onchange='editFilter(".$formId.",".$filterId.",this.options[this.selectedIndex].value); sendData(2316);'>";
+		echo "<select onchange='editFilter(".$formId.",".$filterId.",this.options[this.selectedIndex].value); data[\"".$formId."\"][\"50149\"]=1; sendData2(data,data_container,false);'>";
 		foreach($fields as $field){
 			if ($field->items[5048] == $filter[0]->items[5094]) {
 				$selected = 'selected';

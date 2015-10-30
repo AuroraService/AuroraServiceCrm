@@ -463,7 +463,7 @@ insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2310);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2311);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2312);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2313);
-insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2335);
+insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2335); 
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2338);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2341);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2342);
@@ -472,6 +472,7 @@ insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2344);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2345);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2346);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2347);
+insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2348);
 select * from triplets where obj_id = 2315;
 
 
@@ -2101,6 +2102,7 @@ insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2344,
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2346,2316,'Просмотр товаров',null,1016,11113,2316);
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2347,2316,'Просмотр категорий товаров',null,1017,11114,2316);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2341,2341,'Настроенный просмотр сущностей класса',149,132,23);
+insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2348,2348,'Просмотр сущностей класса с полосой разбивки',141,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2315,2315,'Просмотр сущности',142,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2317,2315,'Просмотр заявки',null,103,2315);
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2321,2315,'Просмотр сервисной заявки',null,109,1153,2317);
@@ -2395,9 +2397,10 @@ create table executions(
   end_time datetime,
   PRIMARY KEY(id)
 );
-
+alter table products add column add_cost int;
 /*
 -- Создание таблицы продуктов
+
 drop table if exists products;
 create table  products(
   id bigint,
@@ -2468,3 +2471,6 @@ set p.provider_id = 15161;
 */
 insert into dim_resource(id, name,type, start_date)
 select id, show_name,1016, '2015-10-01 00:00:00' from products
+
+
+select id id_value, id, articul articul_value, articul, show_name show_name_value, show_name, buy_cost buy_cost_value, buy_cost, add_cost, sell_cost sell_cost_value, sell_cost, manufacturer_id manufacturer_id_value, manufacturer_id, provider_id provider_id_value, provider_id from products

@@ -12,11 +12,12 @@ if ($action==""){
 	$action=$json[5058];
 }
 //echo '=====</br>';
-//print_r($_POST['data']);
-//echo '=====</br>';
+print_r($_POST['data']);
+//return '=====</br>';
 //echo $action;
 //return 'Hello!';
 //echo 'Sel:'.$json[50128];
+$action = 2316;
 
 require_once('main.controller.php');
 $mainController = Controller::getController();
@@ -31,15 +32,17 @@ switch ($action) {
         break;
 	case '2316':
 		//echo 'Step';
+
 		$params[50129] = $json[50129];//50129.Выделенная форма
 		$formCounter = $params[50129];
 		$params[5058] = $json[$formCounter][5058];//5058.Действие
 		$params[5095] = $json[$formCounter][5095];//5095.Фильтр
 		$params[5055] = $json[$formCounter][5055];//5055.Домен
 		$params[50148] = $json[$formCounter][50147];//50148.нач
+		$params[50149] = $json[$formCounter][50149];//50149.Флаг печати строки паддинга
 		$startRow = $json[$formCounter][50147];//50147.Ограничение строк;
 
-		//echo 'Форма:'.$params[50129];
+		echo 'Flag:'.$params[50149];
 
 		$f1[50109] = '%COLUMN%='.$json[$formCounter][50109];//50109.Идентификатор набора параметра
 		$filters = $model->getResources(163,$f1);//163.Фильтр
@@ -53,8 +56,6 @@ switch ($action) {
 
 		$params[5095] = $expFilters;//5095.Фильтр
 		$mainController -> executeAction(2316, $params);//2316.Просмотр сущностей класса
-		break;
-	case '2343':
 		break;
 	case '2345':
 		$selectedForm = $json[50129];
