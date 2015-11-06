@@ -17,20 +17,20 @@ function getXmlHttp(){
 
 
 function load_data(action, domain, id) {
-	var req = getXmlHttp()  
-	var statusElem = document.getElementById('dop_form_interface') 
-	req.onreadystatechange = function() {  
+  var req = getXmlHttp()  
+  var statusElem = document.getElementById('dop_form_interface') 
+  req.onreadystatechange = function() {  
   if (req.readyState == 4) { 
     if(req.status == 200) { 
       statusElem.innerHTML = req.responseText; 
-			}
-		}
+      }
+    }
 
-	}
+  }
 
-	req.open('GET', '/core/ajax/interface.php?domain='+domain+'&id='+id+'&action='+action, true);  
-	req.send(null);
-	
+  req.open('GET', '/core/ajax/interface.php?domain='+domain+'&id='+id+'&action='+action, true);  
+  req.send(null);
+  
 }
 
 
@@ -90,39 +90,9 @@ function sendData2(data, elemId, req, req_data, req_elemId) {
   });
 }
 
-function setFormParams(selector, form, height, width, offsetTop, offsetLeft, classes, top, left){
-  var offsetTop=parseInt(offsetTop) || 0; 
-  var offsetLeft=parseInt(offsetLeft) || 0;
-  var height=parseInt(height) || 100;
-  var width=parseInt(width) || 100;
-  var top=parseInt(top) || 0;
-  var left=parseInt(left) || 0;
-  var classes=classes || "find_popup_disp panel panel-default";
-  var selectorPos=[];
-  var bodyHeight=$('body').height();
-  if (selector != null) { // если передан селектор
-    selectorPos[1]=parseInt($(selector).offset().left); // позиция селектора
-    selectorPos[2]=parseInt($(selector).offset().top);  // позиция селектора
-  } else { // если селектора нет, то положение считываем по left top
-    selectorPos[1]=left;
-    selectorPos[2]=top;
-  }
-  var nposleft=selectorPos[1]+offsetLeft;   // Расчет новой позиции по горизонтали с учетом смещения
-  var npostop=selectorPos[2]+offsetTop;     // Расчет новой позиции по вертикали с учетом смещения
-  if (npostop+height>bodyHeight){
-    npostop=npostop-height;
-  }
-  $(form).css('width', width+'px');
-  $(form).css('height', height+'px');
-  $(form).css('left', nposleft);
-  $(form).css('top', npostop);
-  $(form).removeClass();
-  $(form).addClass(classes); 
-}
-
-function editProperty(form,entId,propId,valCounter,value){
+function editProperty(form,propId,valCounter,value){
   //alert(form+", "+propId+", "+valCounter+", "+value);
-  data[form][entId][propId][valCounter]=value;
+  data[form][propId][valCounter]=value;
 
   //alert(value);
 }
@@ -185,37 +155,46 @@ function InputKeyUp(resId, elem, action, domain){
   sendData2(form_data, resId.id);
 }
 
-$(document).ready(function(){
 
-$(".interface_edit").click(function(){
+
+
+
+//===================
+
+function setFormParams(selector, form, height, width, offsetTop, offsetLeft, classes, top, left){
+  var offsetTop=parseInt(offsetTop) || 0; 
+  var offsetLeft=parseInt(offsetLeft) || 0;
+  var height=parseInt(height) || 100;
+  var width=parseInt(width) || 100;
+  var top=parseInt(top) || 0;
+  var left=parseInt(left) || 0;
+  var classes=classes || "find_popup_disp panel panel-default";
+  var selectorPos=[];
+  var bodyHeight=$('body').height();
+  if (selector != null) { // если передан селектор
+    selectorPos[1]=parseInt($(selector).offset().left); // позиция селектора
+    selectorPos[2]=parseInt($(selector).offset().top);  // позиция селектора
+  } else { // если селектора нет, то положение считываем по left top
+    selectorPos[1]=left;
+    selectorPos[2]=top;
+  }
+  var nposleft=selectorPos[1]+offsetLeft;   // Расчет новой позиции по горизонтали с учетом смещения
+  var npostop=selectorPos[2]+offsetTop;     // Расчет новой позиции по вертикали с учетом смещения
+  if (npostop+height>bodyHeight){
+    npostop=npostop-height;
+  }
+  $('#'+form).css('width', width+'px');
+  $('#'+form).css('height', height+'px');
+  $('#'+form).css('left', nposleft);
+  $('#'+form).css('top', npostop);
+  $('#'+form).removeClass();
+  $('#'+form).addClass(classes); 
+}
+
+function findFormV(obj){
+  //formView('popup_window', 300,600,'fds', obj);
   var form_data=[];
-  var form_data_req=[];
-  form_data['5055']=$(this).attr("domain");
-  form_data['5099']=$(this).attr("selectid");
-  form_data['50104']=$(this).attr("item-id");
-  //alert($(this).attr("item-id"));
+  setFormParams(obj, 'popup_window', 300,600,10,10);
   form_data['5058']="2340";
-  form_data['9091']="235";
-  form_data['9092']=null;
-  form_data['50126']=[];
-  form_data['50126']['5079']=data[50126][5079];
-  form_data['50126']['50127']=data[50126][50127];
-  
-  setFormParams($(this), $("#popup_window"), $(this).attr("win_height"), $(this).attr("win_width"), 10,10);
- // sendData2(form_data, "popup_window");
-  form_data_req['5055']=$(this).attr("domain");
-  form_data_req['5099']=$(this).attr("selectid");
-  form_data_req['9091']="235";
-  form_data_req['9092']=null;
-  form_data_req['5058']="2336";
-  form_data_req['50104']=$(this).attr("item-id");
-  form_data_req['50126']=[];
-  form_data_req['50126']['5079']=data[50126][5079];
-  form_data_req['50126']['50127']=data[50126][50127];
-  sendData2(form_data, "popup_window", true, form_data_req, "find_list_div");
- // sendData2(form_data, "find_list_div");
-});
-
-
-});
-
+  sendData2(form_data, '#popup_window')
+}
