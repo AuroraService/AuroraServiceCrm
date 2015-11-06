@@ -328,6 +328,7 @@ class Model {
 		//if (!empty($where)) $where = $where . ' and '. substr($where2,5); else if (!empty($where2)) $where = ' where '.substr($where2,5);
 		$columns = substr($columns,2);
 		if (!empty($filters[50147])) $limit = ' limit '.$filters[50147]; else $limit = '';
+		echo 'LIMIT='.$filters[50147];
 		$query = "select SQL_CALC_FOUND_ROWS ". $columns. " from ".$tableName." ".$where . $limit;
 		//echo $query;
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());

@@ -13,6 +13,7 @@ class ExtShowController {
 		$actionFilters = $model->getResources(163, $filters, $orders);
 		echo '<script language ="JavaScript">var data = {}; data["'.$formCounter.'"]={}; data["'.$formCounter.'"]["50109"] = '.$paramSetId.'; data["'.$formCounter.'"]["5058"] = '.$actionId.'; t={}; t["5079"]= '.$_SESSION['id'].'; t["50127"]="'.$_SESSION['hash'].'";data["50126"]=t;data["'.$formCounter.'"]["5055"]='.$domain.'; data["50129"]='.$formCounter.';</script>';
 		if (!empty($actionFilters)) {
+			echo '<div id="data_container_header">';
 			echo ' <script language ="JavaScript">var filters = {}; data["'.$formCounter.'"]["5095"] = filters;</script>';
 			foreach ($actionFilters as $aFilter) {
 
@@ -29,13 +30,14 @@ class ExtShowController {
 				$filters3[$aFilter->items[5082]] = $defValue[0]->items[5096];
 			}
 			echo '<a onclick="sendData(2316);">Применить</a>';
+			echo '</div>';
 		}
 		$params[5095]=$filters3;
 		$params[5058]=$actionId;
 		$params[50149]=1;
+		$params[50147]=$filters3[50147];
 		$mainController = Controller::getController();
 		$ret = $mainController->executeAction($actionId,$params);
-		$params[50148]=$filters3[50147];
 		return $ret;
 	}
 }

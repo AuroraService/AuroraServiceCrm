@@ -9,8 +9,10 @@ class ShowController {
 		$columns = $model->getColumns2($formId);
 		if ($params[50125] == 1) $id = 1; else $id = null; //50125.Флаг поискового запроса
 		$table = $model->getDataSet($columns, $formId,$id,$filters);
-		//echo 'User:'.$_SESSION['id'];
-		echo ' <script language ="JavaScript">if (data===undefined) data = {}; if (data["'.$formCounter.'"]===undefined) data["'.$formCounter.'"]={}; if (data["50126"]===undefined) data["50126"]={}; data["50126"]["5079"]='.$_SESSION['id'].';</script>';
+		$userId = $_SESSION['id'];
+		if (empty($userId)) $userId = $params[50126][5079];//50126.Технические параметры, 5079.Пользователь
+		echo 'User:'.$userId;
+		echo ' <script language ="JavaScript">if (data===undefined) data = {}; if (data["'.$formCounter.'"]===undefined) data["'.$formCounter.'"]={}; if (data["50126"]===undefined) data["50126"]={}; data["50126"]["5079"]='.$userId.';</script>';
 		echo '<div class="table-responsive" id="data_container"><div id ="data_dataset_container"><table class="table table-striped table-hover table-condensed"><thead><tr>';
 		$colNum = 0;
 		foreach ($table->cols as $col_value) {
@@ -40,12 +42,16 @@ class ShowController {
 		echo 'Param2:'.$params[50149];
 		if ($params[50149]==1) {
 			echo '<div id="data_container_footer">';
-			echo 'NewValue=' . $params[50148];
-			if (!empty($params[5095][50147])) $pCount = ceil($ret[3] / $params[5095][50147]);
+			//echo 'NewValue=' . $params[50148];
+			if (!empty($params[50147])) $pCount = ceil($ret[3] / $params[50147]);
+			if (!empty($params[50148])) $currentPage = ceil($params[50148] / $params[50147]);
+			else $currentPage = 1;
+
 			echo '<div id="light-pagination" class="pagination"></div>';
 			echo '<script>
               function setPage(index){
-              	data[\'' . $formCounter . '\'][\'50147\']=index*' . $params[5095][50147] . ';
+              //alert(index);
+              	data[\'' . $formCounter . '\'][\'50148\']=index*' . $params[50147] . ';
               	data[\'' . $formCounter . '\'][\'50149\']=0;
                 sendData2(data,data_dataset_container,false);
               }
@@ -59,11 +65,11 @@ class ShowController {
                             prevText: "<<",
                             nextText: ">>",
                             cssStyle: "light-theme",
-                            currentPage: 2
+                            currentPage: '. $currentPage.'
               });
-                   
 
-               
+
+
               </script></div></div>';
 		}
 

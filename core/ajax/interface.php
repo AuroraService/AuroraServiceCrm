@@ -7,21 +7,13 @@ $action = $_REQUEST['action'];
 $domain = $_REQUEST['domain']; 
 $id =  $_REQUEST['id'];
 $json = json_decode($_POST['data'], true);
-//echo 'Hash ='.$json[50126][50127];
 if ($action==""){
 	$action=$json[5058];
 }
-//echo '=====</br>';
-print_r($_POST['data']);
-//return '=====</br>';
-//echo $action;
-//return 'Hello!';
-//echo 'Sel:'.$json[50128];
 $action = 2316;
 
 require_once('main.controller.php');
 $mainController = Controller::getController();
-//echo 'UserId = '.$json[50126][5079];
 $mainController->loadPermissions($json[50126][5079]);
 switch ($action) {
     case '2315':
@@ -31,18 +23,15 @@ switch ($action) {
 		$mainController -> executeAction(2315, $params);//2315.Просмотр сущности
         break;
 	case '2316':
-		//echo 'Step';
-
 		$params[50129] = $json[50129];//50129.Выделенная форма
 		$formCounter = $params[50129];
 		$params[5058] = $json[$formCounter][5058];//5058.Действие
 		$params[5095] = $json[$formCounter][5095];//5095.Фильтр
 		$params[5055] = $json[$formCounter][5055];//5055.Домен
-		$params[50148] = $json[$formCounter][50147];//50148.нач
+		$params[50148] = $json[$formCounter][50148];//50148.Начальная позиция
 		$params[50149] = $json[$formCounter][50149];//50149.Флаг печати строки паддинга
-		$startRow = $json[$formCounter][50147];//50147.Ограничение строк;
-
-		echo 'Flag:'.$params[50149];
+		$params[50126][5079] = $json[50126][5079];//5079.Пользователь
+		$startRow = $json[$formCounter][50148];//50148.Начальная позиция
 
 		$f1[50109] = '%COLUMN%='.$json[$formCounter][50109];//50109.Идентификатор набора параметра
 		$filters = $model->getResources(163,$f1);//163.Фильтр
@@ -51,7 +40,7 @@ switch ($action) {
 			$field = $model->getResources(162,$f2);//162.Поле фильтра
 			$expFilters[$filter->items[5082]]=$field[0]->items[5096];//5096.SQL
 		}
-		//echo $expFilters[50147];
+		$params[50147] = $expFilters[50147];//50147.Количество строк
 		if (!empty($expFilters[50147]) && !empty($startRow)) $expFilters[50147] = $startRow.','.$expFilters[50147];
 
 		$params[5095] = $expFilters;//5095.Фильтр
@@ -59,9 +48,7 @@ switch ($action) {
 		break;
 	case '2345':
 		$selectedForm = $json[50129];
-		echo 'Form:'.$selectedForm;
 		$resource2 = new Resource2($json[$selectedForm]);
-		//print_r($resource2);
 		$params[5013] = $resource2;//5013.Объект
 		$params[5065] = $json[$selectedForm][5065];//5065.Форма
 		$params[5055] = $json[$selectedForm][5055][0];//5055.Домен
@@ -69,19 +56,21 @@ switch ($action) {
 		break;
 	case '2334':
 		$selectedForm = $json[50129];
-		echo 'Form:'.$selectedForm;
 		$resource2 = new Resource2($json[$selectedForm]);
-		//print_r($resource2);
 		$params[5013] = $resource2;//5013.Объект
 		$params[5065] = $json[$selectedForm][5065];//5065.Форма
 		$params[5055] = $json[$selectedForm][5055][0];//5055.Домен
 		$mainController -> executeAction(2334, $params);//2334.Изменение сущности
         break;
     case '2336':
-        echo search($json);
+		$params[5058] = 2336;
+		$mainController -> executeAction(2336, $params);//2336.Печать содержимого поиска выбора
+        //echo search($json); -- Не удалять
         break;
     case '2340':
-        echo  ShowFindForm($json);
+		$params[5058] = 2340;
+		$mainController -> executeAction(2340, $params);//2340. Печать формы поиска выбора
+        //echo  ShowFindForm($json); -- Не удалять
         break;
 	case '2342':
 		//echo 'Step';

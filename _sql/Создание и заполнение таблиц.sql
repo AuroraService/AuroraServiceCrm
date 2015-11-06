@@ -473,6 +473,8 @@ insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2345);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2346);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2347);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2348);
+insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2340);
+insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2336);
 select * from triplets where obj_id = 2315;
 
 
@@ -2128,6 +2130,8 @@ insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2319,2319,
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2333,2333,'Поиск сущностей(Отображение формы)',146,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2342,2342,'Поиск сущностей(Отображение запроса)',146,132,23);
 
+insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2336,2336,'Печать содержимого поиска выбора',1411,132,23);
+insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2340,2340,'Печать формы поиска выбора',1411,132,23);
 select * from dim_actions;
 
 -- Создание таблицы элементов CRM
@@ -2152,6 +2156,7 @@ insert into sCrmElements(id,name,location,type) values(147, 'CreateController', 
 insert into sCrmElements(id,name,location,type) values(148, 'FilterController', 'core/filter.controller.php',14);
 insert into sCrmElements(id,name,location,type) values(149, 'ExtShowController', 'core/ext_show.controller.php',14);
 insert into sCrmElements(id,name,location,type) values(1410, 'EditController', 'core/edit.controller.php',14);
+insert into sCrmElements(id,name,location,type) values(1411, 'Search2Controller', 'core/search2.controller.php',14);
 
 
 insert into sCrmElements(id,name,location,type) values(121,'TextViewer','core/viewers/text.viewer.php',12);
@@ -2397,7 +2402,8 @@ create table executions(
   end_time datetime,
   PRIMARY KEY(id)
 );
-alter table products add column add_cost int;
+-- alter table products add column add_cost int;
+-- alter table kb1.products add column cnt int;
 /*
 -- Создание таблицы продуктов
 
@@ -2443,7 +2449,7 @@ create table  files(
   PRIMARY KEY(id,end_date)
 );
 
-*/
+
 
 -- Создание таблицы накрутки
 drop table if exists add_prices;
@@ -2455,7 +2461,7 @@ create table  add_prices(
   add_cost int
 );
 
-
+*/
 select * from requests;
 select * from triplets;
 
@@ -2470,7 +2476,4 @@ update products p
 set p.provider_id = 15161;
 */
 insert into dim_resource(id, name,type, start_date)
-select id, show_name,1016, '2015-10-01 00:00:00' from products
-
-
-select id id_value, id, articul articul_value, articul, show_name show_name_value, show_name, buy_cost buy_cost_value, buy_cost, add_cost, sell_cost sell_cost_value, sell_cost, manufacturer_id manufacturer_id_value, manufacturer_id, provider_id provider_id_value, provider_id from products
+select id, show_name,1016, '2015-10-01 00:00:00' from products;
