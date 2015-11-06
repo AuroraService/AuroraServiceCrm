@@ -120,9 +120,9 @@ function setFormParams(selector, form, height, width, offsetTop, offsetLeft, cla
   $(form).addClass(classes); 
 }
 
-function editProperty(form,propId,valCounter,value){
+function editProperty(form,entId,propId,valCounter,value){
   //alert(form+", "+propId+", "+valCounter+", "+value);
-  data[form][propId][valCounter]=value;
+  data[form][entId][propId][valCounter]=value;
 
   //alert(value);
 }

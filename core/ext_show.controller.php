@@ -11,7 +11,7 @@ class ExtShowController {
 		$filters[50109]='%COLUMN%='.$paramSetId; //5058.Действие
 		$orders[504]=1;
 		$actionFilters = $model->getResources(163, $filters, $orders);
-		echo '<script language ="JavaScript">var data = {}; data["'.$formCounter.'"]={}; data["'.$formCounter.'"]["50109"] = '.$paramSetId.'; data["'.$formCounter.'"]["5058"] = '.$actionId.'; t={}; t["5079"]= '.$_SESSION['id'].'; t["50127"]="'.$_SESSION['hash'].'";data["50126"]=t;data["'.$formCounter.'"]["5055"]='.$domain.'; data["50129"]='.$formCounter.';</script>';
+		echo '<script language ="JavaScript">var data = {}; data["'.$formCounter.'"]={}; data["'.$formCounter.'"]["50109"] = '.$paramSetId.'; data["'.$formCounter.'"]["5058"] = '.$actionId.'; t={}; t["5079"]= '.$_SESSION['id'].'; t["50127"]="'.$_SESSION['hash'].'";data["50126"]=t;data["'.$formCounter.'"]["5055"]='.$domain.'; data["50129"]='.$formCounter.'; data["5058"]=2316;</script>';
 		if (!empty($actionFilters)) {
 			echo '<div id="data_container_header">';
 			echo ' <script language ="JavaScript">var filters = {}; data["'.$formCounter.'"]["5095"] = filters;</script>';

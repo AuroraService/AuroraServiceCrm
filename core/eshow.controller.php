@@ -8,12 +8,15 @@ class EshowController {
 		$actionId = $iParams[5058];
 		if ($iParams[15132] == 1) $executeAction = 2345; else $executeAction = 2334;//2345.Создание сущности, 2334.Изменение сущности
 
+		$userId = $_SESSION['id'];
+		if (empty($userId)) $userId = $iParams[50126][5079];//50126.Технические параметры, 5079.Пользователь
+
 		if (empty($elemId) && !empty($id)) {
 			$domain = $model->getResProperty($id,5051,0); //5051.Type
 			$elemId=$model->getForm($actionId,$domain);
 		}
-		echo ' <script language ="JavaScript">var data = [];  t=[]; t[5079]= '.$_SESSION['id'].'; t[50127]="'.$_SESSION['hash'].'";data[50126]=t; data[50129]='.$formCounter.'; data[50130]='.$formCounter.'; data['.$formCounter.']=[];data['.$formCounter.'][5065] = '.$elemId.';</script>';
-		$this->printJavaScript(5055,$iParams[5055],0,0,$formCounter);//5055.Домен
+		echo ' <script language ="JavaScript">var data = [];  t=[]; t["5079"]= '.$userId.'; t["50127"]="'.$_SESSION['hash'].'";data["50126"]=t; data["50129"]='.$formCounter.'; data["50130"]='.$formCounter.'; data["'.$formCounter.'"]=[];data["'.$formCounter.'"]["5065"] = '.$elemId.'; data["'.$formCounter.'"]["'.$id.'"]=[];data["'.$formCounter.'"]["5055"]='.$iParams[5055].'</script>';
+		//$this->printJavaScript(5055,$iParams[5055],0,0,$formCounter);//5055.Домен
 		$val = $model->getColumns2($elemId);
 		$viewerData = array();
 		$viewerData[5093] = $val->cols;
@@ -29,8 +32,10 @@ class EshowController {
 			$params[5082] = $col_value->property; //5082.Идентификатор свойства
 			$params[5088] = 0; //5088.Номер значение
 			$params[50129] = $formCounter;
+			$params[5048] = $id; //5048.Идентификатор сущности
 			
 			$params2[5055] = $col_value->domain; //5055.Домен
+
 			
 			$viewer = $model->getViewer($col_value->viewer,$params2,$model);
 
@@ -46,9 +51,9 @@ class EshowController {
 					$cell = new Cell($idValue, $value);
 					$echo = $viewer->show($cell, $params);
 					$viewerData[50115][$propId][$valueCounter]=$echo;//50115.Набор свойств для отображения
-					$this->printJavaScript($col_value->property, $idValue, $lineNum + 1, $valueCounter,$formCounter);
+					$this->printJavaScript($formCounter,$id,$col_value->property, $valueCounter,$idValue);
 			} else {
-				$this->printJavaScript($col_value->property, null, $lineNum + 1, 0,$formCounter);
+				$this->printJavaScript($formCounter,$id,$col_value->property, 0,null);
 				$cell = new Cell(null,null);
 				$viewerData[50115][$propId][0]=$viewer->show($cell, $params);
 			}
@@ -58,13 +63,13 @@ class EshowController {
 		require_once('templates/eshow.template.php');
 
 	}
-	
-	private function printJavaScript($propId,$propValue,$propCounter,$valueCounter,$formCounter){
+
+	private function printJavaScript($formCounter, $entId, $propId, $valueCounter, $propValue){
 		echo '<script language ="JavaScript">';
-		$mas = 'mas'.$formCounter.'_'.$propCounter;
-		if ($valueCounter == 0) echo "var ".$mas." = [];";
+		$mas = 'mas'.$formCounter.'_'.$entId.'_'.$propId;
+		if ($valueCounter == 0) echo "var ".$mas." = {};";
 		echo $mas."[".$valueCounter."]='".$propValue."';
-		data[".$formCounter."][".$propId."] = ".$mas.";";
+		data['".$formCounter."']['". $entId."']['".$propId."'] = ".$mas.";";
 		echo "</script>";
 	}
 

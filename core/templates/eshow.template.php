@@ -22,7 +22,7 @@ if (!empty($viewerData[5093])) foreach ($viewerData[5093] as $col_value) {
 		echo '</div>
               <div class="col-md-4" id="dop_form_interface">';
         echo '</div></div>';
-		echo '<a onclick="data[50129]='.$formCounter.'; sendData('.$executeAction.');">Сохранить</a>';
+		echo '<a onclick="data[\'50129\']='.$formCounter.'; data[\'50146\']='.$id.'; data[\'5058\']=2334; sendData2(data,dop_form_interface,false);">Сохранить</a>';
 
 	
 

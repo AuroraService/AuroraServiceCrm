@@ -10,8 +10,8 @@ $json = json_decode($_POST['data'], true);
 if ($action==""){
 	$action=$json[5058];
 }
-$action = 2316;
-
+//$action = 2316;
+echo "Test";
 require_once('main.controller.php');
 $mainController = Controller::getController();
 $mainController->loadPermissions($json[50126][5079]);
@@ -55,8 +55,10 @@ switch ($action) {
 		$mainController -> executeAction(2345, $params);//2345.Создание сущности
 		break;
 	case '2334':
+		echo 'Step';
 		$selectedForm = $json[50129];
-		$resource2 = new Resource2($json[$selectedForm]);
+		$selectedEntity = $json[50146];
+		$resource2 = new Resource2($json[$selectedForm][$selectedEntity]);
 		$params[5013] = $resource2;//5013.Объект
 		$params[5065] = $json[$selectedForm][5065];//5065.Форма
 		$params[5055] = $json[$selectedForm][5055][0];//5055.Домен
@@ -64,13 +66,13 @@ switch ($action) {
         break;
     case '2336':
 		$params[5058] = 2336;
-		$mainController -> executeAction(2336, $params);//2336.Печать содержимого поиска выбора
-        //echo search($json); -- Не удалять
+		//$mainController -> executeAction(2336, $params);//2336.Печать содержимого поиска выбора
+        echo search($json); // Не удалять
         break;
     case '2340':
 		$params[5058] = 2340;
-		$mainController -> executeAction(2340, $params);//2340. Печать формы поиска выбора
-        //echo  ShowFindForm($json); -- Не удалять
+		//$mainController -> executeAction(2340, $params);//2340. Печать формы поиска выбора
+        echo  ShowFindForm($json); // Не удалять
         break;
 	case '2342':
 		//echo 'Step';

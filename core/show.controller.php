@@ -48,7 +48,7 @@ class ShowController {
 			else $currentPage = 1;
 
 			echo '<div id="light-pagination" class="pagination"></div>';
-			echo '<script>
+			if (!empty($params[50147])) echo '<script>
               function setPage(index){
               //alert(index);
               	data[\'' . $formCounter . '\'][\'50148\']=index*' . $params[50147] . ';
@@ -70,7 +70,8 @@ class ShowController {
 
 
 
-              </script></div></div>';
+              </script></div>';
+			echo '</div>';
 		}
 
 		return $ret;
