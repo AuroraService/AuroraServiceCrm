@@ -154,7 +154,7 @@ class Model {
 		$next = (++$this->entities[$domain]->items[5090]);
 		$id = $this->entities[$domain]->items[5089].$next;
 		$query = 'update entities set counter = '.$next.' where id='.$domain;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:' .$query. mysqli_error());
 		return $id;
 	}
 

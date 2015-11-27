@@ -20,6 +20,7 @@ switch ($action) {
 		$params[5048] = $json[50128]; //5048.Идентификатор
 		$params[50130] = $json[50130]; //50130.Счетчик форм
 		$params[5058] = 2315; //5058.Действие, 2315.Просмотр сущности
+		$params[50126][5079] = $json[50126][5079];
 		$mainController -> executeAction(2315, $params);//2315.Просмотр сущности
         break;
 	case '2316':
@@ -61,7 +62,8 @@ switch ($action) {
 		$resource2 = new Resource2($json[$selectedForm][$selectedEntity]);
 		$params[5013] = $resource2;//5013.Объект
 		$params[5065] = $json[$selectedForm][5065];//5065.Форма
-		$params[5055] = $json[$selectedForm][5055][0];//5055.Домен
+		$params[5055] = $json[$selectedForm][5055];//5055.Домен
+		echo 'Domain='.$params[5055];
 		$mainController -> executeAction(2334, $params);//2334.Изменение сущности
         break;
     case '2336':

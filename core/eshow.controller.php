@@ -15,7 +15,7 @@ class EshowController {
 			$domain = $model->getResProperty($id,5051,0); //5051.Type
 			$elemId=$model->getForm($actionId,$domain);
 		}
-		echo ' <script language ="JavaScript">var data = [];  t=[]; t["5079"]= '.$userId.'; t["50127"]="'.$_SESSION['hash'].'";data["50126"]=t; data["50129"]='.$formCounter.'; data["50130"]='.$formCounter.'; data["'.$formCounter.'"]=[];data["'.$formCounter.'"]["5065"] = '.$elemId.'; data["'.$formCounter.'"]["'.$id.'"]=[];data["'.$formCounter.'"]["5055"]='.$iParams[5055].'</script>';
+		echo ' <script language ="JavaScript">var data = {};  t={}; t["5079"]= '.$userId.'; t["50127"]="'.$_SESSION['hash'].'";data["50126"]=t; data["50129"]='.$formCounter.'; data["50130"]='.$formCounter.'; data["'.$formCounter.'"]={};data["'.$formCounter.'"]["5065"] = '.$elemId.'; data["'.$formCounter.'"]["'.$id.'"]={};data["'.$formCounter.'"]["5055"]='.$domain.'</script>';
 		//$this->printJavaScript(5055,$iParams[5055],0,0,$formCounter);//5055.Домен
 		$val = $model->getColumns2($elemId);
 		$viewerData = array();

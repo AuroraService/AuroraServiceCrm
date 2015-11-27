@@ -52,11 +52,11 @@ function sendData(action, elemId) {
       $(statusElem).append(data);
       //statusElem.innerHTML = data;
       //alert(data);
-      if ( data == 0  ) statusElem.innerHTML = 'Change save';
-      else {
-        statusElem.innerHTML = 'Safe error';
+      //if ( data == 0  ) statusElem.innerHTML = 'Change save';
+      //else {
+      //  statusElem.innerHTML = 'Safe error';
         //statusElem.innerHTML = data;
-      }
+      //}
       //alert(data);
     }
   });
@@ -90,9 +90,9 @@ function sendData2(data, elemId, req, req_data, req_elemId) {
   });
 }
 
-function editProperty(form,propId,valCounter,value){
+function editProperty(form,entId,propId,valCounter,value){
   //alert(form+", "+propId+", "+valCounter+", "+value);
-  data[form][propId][valCounter]=value;
+  data[form][entId][propId][valCounter]=value;
 
   //alert(value);
 }
