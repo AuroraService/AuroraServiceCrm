@@ -11,9 +11,10 @@ if ($action==""){
 	$action=$json[5058];
 }
 //$action = 2316;
-echo "Test";
+//echo "Test";
 require_once('main.controller.php');
 $mainController = Controller::getController();
+//echo 'USER:'.$json[50126][5079];
 $mainController->loadPermissions($json[50126][5079]);
 switch ($action) {
     case '2315':

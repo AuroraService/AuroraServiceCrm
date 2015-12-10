@@ -196,5 +196,6 @@ function findFormV(obj){
   var form_data=[];
   setFormParams(obj, 'popup_window', 300,600,10,10);
   form_data['5058']="2340";
-  sendData2(form_data, '#popup_window')
+  data['5058']="2340";
+  sendData2(data, '#popup_window')
 }

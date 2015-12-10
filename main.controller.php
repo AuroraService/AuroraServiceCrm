@@ -68,6 +68,9 @@ class Controller{
 				$this->executeAction($actionId,$params);
 			} else echo "Нет прав";
 		}
+
+		$result = $this->executeAction(2352,null);
+		echo $result[0];
 	}
 
 	public function loadPermissions($userId){

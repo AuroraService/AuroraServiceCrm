@@ -475,6 +475,7 @@ insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2347);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2348);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2340);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2336);
+insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2352);
 select * from triplets where obj_id = 2315;
 
 
@@ -1645,6 +1646,9 @@ insert into entities(id, location,namespace,counter) values(1615, 'states',1524,
 insert into entities(id, location,namespace,counter) values(1016, 'products',1526,30000);
 insert into entities(id, location,namespace,counter) values(1017, 'product_categories',1525,1000);
 
+insert into entities(id, location,namespace,counter) values(1024, 'base_elements',1530,100);
+insert into entities(id, location,namespace,counter) values(1026, 'op_notes',1532,100);
+
 -- Создание таблицы свойств сущности
 drop table if exists ent_properties;
 create table ent_properties(
@@ -1882,8 +1886,8 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511162,161
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511163,1614,50123,'state1',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511164,1614,50124,'state2',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511165,1614,5057,'pid',134);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511166,1614,50121,'start_time',134);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511167,1614,50122,'end_time',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511166,1614,50121,'start_time',136);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511167,1614,50122,'end_time',136);
 
 -- 1016.Продукт
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511173,1016,5048,'id',1016,0,0);
@@ -1901,7 +1905,17 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511182,1017,5048,'id',1017,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511183,1017,50139,'show_name',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511184,1017,5057,'pid',1017);
--- 1511185
+-- 1026.Записка оператора
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511186,1026,5048,'id',1017,0,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511187,1026,5066,'value',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511188,1026,50150,'sender',102);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511189,1026,5022,'creation_time',136);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511190,1026,50158,'ex_req_flag',135);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511191,1026,50159,'ex_status',135);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511192,1026,5014,'performer_id',102);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511193,1026,50160,'ex_date',136);
+
+-- 1511193
 
 select * from ent_properties;
 
@@ -2103,6 +2117,8 @@ insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2338,
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2344,2316,'Просмотр выполнений действий',null,1614,11112,2316);
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2346,2316,'Просмотр товаров',null,1016,11113,2316);
 insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2347,2316,'Просмотр категорий товаров',null,1017,11114,2316);
+insert into dim_actions(id,action_id,name,contr_id,domain,form,pid) values(2352,2316,'Отображение записок',1412,1026,null,2316);
+
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2341,2341,'Настроенный просмотр сущностей класса',149,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2348,2348,'Просмотр сущностей класса с полосой разбивки',141,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2315,2315,'Просмотр сущности',142,132,23);
@@ -2157,7 +2173,7 @@ insert into sCrmElements(id,name,location,type) values(148, 'FilterController', 
 insert into sCrmElements(id,name,location,type) values(149, 'ExtShowController', 'core/ext_show.controller.php',14);
 insert into sCrmElements(id,name,location,type) values(1410, 'EditController', 'core/edit.controller.php',14);
 insert into sCrmElements(id,name,location,type) values(1411, 'Search2Controller', 'core/search2.controller.php',14);
-
+insert into sCrmElements(id,name,location,type) values(1412, 'OpNotesController', 'core/opnotes.controller.php',14);
 
 insert into sCrmElements(id,name,location,type) values(121,'TextViewer','core/viewers/text.viewer.php',12);
 insert into sCrmElements(id,name,location,type) values(122,'DateTimeViewer','core/viewers/datetime.viewer.php',12);
@@ -2462,6 +2478,28 @@ create table  add_prices(
 );
 
 */
+
+-- Создание таблицы записок
+drop table if exists op_notes;
+create table  op_notes(
+  id  bigint,
+  value varchar(1024),
+  sender bigint,
+  creation_time datetime,
+  ex_req_flag int,
+  ex_status int,
+  performer_id bigint,
+  ex_date datetime,
+  start_date datetime default '2015-10-01',
+  end_date   datetime default '9999-01-01',
+  PRIMARY KEY(id,end_date)
+);
+
+insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15321,'Записка 1',15011,'2015-12-10 13:42',1,0,null,null);
+insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15322,'Записка 2',15011,'2015-12-10 13:43',1,0,null,null);
+insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15323,'Записка 3',15011,'2015-12-10 13:44',1,0,null,null);
+insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15324,'Записка 4',15011,'2015-12-10 13:40',1,0,null,null);
+-- 
 select * from requests;
 select * from triplets;
 
