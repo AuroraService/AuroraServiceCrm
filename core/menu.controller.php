@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 class MenuController {
 	public function execute($menuId, $viewer){
 		$model = Model::getModel();

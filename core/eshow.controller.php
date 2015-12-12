@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 class EshowController {
 	public function execute($iParams){
 		if (empty($iParams[50130])) $formCounter = 1; else $formCounter = ++$iParams[50130];

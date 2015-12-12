@@ -1,4 +1,4 @@
-﻿<style>
+<style>
 .win_find{
 	position: absolute;
 	left: 100;

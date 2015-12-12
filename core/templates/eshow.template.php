@@ -1,4 +1,4 @@
-﻿
+
 <div class="row" style="width: 100%;">
 <div class="col-md-8">
 <div class="table-responsive"><table class="table table-condensed">

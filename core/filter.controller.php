@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 class FilterController {
 	public function execute($params){
 		$model = Model::getModel();

@@ -1,4 +1,4 @@
-﻿<style>
+<style>
 .win_com_head{
   border-bottom: 1px solid gray;
   background-color: rgb(240,240,240);

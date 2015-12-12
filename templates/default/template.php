@@ -1,4 +1,4 @@
-﻿<?
+<?
      $template_header='header.php';
      $template_end='end.php';
      $template_css='css.php';

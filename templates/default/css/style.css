@@ -171,3 +171,59 @@ body {
   border: 1px solid black;
   z-index: 999;
 }
+
+    .b-panel{
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      position: relative;
+    }
+    .msg-panel{
+      padding: 5px 0px 5px 5px;
+    }
+    .msg-header{
+      color: gray;
+    }
+    .msg-body{
+      padding: 5px;
+    }
+    .inf{
+      margin-right: 5px;
+    }
+    .msg-main{
+      margin-bottom: 0px; 
+    }
+    .msg-footer{
+      padding: 0px 10px 0px 10px;
+      margin-bottom: 15px;
+    }
+    .msg-add-open{
+      cursor: pointer;
+
+    }
+    .msg-add-open:hover{
+      color: black;
+    }
+    .op-msg-filters{
+      position: absolute;
+      top: 34px;
+      right: 110px;
+      border: 1px solid black;
+      height: 100px; width: 200px;
+      background-color: white;
+    }
+    .cancelll{
+      cursor: default;
+    }
+    .waiting{
+      cursor: pointer;
+    }
+    .waiting:hover{
+      background-color: rgb(63,72,204);
+    }
+    .op-msg-status-div{
+      position: absolute;
+      width: 80px;
+      right: 20px;
+    }

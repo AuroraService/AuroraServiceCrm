@@ -68,9 +68,13 @@ class Controller{
 				$this->executeAction($actionId,$params);
 			} else echo "Нет прав";
 		}
-
+        echo '</div>
+              <div class="col-md-3">';
 		$result = $this->executeAction(2352,null);
 		echo $result[0];
+		echo '</div>';
+		echo '</div>';
+		echo '</div>';
 	}
 
 	public function loadPermissions($userId){

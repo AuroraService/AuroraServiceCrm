@@ -1,4 +1,4 @@
-﻿<?
+<?
 // Database
      $var_db_host='192.168.88.105';
      $var_db_user='root';
