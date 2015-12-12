@@ -12,7 +12,7 @@ require_once($var_pth_template.$template_header);
 <script src="/core/ajax/interface.js"></script>
 <script src="/core/ajax/paginator.js"></script>
 
-
+<script language ='JavaScript'> data = {};</script>
 <?
 	
 require_once('main.controller.php');

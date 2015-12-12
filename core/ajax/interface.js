@@ -63,7 +63,7 @@ function sendData(action, elemId) {
 }
 
 function sendData2(data, elemId, req, req_data, req_elemId) {
-  //alert(elemId);
+  alert(data[-1]['5066']);
   var req=req || false;
   var req_data=req_data || null;
   var req_elemId=req_elemId || null;
@@ -79,6 +79,7 @@ function sendData2(data, elemId, req, req_data, req_elemId) {
       var statusElem = document.getElementById(elemId);
       //alert(data);
       //statusElem.innerHTML = data;
+      alert($(elemId).attr("id"));
       $(elemId).text("");
       $(elemId).append(data);
       if (req) sendData2(req_data, req_elemId);

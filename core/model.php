@@ -551,6 +551,7 @@ class Model {
 				}
 			}
 		}
+		if (!empty($filters[50114])) $where = $where . " and end_date = '9999-01-01'";
 		$columns = substr($columns,1);
 		if (!empty($where)) $where = " where ".substr($where,5); else $where = "";
 		if (!empty($order)) $order = " order by ".substr($order,1); else $order = "";
@@ -711,10 +712,11 @@ class Model {
 	public function insert($resource2, $type = null, $start_date = null){
 		$props = array();
 		if (empty($type)) $type = $resource2->items[5055][0];
-		if ($this->isSubclassOf($type,1612)) {
+		if (empty($type)) $type = $resource2->items[5055];
+		//if ($this->isSubclassOf($type,1612)) {
 			if (empty($start_date)) $start_date = date("Y-m-d H:i:s");
 			$resource2->items[50113][0]=$start_date;
-		} //1612.Версионная сущность, 50113.Дата открытия записи
+		//} //1612.Версионная сущность, 50113.Дата открытия записи
 		$this->getClassPropertiesTransitive($type,$props);
 		$columns = '';
 		$values = '';
@@ -727,6 +729,10 @@ class Model {
 				$columns = $columns.','.$prop->items[506];
 				$values = $values.','.$this->quotation($resource2->items[$prop->items[5082]][0],$prop->items[5055]);
 			}
+		}
+		if ($this->isSubclassOf($type,1612)){
+			$columns = $columns.',start_date';
+			$values = $values.','."'".$resource2->items[50113][0]."'";
 		}
 		$columns = substr($columns,1);
 		$values = substr($values,1);
@@ -745,7 +751,7 @@ class Model {
 		$items[5079][0]=$this->user_id;//5079.Сотрудник
 		$items[5062][0]=$params[5062];//5062.Действие
 		$items[5013][0]=$params[5013];//5013.Объект
-		$items[5055][0]=$params[5055];//5055.Домен
+		$items[5055][0]=$params[5055]; if (empty($items[5055][0])) $items[5055][0]=$params[5055][0];//5055.Домен
 		$items[50123][0]=$params[50123];//50123.Состояние 1
 		$items[50124][0]=$params[50124];//50124.Состояние 2
 		$items[5057][0]=$params[5057];//5057.Идентификатор родителя
@@ -760,7 +766,7 @@ class Model {
 	public function insertGlobal($resource2, $type = null, $start_date = null){
 		$columns = 'id,type';
 
-		if (empty($type)) $type = $resource2->items[5055][0];
+		if (empty($type)) $type = $resource2->items[5055];
 
 		$versionFlag = $this->isSubclassOf($type,1612);//1612.Версионная сущность
 		if ($versionFlag) {
@@ -784,7 +790,7 @@ class Model {
 		//audit END
 
 		$id = $this->insert($resource2, $type, $start_date);
-		$values = $id.','.$resource2->items[5055][0];
+		$values = $id.','.$resource2->items[5055];
 		if ($versionFlag){
 			$values = $values.',"'.$start_date.'"';
 		}
@@ -829,7 +835,7 @@ class Model {
 	
 	public function isSubclassOf($classId,$pClassId){
 		if ($pClassId == 133) {if ($classId == 134 || $classId == 135 || $classId == 136) return 1; else return 0;}
-		if ($pClassId == 1612) {if (($classId == 103) || ($classId == 109)|| ($classId == 1010) || ($classId == 1011) || ($classId == 1012)) return 1; else return 0;};
+		if ($pClassId == 1612) {if (($classId == 103) || ($classId == 109)|| ($classId == 1010) || ($classId == 1011) || ($classId == 1012)|| ($classId == 1026)) return 1; else return 0;};
 	}
 
 	public function closeCurrentVersion($resourceId, $type = null, $table = null){
@@ -864,7 +870,7 @@ class Model {
 		$localCompareFlag = $this->compare($resource2,$oldResource, $formId,1);
 		if ($localCompareFlag != 1) {
 			//audit START
-			$newState = $this->getId(1615);
+			if ($this->isSubclassOf($type,1612)) $newState = $this->getId(1615);
 			$params[5062] = 2334; //2334.Изменение сущности
 			$params[5013] = $resourceId;
 			$params[5055] = $type;
@@ -902,8 +908,8 @@ class Model {
 			$resource2->items[50113][0] = $close_date; //50113.StartDate
 			$resource2->items[50114][0] = '9999-01-01'; //50114.CloseDate
 			$resource2->items[50131][0] = $newState; //50131.Версионное состояние
-
-			$this->insert($resource2,$type);
+			echo "START_DATE=".$close_date;
+			$this->insert($resource2,$type,$close_date);
 		}
 		if ($compareFlag != 1){
 			if (empty($resource2->items[50113][0])){
@@ -970,6 +976,7 @@ class Model {
 	}
 
 	private function quotation($value, $domain){
+		echo $value;
 		if (($domain == 134)||($domain == 136)) $value = '"'.$value.'"';
 		return $value;
 	}

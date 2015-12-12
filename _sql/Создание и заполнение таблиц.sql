@@ -50,6 +50,8 @@ insert into dim_resource(id,name,type) values(134,'Текст',133);
 insert into dim_resource(id,name,type) values(135,'Число',133);
 insert into dim_resource(id,name,type) values(136,'Дата',133);
 
+insert into dim_resource(id,name,type) values(1026,'Записка оператора',10);
+
 
 
 
@@ -1485,11 +1487,28 @@ insert into sColumns(id, name, position,  type, template,editable,form,pid,viewe
   values(112435,'Дата выезда',11,1, NULL,1,11515,NULL,121,151189);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(112443,'Комментарий',12,1, NULL,1,11515,NULL,121,151165);
-
+  
+-- 11516 Создание записки оператора
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112471,'Значение',1,0, NULL,1,11516,NULL,123,1511187);
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112472,'Отправитель',2,0, NULL,1,11516,NULL,123,1511188);
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112473,'Дата создания',3,1, NULL,1,11516,NULL,123,1511189);
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112474,'Флаг требования исполнения',4,0, NULL,1,11516,NULL,123,1511190);
  
+-- 11517.Форма изменеия записки оператора
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112475,'Статус исполнения',1,1, NULL,1,11517,NULL,123,1511191);
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112476,'Исполнитель',2,0, NULL,1,11517,NULL,123,1511192);
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112477,'Дата исполнения',3,1, NULL,1,11517,NULL,123,1511193);
+  
 select max(id) from sColumns;
  
--- counter 112382
+-- counter 112477
 
 
 -- Создание справочника таблиц
@@ -1647,7 +1666,7 @@ insert into entities(id, location,namespace,counter) values(1016, 'products',152
 insert into entities(id, location,namespace,counter) values(1017, 'product_categories',1525,1000);
 
 insert into entities(id, location,namespace,counter) values(1024, 'base_elements',1530,100);
-insert into entities(id, location,namespace,counter) values(1026, 'op_notes',1532,100);
+insert into entities(id, location,namespace,counter,name_template) values(1026, 'op_notes',1532,100,'%5066%');
 
 -- Создание таблицы свойств сущности
 drop table if exists ent_properties;
@@ -2495,10 +2514,18 @@ create table  op_notes(
   PRIMARY KEY(id,end_date)
 );
 
-insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15321,'Записка 1',15011,'2015-12-10 13:42',1,0,null,null);
+select * from op_notes;
+
+insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15321,'Записка 1',15011,'2015-12-10 13:42',0,0,null,null);
 insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15322,'Записка 2',15011,'2015-12-10 13:43',1,0,null,null);
 insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15323,'Записка 3',15011,'2015-12-10 13:44',1,0,null,null);
 insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15324,'Записка 4',15011,'2015-12-10 13:40',1,0,null,null);
+
+insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15325,'Записка 5',15012,'2015-12-10 13:45',1,2,15015,'2015-12-10 13:55');
+insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15326,'Записка 6',15013,'2015-12-10 13:49',1,1,15014,'2015-12-10 13:50');
+
+insert into dim_resource(id,type) values(15324,1026);
+
 -- 
 select * from requests;
 select * from triplets;
