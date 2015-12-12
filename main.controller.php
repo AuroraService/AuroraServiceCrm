@@ -71,6 +71,8 @@ class Controller{
 
 		$result = $this->executeAction(2352,null);
 		echo $result[0];
+		echo $result[1];
+
 	}
 
 	public function loadPermissions($userId){

@@ -49,17 +49,20 @@ switch ($action) {
 		$mainController -> executeAction(2316, $params);//2316.Просмотр сущностей класса
 		break;
 	case '2345':
+
 		$selectedForm = $json[50129];
+		//echo 'Create'.$json[$selectedForm][5066];
 		$resource2 = new Resource2($json[$selectedForm]);
 		$params[5013] = $resource2;//5013.Объект
 		$params[5065] = $json[$selectedForm][5065];//5065.Форма
-		$params[5055] = $json[$selectedForm][5055][0];//5055.Домен
+		$params[5055] = $json[$selectedForm][5055];//5055.Домен
 		$mainController -> executeAction(2345, $params);//2345.Создание сущности
 		break;
 	case '2334':
 		echo 'Step';
 		$selectedForm = $json[50129];
 		$selectedEntity = $json[50146];
+		if (empty($json[$selectedForm][$selectedEntity][5048][0])) $json[$selectedForm][$selectedEntity][5048][0] = $selectedEntity;
 		$resource2 = new Resource2($json[$selectedForm][$selectedEntity]);
 		$params[5013] = $resource2;//5013.Объект
 		$params[5065] = $json[$selectedForm][5065];//5065.Форма
