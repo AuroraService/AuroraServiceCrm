@@ -39,7 +39,7 @@ class Model {
 		return 0;
 	}
 
-	public function compare($resource1, $resource2, $formId = null, $localFlag = 0){
+	public function compare($resource1, $resource2, $formId = null, $localFlag = 0, $type = null){
 		//print_r($resource2);
 		if (!empty($formId)){
 			$filters[5065] = '%COLUMN%='.$formId;
@@ -48,7 +48,7 @@ class Model {
 				$formPropsIds[$formProp->items[5087]] = 1; //5087.Свойство сущности
 			}
 		}
-		$type = $this->getResProperty($resource1->items[5048][0],5051);//5051.Тип
+		if (empty($type)) $type = $this->getResProperty($resource1->items[5048][0],5051);//5051.Тип
 		$props = array();
 		$this->getClassPropertiesTransitive($type,$props);
 		//$compareFlag = 1;
@@ -363,6 +363,16 @@ class Model {
 		if (empty($domain)) $action = $this->getAction($actionId);
 		else $action = $this->getLeafAction($actionId,$domain);
 		return $action->items[5065];
+	}
+
+	function getFormProps($formId){
+		$filters[5065] = '%COLUMN%=' . $formId;
+		$formProps = $this->getResources(112, $filters);
+		foreach ($formProps as $formProp) {
+			echo '';
+			$formPropsIds[$formProp->items[5087]] = 1; //5087.Свойство сущности
+		}
+		return $formPropsIds;
 	}
 
 	public function getLeafAction($actionId,$domain){
@@ -709,39 +719,52 @@ class Model {
 	}
 
 	//Создание сущности
-	public function insert($resource2, $type = null, $start_date = null){
-		$props = array();
+	public function insert($resource2, $type = null, $start_date = null, $formId = null){
+		if (!empty($formId)) $formPropsIds = $this->getFormProps($formId);
+
 		if (empty($type)) $type = $resource2->items[5055][0];
 		if (empty($type)) $type = $resource2->items[5055];
-		//if ($this->isSubclassOf($type,1612)) {
-			if (empty($start_date)) $start_date = date("Y-m-d H:i:s");
-			$resource2->items[50113][0]=$start_date;
-		//} //1612.Версионная сущность, 50113.Дата открытия записи
-		$this->getClassPropertiesTransitive($type,$props);
-		$columns = '';
-		$values = '';
+		if (empty($start_date)) $start_date = date("Y-m-d H:i:s");
+		$resource2->items[50113][0]=$start_date;
+
+		$versionFlag = $this->isSubclassOf($type,1612);//1612.Версионная сущность
+		if ($versionFlag) {
+			$newState = $this->getId(1615);
+			$resource2->items[50131][0]=$newState;//50131.Версионное состояние
+		}
+
+		$resourceId = $this->getId($type);
+		$resource2->items[5048][0] = $resourceId;
+		//audit START
+		$params[5062] = 2345; //2345.Создание сущности
+		$params[5013] = $resourceId;
+		$params[5055] = $type;
+		$params[50123] = null;//50123.Начальное состояние
+		$params[50124] = $newState; //50124.Конечное состояние
+		$params[5057] = null;
+		$executeId = $this->insertAudit($params);
+		//audit END
+		$entProps = array();
+		$this->getClassPropertiesTransitive($type,$entProps);
 		if (empty($resource2->items[5048][0])) $resource2->items[5048][0] = $this->getId($type);
-		foreach ($props as $propId => $prop){
-			if (//($prop->items[50108] != 1) &&
-				($prop->items[50110] != 1) &&
-				($prop->items[5084] != 1) &&
-				(!empty($resource2->items[$prop->items[5082]][0]))){//50108.Автозаполняемое, 5084.Флаг внешнего свойства,50110.Флаг виртуального свойства
-				$columns = $columns.','.$prop->items[506];
-				$values = $values.','.$this->quotation($resource2->items[$prop->items[5082]][0],$prop->items[5055]);
+		$tableName = $this->getResProperty($type,503,0,0);
+		$this->insertBody($resource2,$type,$formPropsIds,$entProps,$tableName);
+		$this->insertDimResource($resourceId,$type,$start_date);
+
+		foreach ($entProps as $propId => $prop) {
+			if (($prop->items[5084] == 1) && (($formPropsIds[$prop->items[5048]] == 1) || (empty($formPropsIds)))) {
+				$propId = $prop->items[5082];
+				if (!empty($resource2->items[$propId])) foreach ($resource2->items[$propId] as $value) {
+					$isResource = !$this->isSubclassOf($prop->items[5055],133);
+					if ($prop->items[50110] == 1) $this->insertTriplets();
+					else $this->insertTriplets(null, $resourceId, $propId,$value,$isResource,$start_date);
+				}
 			}
 		}
-		if ($this->isSubclassOf($type,1612)){
-			$columns = $columns.',start_date';
-			$values = $values.','."'".$resource2->items[50113][0]."'";
-		}
-		$columns = substr($columns,1);
-		$values = substr($values,1);
-		$tableName = $this->getResProperty($type,503,0,0);
 
-		$query = 'insert into '.$tableName.' ('.$columns.') values('.$values.')';
-		echo $query;
+		$end_time = date("Y-m-d H:i:s:u");
+		if (!empty($executeId)) $this->updateProperty2($executeId,50122,$end_time,1614,null);//50122.Время окончания,1614.Исполнение действия
 
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
 		return $resource2->items[5048][0];
 	}
 
@@ -758,84 +781,58 @@ class Model {
 		$items[50121][0]=date("Y-m-d H:i:s:u");
 		$items[50122][0]=null;
 		$execute = new Resource2($items);
-		$this->insert($execute,1614);//1614.Исполнение действия
+		$entProps = array();
+		$this->getClassPropertiesTransitive(1614,$entProps);
+		$tableName = $this->getResProperty(1614,503,0,0);
+		$this->insertBody($execute,1614,null,$entProps,$tableName);//1614.Исполнение действия
 		return $executeId;
 	}
 
-	//Создание глобальной сущности
-	public function insertGlobal($resource2, $type = null, $start_date = null){
-		$columns = 'id,type';
-
-		if (empty($type)) $type = $resource2->items[5055];
-
-		$versionFlag = $this->isSubclassOf($type,1612);//1612.Версионная сущность
-		if ($versionFlag) {
+	public function insertBody($resource2, $type, $formPropsIds, $entProps, $tableName){
+		foreach ($entProps as $propId => $prop){
+			if (//($prop->items[50108] != 1) &&
+				($prop->items[50110] != 1) &&
+				($prop->items[5084] != 1) &&
+				(($formPropsIds[$prop->items[5048]] == 1)||(empty($formPropsIds))) &&
+				(!empty($resource2->items[$prop->items[5082]][0]))){//5084.Флаг внешнего свойства,50110.Флаг виртуального свойства
+				$columns = $columns.','.$prop->items[506];
+				$values = $values.','.$this->quotation($resource2->items[$prop->items[5082]][0],$prop->items[5055]);
+			}
+		}
+		if ($this->isSubclassOf($type,1612)){
 			$columns = $columns.',start_date';
-			if (empty($start_date)) $start_date = date("Y-m-d H:i:s");
-			$resource2->items[50113][0]=$start_date;//50113.Дата открытия записи
-			$newState = $this->getId(1615);
-			$resource2->items[50131][0]=$newState;//50131.Версионное состояние
+			$values = $values.','."'".$resource2->items[50113][0]."'";
 		}
-
-		$resourceId = $this->getId($type);
-		$resource2->items[5048][0] = $resourceId;
-		//audit START
-		$params[5062] = 2345; //2345.Создание сущности
-		$params[5013] = $resourceId;
-		$params[5055] = $type;
-		$params[50123] = null;//50123.Начальное состояние
-		$params[50124] = $newState; //50124.Конечное состояние
-		$params[5057] = null;
-		$executeId = $this->insertAudit($params);
-		//audit END
-
-		$id = $this->insert($resource2, $type, $start_date);
-		$values = $id.','.$resource2->items[5055];
-		if ($versionFlag){
-			$values = $values.',"'.$start_date.'"';
-		}
-		$query = 'insert into dim_resource('.$columns.') values ('.$values.')';
+		$columns = substr($columns,1);
+		$values = substr($values,1);
+		$query = 'insert into '.$tableName.' ('.$columns.') values('.$values.')';
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
-
-		$end_time = date("Y-m-d H:i:s:u");
-		$this->generateName($resourceId, $type); //Генерация имен ресурса
-		if (!empty($executeId)) $this->updateProperty2($executeId,50122,$end_time,1614,null);//50122.Время окончания,1614.Исполнение действия
-		return $id;
+		return $resource2->items[5048][0];
 	}
 
-	public function insertTriplets($subj_id,$prop_id,$value, $oldValue,$isResource = 1, $close_date = null){
-		if ($isResource) {
-			$value_name = 'obj_id';
-		}
-		else {
-			$value_name = 'value';
-		}
+	public function insertDimResource($id,$type,$startDate){
+		$query = 'insert into dim_resource(id,type,start_date) values ('.$id.','.$type.',"'.$startDate.'")';
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
+		$this->generateName($id, $type); //Генерация имен ресурса
+	}
 
+	public function insertTriplets($id, $subjId,$propId,$value,$isResource = 1, $startDate = null){
+		if ($isResource) $value_name = 'obj_id'; else $value_name = 'value';
 
-		if (empty($close_date)){
-			$close_date = date("Y-m-d H:i:s");
-		}
+		if (empty($startDate)) $startDate = date("Y-m-d H:i:s");
+		$query = "insert into triplets(subj_id,prop_id,".$value_name.",start_date,end_date) values(".$subjId.",".$propId.",".$value.",'".$startDate."','9999-01-01')";
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'Query='.$query. mysqli_error());
+		return $startDate;
+	}
 
-
-		if ($oldValue != $value){
-			if (!empty($oldValue)) $close_date = $this->closeCurrentVersionTriplet($subj_id,$prop_id, $oldValue, $isResource, $close_date);
-			//Рассчёт времени START
-			$start_date = new DateTime($close_date);
-			$start_date->add(new DateInterval('PT1S'));
-			$start_date = $start_date->format("Y-m-d H:i:s");
-			//Рассчёт времени END
-
-			$query = "insert into triplets(subj_id,prop_id,".$value_name.",start_date,end_date) values(".$subj_id.",".$prop_id.",".$value.",'".$start_date."','9999-01-01')";
-			$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'Query='.$query. mysqli_error());
-		}
-		return $close_date;
-
+	//todo
+	public function tripletsInsert($id, $subj_id, $prop_id, $obj_id, $value, $is_resource, $start_date){
 
 	}
 	
 	public function isSubclassOf($classId,$pClassId){
 		if ($pClassId == 133) {if ($classId == 134 || $classId == 135 || $classId == 136) return 1; else return 0;}
-		if ($pClassId == 1612) {if (($classId == 103) || ($classId == 109)|| ($classId == 1010) || ($classId == 1011) || ($classId == 1012)|| ($classId == 1026)) return 1; else return 0;};
+		if ($pClassId == 1612) {if (($classId == 103) || ($classId == 109)|| ($classId == 1010) || ($classId == 1011) || ($classId == 1012)|| ($classId == 1026)|| ($classId == 1016)) return 1; else return 0;};
 	}
 
 	public function closeCurrentVersion($resourceId, $type = null, $table = null){
@@ -852,22 +849,23 @@ class Model {
 	}
 
 	public function closeCurrentVersionTriplet($subj_id,$prop_id, $value, $isResource=1, $close_date = null){
+		if (empty($close_date)) $close_date = date("Y-m-d H:i:s");
 		if ($isResource) $value_name = 'obj_id'; else {$value_name = 'value'; $value = '\''.$value.'\'';}
 		$query = "update triplets set end_date = '".$close_date."' where subj_id = ".$subj_id." and prop_id = ".$prop_id." and ".$value_name."=".$value." and end_date = '9999-01-01'";
-		echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .$query. mysqli_error());
 		return $close_date;
 	}
 
 
 	//Сохраняет изменения в переданной сущности
-	public function update($resource2, $formId){
+	public function update($resource2, $formId, $type=null){
 		$resourceId = $resource2->items[5048][0];//5048.Идентификатор
-		$type = $this->getResProperty($resourceId,5051);//5051.Тип
+		if (empty($type)) $type = $this->getResProperty($resourceId,5051);//5051.Тип
+		$tableName = $this->getResProperty($type,503,0,0); //503.Местоположение
 		$oldResource = $this->getCurrentResource2($resource2->items[5048][0],$type);
 		echo 'OldState:'.$oldResource->items[50131][0];
-		$compareFlag = $this->compare($resource2,$oldResource, $formId);
-		$localCompareFlag = $this->compare($resource2,$oldResource, $formId,1);
+		$compareFlag = $this->compare($resource2,$oldResource, $formId,0,$type);
+		$localCompareFlag = $this->compare($resource2,$oldResource, $formId,1,$type);
 		if ($localCompareFlag != 1) {
 			//audit START
 			if ($this->isSubclassOf($type,1612)) $newState = $this->getId(1615);
@@ -886,12 +884,7 @@ class Model {
 			$close_date = $close_date->format("Y-m-d H:i:s");
 
 			//Проставление свойств которых нет в форме START
-			$filters[5065] = '%COLUMN%='.$formId;
-			$formProps = $this->getResources(112,$filters);
-			foreach ($formProps as $formProp){
-				echo '';
-				$formPropsIds[$formProp->items[5087]] = 1; //5087.Свойство сущности
-			}
+			if (!empty($formId)) $formPropsIds = $this->getFormProps($formId);
 			$entProps = array();
 			$this->getClassPropertiesTransitive($type,$entProps);
 			foreach($entProps as $entProp){
@@ -909,9 +902,11 @@ class Model {
 			$resource2->items[50114][0] = '9999-01-01'; //50114.CloseDate
 			$resource2->items[50131][0] = $newState; //50131.Версионное состояние
 			echo "START_DATE=".$close_date;
-			$this->insert($resource2,$type,$close_date);
+			$this->insertBody($resource2,$type,$formPropsIds,$entProps,$tableName);
+			//$this->insert($resource2,$type,$close_date);
 		}
 		if ($compareFlag != 1){
+			$this->updateExternalProperties($resource2,$oldResource,$entProps,$formPropsIds);
 			if (empty($resource2->items[50113][0])){
 				$resource2->items[50113][0] = date("Y-m-d H:i:s");
 			}
@@ -954,6 +949,24 @@ class Model {
 		$end_time = date("Y-m-d H:i:s:u");
 		if (!empty($executeId)) $this->updateProperty2($executeId,50122,$end_time,1614,null);//50122.Время окончания,1614.Исполнение действия
 		echo 'CompareFlag='.$compareFlag;
+	}
+
+	public function updateExternalProperties($newResource2,$oldResource2,$entProps,$formPropsIds,$closeDate = null){
+		if (empty($closeDate)) $closeDate = date("Y-m-d H:i:s");
+		$resourceId = $newResource2->items[5048][0];
+		foreach ($entProps as $propId => $prop) {
+			if (($prop->items[5084] == 1) && (($formPropsIds[$prop->items[5048]] == 1) || (empty($formPropsIds)))) {
+				$propId = $prop->items[5082];
+				if (!empty($oldResource2->items[$propId])) foreach ($oldResource2->items[$propId] as $oldValue) {
+					$isResource = !$this->isSubclassOf($prop->items[5055],133);
+					$findFlag = 0;
+					foreach ($newResource2->items[$propId] as $newValue) {
+						if ($oldValue == $newValue) {$findFlag = 1; break;}
+					}
+					if ($findFlag == 0) $this->closeCurrentVersionTriplet($resourceId,$propId,$oldValue,$isResource,$closeDate);
+				}
+			}
+		}
 	}
 
 
