@@ -9,7 +9,7 @@ $res2 = new Resource2($items);
 
 $model->insert($res2,1016);
 
-$res2->items[5048][0]=152630054;
+$res2->items[5048][0]=152630006;
 $res2->items[50139][0]='Test insert7';
 $res2->items[50165][0]=111;
-$model->update($res2,11113,1016);
+$model->update($res2,11518,1016);

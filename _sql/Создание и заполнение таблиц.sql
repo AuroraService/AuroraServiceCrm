@@ -33,6 +33,7 @@ insert into dim_resource(id,name,type) values(1012,'Заявка на изъят
 
 insert into dim_resource(id,name,type) values(1013,'Адрес',10);
 insert into dim_resource(id,name,type) values(1014,'Телефон',10);
+insert into dim_resource(id,name,type) values(1016,'Продукт',10);
 
 insert into dim_resource(id,name,type) values(10,'Ресурс с расположением в своей таблице ',132);
 insert into dim_resource(id,name,type) values(12,'Отображатель',11);
@@ -1508,9 +1509,31 @@ insert into sColumns(id, name, position,  type, template,editable,form,pid,viewe
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(112477,'Дата исполнения',3,1, NULL,1,11517,NULL,123,1511193);
   
+-- 11518
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112478, 'Id', 1, 0, NULL,0,11518,NULL,1210,1511173);
+  
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112479,'Артикул',1, 0, NULL,1,11518,NULL,1210,1511174);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112480,'Наименование',2, 0, NULL,1,11518,NULL,1210,1511175);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112481,'Производитель',3, 0, NULL,1,11518,NULL,1210,1511176);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112482,'Поставщик',4, 0, NULL,1,11518,NULL,1210,1511177);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112483,'Цена покупки',5, 0, NULL,1,11518,NULL,1210,1511179);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112484,'Наценка',6, 4, NULL,1,11518,NULL,1211,1511185);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112485,'Цена продажи',7, 0, NULL,1,11518,NULL,1210,1511180);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112486,'',8, 0, NULL,1,11518,NULL,1210,1511202); 
+
+  
 select max(id) from sColumns;
  
--- counter 112477
+-- counter 112485
 
 
 -- Создание справочника таблиц
@@ -1927,7 +1950,7 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511185,101
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511181,1016,50141,'',1017,1);
 
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511201,1016,50155,'cnt',1017,0);
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511202,1016,50165,'',1017,1);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,cardinal) values(1511202,1016,50165,'',1017,1,-1);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511203,1016,50172,'part_group',1017,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511204,1016,50173,'store',1017,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511205,1016,50174,'',1017,1);

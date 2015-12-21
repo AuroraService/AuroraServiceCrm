@@ -901,50 +901,12 @@ class Model {
 			$resource2->items[50113][0] = $close_date; //50113.StartDate
 			$resource2->items[50114][0] = '9999-01-01'; //50114.CloseDate
 			$resource2->items[50131][0] = $newState; //50131.Версионное состояние
-			echo "START_DATE=".$close_date;
 			$this->insertBody($resource2,$type,$formPropsIds,$entProps,$tableName);
-			//$this->insert($resource2,$type,$close_date);
 		}
 		if ($compareFlag != 1){
-			$this->updateExternalProperties($resource2,$oldResource,$entProps,$formPropsIds);
-			if (empty($resource2->items[50113][0])){
-				$resource2->items[50113][0] = date("Y-m-d H:i:s");
-			}
 			$entProps = array();
 			$this->getClassPropertiesTransitive($type,$entProps);
-			foreach ($entProps as $propId => $prop) {
-				if (($prop->items[5084] == 1)) {
-					echo 'PropId='.$prop->items[5082];
-					$propId = $prop->items[5082];
-					if ($prop->items[50110] == 1) {
-						$insertPropId = $this->getResProperty($propId, 5049);//5049.Является обратным
-					} else {
-						$insertPropId = $propId;
-					}
-					$ret = $this->compareProperties($resource2->items[$prop->items[5082]], $oldResource->items[$prop->items[5082]]);
-					if (!empty($ret)) foreach ($ret as $value) {
-						if ($prop->items[50110] != 1) {
-							$subj_id = $resource2->items[5048][0];
-							$obj_id = $value;
-						} else {
-							$subj_id = $value;
-							$obj_id = $resource2->items[5048][0];
-						}
-						$this->insertTriplets($subj_id, $insertPropId, $obj_id,null, 1, $resource2->items[50113][0]);
-					}
-					$ret = $this->compareProperties($oldResource->items[$prop->items[5082]], $resource2->items[$prop->items[5082]]);
-					if (!empty($ret)) foreach ($ret as $value) {
-						if ($prop->items[50110] != 1) {
-							$subj_id = $resource2->items[5048][0];
-							$obj_id = $value;
-						} else {
-							$subj_id = $value;
-							$obj_id = $resource2->items[5048][0];
-						}
-						$this->closeCurrentVersionTriplet($subj_id, $insertPropId, $obj_id, 1, $resource2->items[50113][0]);
-					}
-				}
-			}
+			$this->updateExternalProperties($resource2,$oldResource,$entProps,$formPropsIds);
 		}
 		$end_time = date("Y-m-d H:i:s:u");
 		if (!empty($executeId)) $this->updateProperty2($executeId,50122,$end_time,1614,null);//50122.Время окончания,1614.Исполнение действия
@@ -952,18 +914,30 @@ class Model {
 	}
 
 	public function updateExternalProperties($newResource2,$oldResource2,$entProps,$formPropsIds,$closeDate = null){
+		echo 'UpdateExternal';
 		if (empty($closeDate)) $closeDate = date("Y-m-d H:i:s");
 		$resourceId = $newResource2->items[5048][0];
 		foreach ($entProps as $propId => $prop) {
 			if (($prop->items[5084] == 1) && (($formPropsIds[$prop->items[5048]] == 1) || (empty($formPropsIds)))) {
 				$propId = $prop->items[5082];
+				//echo 'Value='.$oldResource2->items[$propId][1];
 				if (!empty($oldResource2->items[$propId])) foreach ($oldResource2->items[$propId] as $oldValue) {
 					$isResource = !$this->isSubclassOf($prop->items[5055],133);
 					$findFlag = 0;
 					foreach ($newResource2->items[$propId] as $newValue) {
-						if ($oldValue == $newValue) {$findFlag = 1; break;}
+						echo 'OldValue='.$oldValue.',NewValue='.$newValue.'<br>';
+						if ($oldValue == $newValue) {$findFlag = 1; break 1;}
 					}
 					if ($findFlag == 0) $this->closeCurrentVersionTriplet($resourceId,$propId,$oldValue,$isResource,$closeDate);
+				}
+				if (!empty($newResource2->items[$propId])) foreach ($newResource2->items[$propId] as $newValue) {
+					$isResource = !$this->isSubclassOf($prop->items[5055],133);
+					$findFlag = 0;
+					foreach ($oldResource2->items[$propId] as $oldValue) {
+						echo 'OldValue='.$oldValue.',NewValue='.$newValue.'<br>';
+						if ($oldValue == $newValue) {$findFlag = 1; break 1;}
+					}
+					if ($findFlag == 0) $this->insertTriplets(null,$resourceId,$propId,$newValue,$isResource,$closeDate);
 				}
 			}
 		}
