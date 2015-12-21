@@ -33,6 +33,7 @@ insert into dim_resource(id,name,type) values(1012,'Заявка на изъят
 
 insert into dim_resource(id,name,type) values(1013,'Адрес',10);
 insert into dim_resource(id,name,type) values(1014,'Телефон',10);
+insert into dim_resource(id,name,type) values(1016,'Продукт',10);
 
 insert into dim_resource(id,name,type) values(10,'Ресурс с расположением в своей таблице ',132);
 insert into dim_resource(id,name,type) values(12,'Отображатель',11);
@@ -179,10 +180,12 @@ insert into dim_resource(id,name,type) values(15212,'Параметр 2',1611);
 -- Создание таблицы высказываний
 drop table if exists triplets;
 create table triplets(
+  id         bigint,
   subj_id	 bigint,
   prop_id    bigint,
   obj_id	    bigint,
   value	    varchar(256),
+  is_resource int default 1,
   cr_time    datetime,
   start_date datetime default '2015-11-01',
   end_date   datetime default '9999-01-01',
@@ -1506,9 +1509,31 @@ insert into sColumns(id, name, position,  type, template,editable,form,pid,viewe
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(112477,'Дата исполнения',3,1, NULL,1,11517,NULL,123,1511193);
   
+-- 11518
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112478, 'Id', 1, 0, NULL,0,11518,NULL,1210,1511173);
+  
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112479,'Артикул',1, 0, NULL,1,11518,NULL,1210,1511174);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112480,'Наименование',2, 0, NULL,1,11518,NULL,1210,1511175);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112481,'Производитель',3, 0, NULL,1,11518,NULL,1210,1511176);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112482,'Поставщик',4, 0, NULL,1,11518,NULL,1210,1511177);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112483,'Цена покупки',5, 0, NULL,1,11518,NULL,1210,1511179);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112484,'Наценка',6, 4, NULL,1,11518,NULL,1211,1511185);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112485,'Цена продажи',7, 0, NULL,1,11518,NULL,1210,1511180);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 112486,'',8, 0, NULL,1,11518,NULL,1210,1511202); 
+
+  
 select max(id) from sColumns;
  
--- counter 112477
+-- counter 112485
 
 
 -- Создание справочника таблиц
@@ -1667,6 +1692,9 @@ insert into entities(id, location,namespace,counter) values(1017, 'product_categ
 
 insert into entities(id, location,namespace,counter) values(1024, 'base_elements',1530,100);
 insert into entities(id, location,namespace,counter,name_template) values(1026, 'op_notes',1532,100,'%5066%');
+
+insert into entities(id, location,namespace,counter) values(1616, 'triplets',1533,100);
+insert into entities(id, location,namespace,counter) values(1029, 'products',1526,100);
 
 -- Создание таблицы свойств сущности
 drop table if exists ent_properties;
@@ -1900,7 +1928,7 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) 
 
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511159,1614,5079,'user_id',102);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511160,1614,5062,'action_id',23);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511161,1614,5013,'object_id',132);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511161,1614,5013,'obj_id',132);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511162,1614,5055,'domain',132);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511163,1614,50123,'state1',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511164,1614,50124,'state2',134);
@@ -1920,6 +1948,17 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511179,101
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511180,1016,5040,'sell_cost',135);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511185,1016,50145,'add_cost',135);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511181,1016,50141,'',1017,1);
+
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511201,1016,50155,'cnt',1017,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,cardinal) values(1511202,1016,50165,'',1017,1,-1);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511203,1016,50172,'part_group',1017,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511204,1016,50173,'store',1017,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511205,1016,50174,'',1017,1);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511206,1016,50175,'',1017,1);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511207,1016,50176,'',1017,1);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511208,1016,50167,'',1017,1);
+
+
 -- 1017.Категория продукта
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511182,1017,5048,'id',1017,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511183,1017,50139,'show_name',134);
@@ -1933,8 +1972,17 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511190,102
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511191,1026,50159,'ex_status',135);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511192,1026,5014,'performer_id',102);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511193,1026,50160,'ex_date',136);
+-- 1616.Высказывание
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511194,1616,5048,'id',1616,0,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511195,1616,50163,'subj_id',132);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511196,1616,5082,'prop_id',50);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511197,1616,5013,'obj_id',132);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511198,1616,5066,'value',133);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511199,1616,50164,'is_resource',135);
+-- 1029.Продукт премиальной марки
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511200,1029,5048,'id',1029,0,0);
 
--- 1511193
+-- 1511199
 
 select * from ent_properties;
 
@@ -2427,7 +2475,7 @@ drop table if exists executions;
 create table executions(
   id bigint,
   user_id bigint,
-  object_id bigint,
+  obj_id bigint,
   domain bigint,
   state1 bigint,
   state2 bigint,
@@ -2453,6 +2501,7 @@ create table  products(
   buy_cost int,
   add_cost int,
   sell_cost int,
+  cnt int,
   start_date datetime default '2015-10-01',
   end_date   datetime default '9999-01-01',
   state  bigint,
@@ -2526,9 +2575,56 @@ insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,perform
 
 insert into dim_resource(id,type) values(15324,1026);
 
+
+-- Создание таблицы моделей
+drop table if exists models;
+create table models(
+  id               bigint,
+  manufacturer_id  bigint,
+  tech_type        bigint,
+  name             varchar(1024),
+  type             bigint,
+  pid              bigint,
+  start_date datetime default '2015-10-01',
+  end_date   datetime default '9999-01-01',
+  PRIMARY KEY(id,end_date)
+);
+
+-- Создание таблицы продуктов
+drop table if exists products;
+create table  products(
+  id               bigint,
+  articul          varchar(256),
+  show_name        varchar(256),
+  manufacturer_id  bigint,
+  provider_id      bigint,
+  image            bigint,
+  buy_cost         int,
+  add_cost         int,
+  sell_cost        int,
+  cnt              int,
+  part_group       bigint,
+  store            bigint,
+  position         int,
+  del_flag         int,
+  man_articul      varchar(256),
+  schema_id        bigint,
+  start_date       datetime default '2015-10-01',
+  end_date         datetime default '9999-01-01',
+  state            bigint,
+  PRIMARY KEY(id,end_date)
+);
+
+insert into products(id,articul,show_name) values(1526,'xxx','Test 1');
+-- insert into dim_resource(id,type) values(1526,1016);
+select * from dim_resource where type = 1016;
 -- 
+select * from products;
+select * from triplets where prop_id = 50165;
 select * from requests;
 select * from triplets;
+select * from files;
+delete from products;
 
 -- update triplets set end_date = '' where subj_id = 15031 and prop_id = 5028 and obj_id=15031 and end_date = '9999-01-01';
 select * from entities;
