@@ -208,6 +208,8 @@ insert into triplets(subj_id, prop_id,obj_id) values(109,5061,103);
 insert into triplets(subj_id, prop_id,obj_id) values(1010,5061,103);
 insert into triplets(subj_id, prop_id,obj_id) values(1011,5061,103);
 insert into triplets(subj_id, prop_id,obj_id) values(1012,5061,103);
+-- Иерархии
+insert into triplets(subj_id, prop_id,obj_id) values(1027,5061,132);
 -- Отношения между свойствами
 insert into triplets(subj_id, prop_id,obj_id) values(5050,5049,5028);
 insert into triplets(subj_id, prop_id,obj_id) values(50120,5049,5057);
@@ -481,6 +483,7 @@ insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2348);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2340);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2336);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2352);
+insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2353);
 select * from triplets where obj_id = 2315;
 
 
@@ -1695,6 +1698,7 @@ insert into entities(id, location,namespace,counter,name_template) values(1026, 
 
 insert into entities(id, location,namespace,counter) values(1616, 'triplets',1533,100);
 insert into entities(id, location,namespace,counter) values(1029, 'products',1526,100);
+insert into entities(id, location,namespace,counter) values(1027, 'models',1534,100);
 
 -- Создание таблицы свойств сущности
 drop table if exists ent_properties;
@@ -1982,7 +1986,23 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511199,161
 -- 1029.Продукт премиальной марки
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511200,1029,5048,'id',1029,0,0);
 
--- 1511199
+-- 132.Ресурс
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511209,132,5048,'id',132,0,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511210,132,501,'name',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511211,132,5051,'type',132);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511212,132,50100,'search_name',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511213,132,50136,'present_name',134);
+
+-- 1027.Модель техники
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511214,1027,5048,'id',1027,0,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511215,1027,50137,'manufacturer_id',1025);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511216,1027,50165,'tech_type',132);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511217,1027,501,'name',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511218,1027,50166,'',1018,1);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511219,1027,50167,'',1019,1);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511220,1027,5051,'type',132);
+
+-- 1511220
 
 select * from ent_properties;
 
@@ -2215,6 +2235,8 @@ insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2342,2342,
 
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2336,2336,'Печать содержимого поиска выбора',1411,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2340,2340,'Печать формы поиска выбора',1411,132,23);
+
+insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2353,2340,'Отображение базы данных аналогов',1413,132,23);
 select * from dim_actions;
 
 -- Создание таблицы элементов CRM
@@ -2241,6 +2263,7 @@ insert into sCrmElements(id,name,location,type) values(149, 'ExtShowController',
 insert into sCrmElements(id,name,location,type) values(1410, 'EditController', 'core/edit.controller.php',14);
 insert into sCrmElements(id,name,location,type) values(1411, 'Search2Controller', 'core/search2.controller.php',14);
 insert into sCrmElements(id,name,location,type) values(1412, 'OpNotesController', 'core/opnotes.controller.php',14);
+insert into sCrmElements(id,name,location,type) values(1413, 'AnalogBaseController', 'core/analog_base.controller.php',14);
 
 insert into sCrmElements(id,name,location,type) values(121,'TextViewer','core/viewers/text.viewer.php',12);
 insert into sCrmElements(id,name,location,type) values(122,'DateTimeViewer','core/viewers/datetime.viewer.php',12);
@@ -2590,6 +2613,13 @@ create table models(
   PRIMARY KEY(id,end_date)
 );
 
+insert into models(id, name) values(15341,'Test Model');
+
+insert into dim_resource(id,type) values(15341,1027);
+
+select * from models;
+select * from dim_resource;
+
 -- Создание таблицы продуктов
 drop table if exists products;
 create table  products(
@@ -2617,6 +2647,9 @@ create table  products(
 
 insert into products(id,articul,show_name) values(1526,'xxx','Test 1');
 -- insert into dim_resource(id,type) values(1526,1016);
+
+
+
 select * from dim_resource where type = 1016;
 -- 
 select * from products;
