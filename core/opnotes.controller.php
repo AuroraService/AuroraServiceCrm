@@ -22,7 +22,7 @@ class OpNotesController {
                  <div class="op-msg-filters" id="op-msg-filters-form" style="display: none; z-index: 999;" up="false">
                  </div><div id="op_view_form">';
 		foreach ($notes as $note) {
-			$user = $model->getResource($note->items[50150],102); //50150.Отправитель сообщения, 102.Сотрудник
+			if (!empty($note->items[50150])) $user = $model->getResource($note->items[50150],102); //50150.Отправитель сообщения, 102.Сотрудник
 			if ($note->items[5014]!="") $perf_user = $model->getResource($note->items[5014],102);
 			//echo $note->items[5048] .",".$note->items[5066]. ",".$note->items[50150]. ",".$note->items[5022]. ",".$note->items[50158]. ",".$note->items[50159]. ",".$note->items[5014]. ",".$note->items[50160].'<BR>';
 			$frm_date=date("d.m, H:i", strtotime($note->items[5022]));
