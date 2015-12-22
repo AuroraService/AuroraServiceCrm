@@ -606,7 +606,7 @@ class Model {
 		//print_r($resources1);
 		$resources2 = array();
 		$lineCounter = 0;
-		foreach ($resources1 as $resource1){
+		if (!empty($resources1)) foreach ($resources1 as $resource1){
 			foreach ($resource1->items as $propId => $propValue) {
 				$resources2[$lineCounter]->items[$propId][0] = $propValue;
 			}
@@ -648,6 +648,27 @@ class Model {
 		return $resources2;
 	}
 
+	public function getResourcesOpt($type, $filters = null, $orders = null, $formId = null){
+		$tableName = $this->getResProperty($type,503,0,0); //503.Местоположение
+		$tableCounter = 1;
+		$tableAlias = "l".$tableCounter;
+		$entProps =  $this->getClassProperties($type);
+		if (!empty($formId)) $formPropsIds = $this->getFormProps($formId);
+		$ret = $this->generatePropList($tableAlias,$entProps,$filters, $orders,$formPropsIds);
+		print_r($ret);
+		$pClasses = $this->getResProperty2($type,5061,0);
+		foreach ($pClasses as $pClass){
+			$entProps =  $this->getClassProperties($pClass);
+			$tableCounter++;
+			$tableAlias = "l".$tableCounter;
+			$ret = $this->generatePropList($tableAlias,$entProps,$filters, $orders,$formPropsIds);
+			print_r($ret);
+		}
+
+
+
+	}
+
 	public function getResourceValue($resourceId,$template){
 		if (empty($resourceId)) return '';
 		$type = $this->getResProperty($resourceId,5051);
@@ -683,6 +704,25 @@ class Model {
 		if (!empty($ret)) foreach($ret as $child){
 			$this->getSubClass($child,$result);
 		}
+	}
+
+	public function generatePropList($tableAlias, $entProps, $filters = null, $orders = null, $formPropsIds = null){
+		$selectList = '';
+		$whereList = '';
+		$orderList = '';
+		foreach ($entProps as $prop) {
+			if ($prop->items[5084]==0) {
+				$propId = $prop->items[5082]; //5082.Идентификатор свойства
+				$alias = $prop->items[506];//506.Псевдоним
+				$selectList = $selectList . ',' . $tableAlias . '.' . $alias . ' ' . $propId;
+				if (!empty($filters[$propId])) $whereList = $whereList . ' and ' . $tableAlias . '.' . $alias . '=' . $filters[$propId];
+				if (!empty($orders[$propId])) $orderList = $orderList . ',' . $tableAlias . '.' . $alias;
+			}
+		}
+		$ret[0] = $selectList;
+		$ret[1] = $whereList;
+		$ret[2] = $orderList;
+		return $ret;
 	}
 
 	public function generateName($resourceId, $type){
@@ -924,7 +964,7 @@ class Model {
 				if (!empty($oldResource2->items[$propId])) foreach ($oldResource2->items[$propId] as $oldValue) {
 					$isResource = !$this->isSubclassOf($prop->items[5055],133);
 					$findFlag = 0;
-					foreach ($newResource2->items[$propId] as $newValue) {
+					if (!empty($newResource2->items[$propId])) foreach ($newResource2->items[$propId] as $newValue) {
 						echo 'OldValue='.$oldValue.',NewValue='.$newValue.'<br>';
 						if ($oldValue == $newValue) {$findFlag = 1; break 1;}
 					}
@@ -933,7 +973,7 @@ class Model {
 				if (!empty($newResource2->items[$propId])) foreach ($newResource2->items[$propId] as $newValue) {
 					$isResource = !$this->isSubclassOf($prop->items[5055],133);
 					$findFlag = 0;
-					foreach ($oldResource2->items[$propId] as $oldValue) {
+					if (!empty($oldResource2->items[$propId])) foreach ($oldResource2->items[$propId] as $oldValue) {
 						echo 'OldValue='.$oldValue.',NewValue='.$newValue.'<br>';
 						if ($oldValue == $newValue) {$findFlag = 1; break 1;}
 					}

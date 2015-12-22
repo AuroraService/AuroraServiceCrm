@@ -80,6 +80,10 @@ switch ($action) {
 		//$mainController -> executeAction(2340, $params);//2340. Печать формы поиска выбора
         echo  ShowFindForm($json); // Не удалять
         break;
+    case '2354':
+        $mainController->executeAction(2354, $params);//2354.Получение списка
+        echo 'List';
+        break;
 	case '2342':
 		//echo 'Step';
 		$model = Model::getModel();
@@ -87,8 +91,8 @@ switch ($action) {
 		$params[5055] = $domain; //5055.Домен
 		$params[5091] = $json[5091][0]; //5091.Поисковый запрос
 		$params[5058] = 2342;
-		$mainController -> executeAction(2342, $params);//2342.Поиск сущностей(обработка запроса)
-		break;
+        $mainController->executeAction(2342, $params);//2342.Поиск сущностей(обработка запроса)
+        break;
 	return 0;
 }
 
