@@ -648,24 +648,119 @@ class Model {
 		return $resources2;
 	}
 
+	public function getResources2Opt($type, $filters = null, $orders = null, $formId = null){
+		$resources1 = $this->getResourcesOpt($type, $filters, $orders, $formId);
+
+		$tableName = $this->getResProperty($type,503,0,0); //503.Местоположение
+		$tableCounter = 1;
+		$firstTableAlias = "l".$tableCounter;
+		$select = ",".$firstTableAlias.".id '5048'";
+		$from = " from ".$tableName." ".$firstTableAlias;
+		$entProps = array();
+		$this->getClassPropertiesTransitive($type, $entProps); //1511.Свойство сущности
+		foreach ($entProps as $entProp) {
+			if ($entProp->items[5084] == 1) { //5084.Флаг внешнего свойства
+				$propId = $entProp->items[5082];
+				$tableCounter++;
+				$tableAlias = "l".$tableCounter;
+				$select = $select.",".$tableAlias.".obj_id '".$propId."'";
+				$from = $from." left join triplets ".$tableAlias." on ".$tableAlias.".subj_id=".$firstTableAlias.".id and ".$tableAlias.".prop_id=".$propId." and ".$tableAlias.".end_date='9999-01-01'";
+			}
+		}
+
+		if (!empty($filters[50114])) $where = " where ".$firstTableAlias.".end_date = '9999-01-01'";
+
+		$query = "select ".substr($select,1).$from.$where;
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'Query:'.$query.','. mysqli_error());
+		$oldId = null;
+		$valueCounter = null;
+		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
+			$id = $line[5048];
+			//echo 'id = '.$id.','.$oldId.'<br>';
+			if ($id != $oldId) $valueCounter = null;
+			$oldId = $id;
+			foreach ($entProps as $entProp) {
+				if ($entProp->items[5084] == 1) { //5084.Флаг внешнего свойства
+					$propId = $entProp->items[5082];
+					if (!empty($line[$propId])) {
+						//echo 'valueCounter[$propId]='.$valueCounter[$propId].'<br>';
+						if (isset($valueCounter[$propId])) $valueCounter[$propId]++; else $valueCounter[$propId] = 0;
+						//echo 'valueCounter[$propId]='.$valueCounter[$propId].'<br>';
+						$extProps[$id][$propId][$valueCounter[$propId]] = $line[$propId];
+					}
+				}
+			}
+		}
+		//echo '<br><br>';
+		//print_r($extProps);
+		//echo '<br><br>';
+
+		foreach ($resources1 as $resource1){
+			$id = $resource1->items[5048][0];
+			foreach ($entProps as $entProp) {
+				if ($entProp->items[5084] == 1) { //5084.Флаг внешнего свойства
+					$valueCounter = 0;
+					$propId = $entProp->items[5082];
+					if (!empty($extProps[$id][$propId])) foreach ($extProps[$id][$propId] as $value) {
+						//echo $value;
+						$resource1->items[$propId][$valueCounter] = $value;
+						$valueCounter++;
+					}
+				}
+			}
+		}
+
+		echo $query;
+		return $resources1;
+	}
+
 	public function getResourcesOpt($type, $filters = null, $orders = null, $formId = null){
 		$tableName = $this->getResProperty($type,503,0,0); //503.Местоположение
 		$tableCounter = 1;
-		$tableAlias = "l".$tableCounter;
+		$firstTableAlias = "l".$tableCounter;
 		$entProps =  $this->getClassProperties($type);
 		if (!empty($formId)) $formPropsIds = $this->getFormProps($formId);
-		$ret = $this->generatePropList($tableAlias,$entProps,$filters, $orders,$formPropsIds);
-		print_r($ret);
+		$ret = $this->generatePropList($firstTableAlias,$entProps,$filters, $orders,$formPropsIds);
+		$select = $ret[0];
+		$where = $ret[1];
+		$order = $ret[2];
+		$from = " from ".$tableName." ".$firstTableAlias;
+
 		$pClasses = $this->getResProperty2($type,5061,0);
 		foreach ($pClasses as $pClass){
+			$tableName = $this->getResProperty($pClass,503,0,0); //503.Местоположение
 			$entProps =  $this->getClassProperties($pClass);
 			$tableCounter++;
 			$tableAlias = "l".$tableCounter;
 			$ret = $this->generatePropList($tableAlias,$entProps,$filters, $orders,$formPropsIds);
-			print_r($ret);
+			$select = $select.$ret[0];
+			$where = $where.$ret[1];
+			$order = $order.$ret[2];
+			if (!empty($ret[0])||!empty($ret[1])||!empty($ret[2])) $from = $from." join ".$tableName." ".$tableAlias." on ".$tableAlias.".id=".$firstTableAlias.".id";
 		}
+		if (!empty($filters[50114])) $where = $where . " and ".$firstTableAlias.".end_date = '9999-01-01'";
+		if (!empty($where)) $where = " where ".substr($where,5);
+		if (!empty($order)) $order = " order by ".substr($order,1);
+		$query = "select ".substr($select,1).$from.$where.$order;
+		echo "<br>".$query."<br>";
 
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'Query:'.$query.','. mysqli_error());
+		$lineNum = 0;
+		$entProps = array();
+		$this->getClassPropertiesTransitive($type, $entProps); //1511.Свойство сущности
+		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
+			foreach ($entProps as $entProp) {
+				if ($entProp->items[5084] == 0) { //5084.Флаг внешнего свойства
+					$propId = $entProp->items[5082];
+					$items[$propId][0]=$line[$propId];
+				}
+			}
 
+			$res = new Resource2($items);
+			$ret[$lineNum]=$res;
+			$lineNum++;
+		}
+		return $ret;
 
 	}
 
@@ -714,8 +809,8 @@ class Model {
 			if ($prop->items[5084]==0) {
 				$propId = $prop->items[5082]; //5082.Идентификатор свойства
 				$alias = $prop->items[506];//506.Псевдоним
-				$selectList = $selectList . ',' . $tableAlias . '.' . $alias . ' ' . $propId;
-				if (!empty($filters[$propId])) $whereList = $whereList . ' and ' . $tableAlias . '.' . $alias . '=' . $filters[$propId];
+				$selectList = $selectList . ',' . $tableAlias . '.' . $alias . ' "' . $propId.'"';
+				if (!empty($filters[$propId])) $whereList = $whereList . ' and ' . $tableAlias . '.' . str_replace('%COLUMN%', $alias, $filters[$propId]);
 				if (!empty($orders[$propId])) $orderList = $orderList . ',' . $tableAlias . '.' . $alias;
 			}
 		}

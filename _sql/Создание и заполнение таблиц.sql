@@ -484,6 +484,7 @@ insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2340);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2336);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2352);
 insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2353);
+insert into triplets(subj_id, prop_id,obj_id) values(15011,5011,2354);
 select * from triplets where obj_id = 2315;
 
 
@@ -1700,6 +1701,8 @@ insert into entities(id, location,namespace,counter) values(1616, 'triplets',153
 insert into entities(id, location,namespace,counter) values(1029, 'products',1526,100);
 insert into entities(id, location,namespace,counter) values(1027, 'models',1534,100);
 
+insert into entities(id, location,namespace,counter) values(1020, 'manufacturers',1528,100);
+
 -- Создание таблицы свойств сущности
 drop table if exists ent_properties;
 create table ent_properties(
@@ -1997,12 +2000,17 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511213,132
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511214,1027,5048,'id',1027,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511215,1027,50137,'manufacturer_id',1025);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511216,1027,50165,'tech_type',132);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511217,1027,501,'name',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511217,1027,50139,'show_name',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511218,1027,50166,'',1018,1);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511219,1027,50167,'',1019,1);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511220,1027,5051,'type',132);
 
--- 1511220
+-- 1020.Производитель
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511221,1020,5048,'id',1020,0,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511222,1020,50139,'show_name',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511223,1020,50178,'prem_flag',135);
+
+-- 1511223
 
 select * from ent_properties;
 
@@ -2237,6 +2245,7 @@ insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2336,2336,
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2340,2340,'Печать формы поиска выбора',1411,132,23);
 
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2353,2340,'Отображение базы данных аналогов',1413,132,23);
+insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2354,2340,'Получение списка',1414,132,23);
 select * from dim_actions;
 
 -- Создание таблицы элементов CRM
@@ -2264,6 +2273,7 @@ insert into sCrmElements(id,name,location,type) values(1410, 'EditController', '
 insert into sCrmElements(id,name,location,type) values(1411, 'Search2Controller', 'core/search2.controller.php',14);
 insert into sCrmElements(id,name,location,type) values(1412, 'OpNotesController', 'core/opnotes.controller.php',14);
 insert into sCrmElements(id,name,location,type) values(1413, 'AnalogBaseController', 'core/analog_base.controller.php',14);
+insert into sCrmElements(id,name,location,type) values(1414, 'ListController', 'core/list.controller.php',14);
 
 insert into sCrmElements(id,name,location,type) values(121,'TextViewer','core/viewers/text.viewer.php',12);
 insert into sCrmElements(id,name,location,type) values(122,'DateTimeViewer','core/viewers/datetime.viewer.php',12);
@@ -2605,17 +2615,25 @@ create table models(
   id               bigint,
   manufacturer_id  bigint,
   tech_type        bigint,
-  name             varchar(1024),
+  show_name             varchar(1024),
   type             bigint,
   pid              bigint,
   start_date datetime default '2015-10-01',
   end_date   datetime default '9999-01-01',
+  search_name varchar(256),
+  present_name varchar(256),
+  name varchar(256),
   PRIMARY KEY(id,end_date)
 );
 
-insert into models(id, name) values(15341,'Test Model');
+insert into triplets(subj_id,prop_id,obj_id) values(15341,50166,12345);
+insert into triplets(subj_id,prop_id,obj_id) values(15341,50166,123456);
+
+insert into models(id, show_name) values(15341,'Test Model');
+insert into models(id, show_name) values(15342,'Название модели');
 
 insert into dim_resource(id,type) values(15341,1027);
+insert into dim_resource(id,type) values(15342,1027);
 
 select * from models;
 select * from dim_resource;
@@ -2645,10 +2663,49 @@ create table  products(
   PRIMARY KEY(id,end_date)
 );
 
-insert into products(id,articul,show_name) values(1526,'xxx','Test 1');
+insert into products(id,articul,show_name) values(15261,'Артикул продукта','Название продукта');
+insert into products(id,articul,show_name) values(15262,'xxx','Test 1');
 -- insert into dim_resource(id,type) values(1526,1016);
 
+select * from products;
+-- Создание таблицы производителей
+drop table if exists manufacturers;
+create table  manufacturers(
+  id               bigint,
+  show_name        varchar(256),
+  prem_flag        int default 0,
+  start_date       datetime default '2015-10-01',
+  end_date         datetime default '9999-01-01',
+  state            bigint,
+  PRIMARY KEY(id,end_date)
+);
 
+
+
+insert into manufacturers(id,show_name) values(15281,'Whirlpool');
+insert into manufacturers(id,show_name) values(15282,'Lg');
+insert into manufacturers(id,show_name) values(15283,'Samsung');
+insert into manufacturers(id,show_name) values(15284,'Liebherr');
+insert into manufacturers(id,show_name) values(15285,'Siltal');
+insert into manufacturers(id,show_name) values(15286,'Vestfrost');
+insert into manufacturers(id,show_name) values(15288,'Беко');
+insert into manufacturers(id,show_name) values(15289,'Bosch');
+insert into manufacturers(id,show_name) values(152810,'Uni');
+insert into manufacturers(id,show_name) values(152811,'Candy');
+insert into manufacturers(id,show_name) values(152812,'Electrolux');
+insert into manufacturers(id,show_name) values(152813,'Gorenje');
+insert into manufacturers(id,show_name) values(152814,'Indesit');
+insert into manufacturers(id,show_name) values(152815,'Teka');
+insert into manufacturers(id,show_name) values(152816,'Asko');
+insert into manufacturers(id,show_name) values(152817,'Бисселл');
+
+insert into manufacturers(id,show_name,prem_flag) values(152820,'Kuppersbusch',1);
+insert into manufacturers(id,show_name,prem_flag) values(152821,'Ilve',1);
+insert into manufacturers(id,show_name,prem_flag) values(152822,'Restart',1);
+insert into manufacturers(id,show_name,prem_flag) values(152823,'Gaggenau',1);
+insert into manufacturers(id,show_name,prem_flag) values(152824,'Gutman',1);
+
+select * from manufacturers;
 
 select * from dim_resource where type = 1016;
 -- 
@@ -2657,12 +2714,14 @@ select * from triplets where prop_id = 50165;
 select * from requests;
 select * from triplets;
 select * from files;
-delete from products;
+-- delete from products;
 
 -- update triplets set end_date = '' where subj_id = 15031 and prop_id = 5028 and obj_id=15031 and end_date = '9999-01-01';
 select * from entities;
 select * from executions;
 select * from dim_resource;
+
+select l1.id '5048',l2.obj_id '50166',l3.obj_id '50167' from models l1 left join triplets l2 on l2.id=l1.id and l2.prop_id=50166 and l2.end_date='9999-01-01' left join triplets l3 on l3.id=l1.id and l3.prop_id=50167 and l3.end_date='9999-01-01' where l1.end_date = '9999-01-01'
 
 /*
 update products p 
