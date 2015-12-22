@@ -18,10 +18,10 @@
      } ?>
   </select>
 
-  <input type="text" class="form-control filter-input" placeholder="Поиск">
+  <input type="text" class="form-control filter-input" placeholder="Поиск" id="find_input1">
   </div>
   <div class="panel-body nbody" style="max-height: 200px; overflow-y: scroll;">
-<div class="list-group ngroup" style="background-color: white;"><? include 'item-1.php'; ?></div>
+    <div class="list-group ngroup" style="background-color: white;"><? include 'item-1.php'; ?></div>
   </div>
 </div>
 
@@ -50,10 +50,10 @@
        echo '<option>'.$val->items[50139].'</option>';
      } ?>
   </select>
-  <input type="text" class="form-control filter-input" placeholder="Поиск">
+  <input type="text" class="form-control filter-input" placeholder="Поиск" id="find_input2">
   </div>
   <div class="panel-body nbody" style="max-height: 200px; overflow-y: scroll; border-top: 1px solid rgb(221,221,221);">
-<div class="list-group ngroup" style="background-color: white;"><? include 'item-1.php'; ?></div>
+<div class="list-group ngroup" style="background-color: white;" id="find_res_2"><? include 'item-1.php'; ?></div>
   </div>
   </div>
 

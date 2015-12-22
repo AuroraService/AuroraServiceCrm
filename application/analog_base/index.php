@@ -23,17 +23,11 @@ $model = Model::getModel();
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="../../btstrp/js/bootstrap.min.js"></script>
+    <script src="../../core/ajax/interface.js"></script>
  </head>
 <body>
 <?
-    if ($model->CheckLogin()!=1){
-      $clogin=$model->LogIn();
-      //echo $clogin;
-      if ($clogin!=100){
-        require_once('includes/login_form.php');
-        exit;
-      }
-    }
+
 echo "<script language ='JavaScript'> data['50126'] = {}; data['50126']['5079']=".$_SESSION['id'].";</script>";
 $model->loadPermissions();
 require_once('../../main.controller.php');

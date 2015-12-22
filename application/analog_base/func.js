@@ -1,4 +1,7 @@
 var zoom_counter=1;
+var find_timer1;
+var find_timer2;
+var find_timer3;
 function CreateZoom(){
   var cell="div-cell";
   zoom_counter=1;
@@ -78,3 +81,24 @@ $("#clear_filter_btn_1").click(function(){
 $("#clear_filter_btn_2").click(function(){
   $(".f2 [value='0']").attr("selected", "selected");
 });
+
+
+
+$("#find_input1").keyup(function(){
+  clearTimeout(find_timer1);
+  var ft=$("#find_input1").val();
+  if ((ft!="") && (ft!=" ")) find_timer1=setTimeout(function() {getFind(1, ft);}, 500);
+
+})
+$("#find_input2").keyup(function(){
+  clearTimeout(find_timer2);
+  var ft=$("#find_input2").val();
+  if ((ft!="") && (ft!=" ")) find_timer2=setTimeout(function() {getFind(2, ft);}, 500);
+})
+
+function getFind(tp, val){
+  //$("#win_1").append(tp+": "+val+"<br />");
+  data[5058]="2354";
+  data[5091]=val;
+  //sendData2(data, "#find_res_2");
+}
