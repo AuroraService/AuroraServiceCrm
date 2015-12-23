@@ -98,7 +98,9 @@ $("#find_input2").keyup(function(){
 
 function getFind(tp, val){
   //$("#win_1").append(tp+": "+val+"<br />");
-  data[5058]="2354";
-  data[5091]=val;
+  data['5058']="2354";
+  data['5055']="1016";
+  data['50178']="1212";
+  data['5091']=val;
   sendData2(data, "#find_res_2");
 }

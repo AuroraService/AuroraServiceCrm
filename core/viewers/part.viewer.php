@@ -11,7 +11,11 @@ class PartViewer{
         $this->model = $model;
     }
     public function show($cell, $params){
-        if ($params[5042] == 0) $editable = 'disabled';
-        return "<input onchange='editProperty(".$params[50129].",".$params[5048].",".$params[5082].",".$params[5088].",this.value);' value='".$cell->value->items[50139]."' ".$editable."/>";
+        //echo 'Show';
+        //echo $cell->items[50139][0];
+        // $cell->value
+        if ($params[5099]!="") $params[5099]=' active';
+        $result[0]='<a href="#" class="list-group-item'.$params[5099].'"><img src="icons/kuper.png" height="15" style="float: left; margin-right: 3px;"></img><h5 class="list-group-item-heading">'.$cell->items[50139][0].'</h5></a>';
+        return $result;
     }
 }

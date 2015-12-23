@@ -81,8 +81,14 @@ switch ($action) {
         echo  ShowFindForm($json); // Не удалять
         break;
     case '2354':
+        $params[5055]=$json[5055];//5055.Домен
+        $params[5091]=$json[5091];//5091.Поисковый запрос
+        $params[50178]=$json[50178];//50178.Отображатель
         $mainController->executeAction(2354, $params);//2354.Получение списка
-        echo 'List';
+        //echo 'Type='.$json[5055];
+        //echo 'Query='.$json[5091];
+        //echo 'Viewer='.$json[50178];
+        //echo 'List';
         break;
 	case '2342':
 		//echo 'Step';

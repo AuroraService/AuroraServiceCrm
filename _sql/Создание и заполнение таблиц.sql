@@ -2244,8 +2244,8 @@ insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2342,2342,
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2336,2336,'Печать содержимого поиска выбора',1411,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2340,2340,'Печать формы поиска выбора',1411,132,23);
 
-insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2353,2340,'Отображение базы данных аналогов',1413,132,23);
-insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2354,2340,'Получение списка',1414,132,23);
+insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2353,2353,'Отображение базы данных аналогов',1413,132,23);
+insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2354,2354,'Получение списка',1414,132,23);
 select * from dim_actions;
 
 -- Создание таблицы элементов CRM
@@ -2287,6 +2287,8 @@ insert into sCrmElements(id,name,location,type) values(129,'Resource2Viewer','co
 insert into sCrmElements(id,name,location,type) values(1210,'Text2Viewer','core/viewers/text2.viewer.php',12);
 insert into sCrmElements(id,name,location,type) values(1211,'Text3Viewer','core/viewers/text3.viewer.php',12);
 
+insert into sCrmElements(id,name,location,type) values(1212,'PartViewer','core/viewers/part.viewer.php',12);
+insert into sCrmElements(id,name,location,type) values(1213,'TechModelViewer','core/viewers/tech_model.viewer.php',12);
 -- Создание таблицы адресов (страна, область, район, населенный пункт, улица, дом, корпус, квартира
 drop table if exists addresses;
 create table addresses(
@@ -2678,7 +2680,7 @@ create table  manufacturers(
   end_date         datetime default '9999-01-01',
   state            bigint,
   PRIMARY KEY(id,end_date)
-);
+); 
 
 
 
@@ -2721,8 +2723,8 @@ select * from entities;
 select * from executions;
 select * from dim_resource;
 
-select l1.id '5048',l2.obj_id '50166',l3.obj_id '50167' from models l1 left join triplets l2 on l2.id=l1.id and l2.prop_id=50166 and l2.end_date='9999-01-01' left join triplets l3 on l3.id=l1.id and l3.prop_id=50167 and l3.end_date='9999-01-01' where l1.end_date = '9999-01-01'
-
+select l1.id '5048',l2.obj_id '50166',l3.obj_id '50167' from models l1 left join triplets l2 on l2.subj_id=l1.id and l2.prop_id=50166 and l2.end_date='9999-01-01' left join triplets l3 on l3.subj_id=l1.id and l3.prop_id=50167 and l3.end_date='9999-01-01' where l1.end_date = '9999-01-01'
+;
 /*
 update products p 
   join buffer_products bp on bp.articul = p.articul
