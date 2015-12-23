@@ -720,29 +720,29 @@ class Model {
 		$firstTableAlias = "l".$tableCounter;
 		$entProps =  $this->getClassProperties($type);
 		if (!empty($formId)) $formPropsIds = $this->getFormProps($formId);
-		$ret = $this->generatePropList($firstTableAlias,$entProps,$filters, $orders,$formPropsIds);
-		$select = $ret[0];
-		$where = $ret[1];
-		$order = $ret[2];
+		$propList = $this->generatePropList($firstTableAlias,$entProps,$filters, $orders,$formPropsIds);
+		$select = $propList[0];
+		$where = $propList[1];
+		$order = $propList[2];
 		$from = " from ".$tableName." ".$firstTableAlias;
 
 		$pClasses = $this->getResProperty2($type,5061,0);
-		foreach ($pClasses as $pClass){
+		if (!empty($pClasses)) foreach ($pClasses as $pClass){
 			$tableName = $this->getResProperty($pClass,503,0,0); //503.Местоположение
 			$entProps =  $this->getClassProperties($pClass);
 			$tableCounter++;
 			$tableAlias = "l".$tableCounter;
-			$ret = $this->generatePropList($tableAlias,$entProps,$filters, $orders,$formPropsIds);
-			$select = $select.$ret[0];
-			$where = $where.$ret[1];
-			$order = $order.$ret[2];
-			if (!empty($ret[0])||!empty($ret[1])||!empty($ret[2])) $from = $from." join ".$tableName." ".$tableAlias." on ".$tableAlias.".id=".$firstTableAlias.".id";
+			$propList = $this->generatePropList($tableAlias,$entProps,$filters, $orders,$formPropsIds);
+			$select = $select.$propList[0];
+			$where = $where.$propList[1];
+			$order = $order.$propList[2];
+			if (!empty($propList[0])||!empty($propList[1])||!empty($propList[2])) $from = $from." join ".$tableName." ".$tableAlias." on ".$tableAlias.".id=".$firstTableAlias.".id";
 		}
 		if (!empty($filters[50114])) $where = $where . " and ".$firstTableAlias.".end_date = '9999-01-01'";
 		if (!empty($where)) $where = " where ".substr($where,5);
 		if (!empty($order)) $order = " order by ".substr($order,1);
 		$query = "select ".substr($select,1).$from.$where.$order;
-		echo "<br>".$query."<br>";
+		//echo "<br>".$query."<br>";
 
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'Query:'.$query.','. mysqli_error());
 		$lineNum = 0;
@@ -810,7 +810,7 @@ class Model {
 				$propId = $prop->items[5082]; //5082.Идентификатор свойства
 				$alias = $prop->items[506];//506.Псевдоним
 				$selectList = $selectList . ',' . $tableAlias . '.' . $alias . ' "' . $propId.'"';
-				if (!empty($filters[$propId])) $whereList = $whereList . ' and ' . $tableAlias . '.' . str_replace('%COLUMN%', $alias, $filters[$propId]);
+				if (!empty($filters[$propId])) $whereList = $whereList . ' and ' . str_replace('%COLUMN%', $tableAlias.".".$alias, $filters[$propId]);
 				if (!empty($orders[$propId])) $orderList = $orderList . ',' . $tableAlias . '.' . $alias;
 			}
 		}
