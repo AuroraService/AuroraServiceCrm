@@ -27,13 +27,20 @@ $model = Model::getModel();
  </head>
 <body>
 <?
-
-echo "<script language ='JavaScript'> data['50126'] = {}; data['50126']['5079']=".$_SESSION['id'].";</script>";
-$model->loadPermissions();
-require_once('../../main.controller.php');
-$contr = new Controller();
-$params[5055]=132;
-$contr->executeAction(2353,$params);
+    if ($model->CheckLogin()!=1){
+      $clogin=$model->LogIn();
+      //echo $clogin;
+      if ($clogin!=100){
+        require_once('includes/login_form.php');
+        exit;
+      }
+    }
+    echo "<script language ='JavaScript'> data['50126'] = {}; data['50126']['5079']=".$_SESSION['id'].";</script>";
+    $model->loadPermissions();
+    require_once('../../main.controller.php');
+    $contr = new Controller();
+    $params[5055]=132;
+    $contr->executeAction(2353,$params);
 ?>
 </body>
 <script src="func.js"></script>

@@ -1,6 +1,7 @@
 ﻿<?php
 class AnalogBaseController {
     public function execute($iParams){
+		//echo 'AnalogBaseController';
     	$model = Model::getModel();
     	$filters[5057]="%COLUMN%=1525171";           //
         $ret = $model->getResources(1017,$filters);  // Список типов техники
