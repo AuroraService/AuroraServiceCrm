@@ -4,18 +4,25 @@ class ListController {
         $type = $params[5055];//5055.Домен
         $query = $params[5091];//5091.Поисковый запрос
         $viewer = $params[50178];//50178.Отображатель
-        echo $query;
+        $filters= $params[5095];//5095.Фильтр
+        //echo $query;
 
         $model = Model::getModel();
-        $filters[50139] = "UPPER(%COLUMN%) LIKE '%".strtoupper($query)."%'";
+        if (!empty($query)) $filters[50139] = "UPPER(%COLUMN%) LIKE '%".strtoupper($query)."%'";
+        //print_r($filters);
         $results = $model->getResourcesOpt($type,$filters);
-        $viewer=$model->getViewer($viewer,null,null);
+        //print_r($results);
+        //echo 'Viewer='.$viewer;
+        if (!empty($viewer)) $viewerEnt=$model->getViewer($viewer,$params[50186],$model);
         //print_r($results);
         if (!empty($results)) foreach ($results as $result){
-            $result = $viewer->show($result,null);
+            //echo 'Viewer='.$result->items[50178][0];
+            if (empty($viewer)) $viewerEnt=$model->getViewer($result->items[50178][0],$params[50186],$model);
+            $result = $viewerEnt->show($result,$params[50186]);
             $ret[0] = $ret[0].$result[0];
         }
-        echo $ret[0];
+        return $ret;
+        //echo $ret[0];
         //echo 'ListController';
     }
 
