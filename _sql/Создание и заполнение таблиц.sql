@@ -1892,15 +1892,16 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511123,163
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511124,163,504,'position',161);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511127,163,501,'name',134);
 
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511224,163,50178,'viewer',134);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511225,163,50180,'result_viewer',134);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511226,163,5058,'action',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511224,163,50178,'viewer',12);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511225,163,50180,'result_viewer',12);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511226,163,5058,'action',23);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511227,163,50181,'result_container',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511228,163,5096,'sql_code',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511229,163,50139,'show_name',134);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511230,163,50183,'sort_flag',134);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511231,163,50184,'add_prop',134);
-
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511230,163,50183,'sort_flag',135);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511231,163,50184,'add_prop',132);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511232,163,5055,'domain',132);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511233,163,50187,'php_code',132);
 
 -- 50.Свойство
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511125,50,5048,'id',50,0,0);
@@ -2257,7 +2258,7 @@ insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2340,2340,
 
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2353,2353,'Отображение базы данных аналогов',1413,132,23);
 insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2354,2354,'Получение списка',1414,132,23);
-insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2355,2354,'Получение списка фильтров',1414,163,23);
+-- insert into dim_actions(id,action_id,name,contr_id,domain,pid) values(2355,2354,'Получение списка фильтров',1414,163,23);
 select * from dim_actions; 
 
 -- Создание таблицы элементов CRM
@@ -2439,7 +2440,9 @@ create table actionFilters(
   sql_code varchar(256),
   show_name varchar(256),
   sort_flag int default 0,
-  add_prop bigint
+  add_prop bigint,
+  domain bigint,
+  php_code varchar(1024)
 );
 
 
@@ -2449,9 +2452,9 @@ insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position
 
 insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15213,15174,'Строк на странице:',50147,15189,1,1); -- 50146.Limit
 
-insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code) values(15214,50137,1,1214,1213,2354,'find_res_1','%COLUMN%=%VALUE%');
-insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code) values(15214,50165,2,1214,1213,2354,'find_res_1','%COLUMN%=%VALUE%');
-insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code) values(15214,50165,3,1215,1213,2354,'find_res_1','%COLUMN%=LIKE("%VALUE%")');
+insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain,php_code) values(15214,50137,1,1214,1213,2354,'find_res_1','%COLUMN%=%VALUE%',1020,'$filters[50178]="%COLUMN%=1";');
+insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain,php_code) values(15214,50165,2,1214,1213,2354,'find_res_1','%COLUMN%=%VALUE%',1017,'$filters[5057]="%COLUMN%=1525170";');
+insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain) values(15214,50165,3,1215,1213,2354,'find_res_1','%COLUMN%=LIKE("%VALUE%")',134);
 
 select * from actionFilters;
 

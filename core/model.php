@@ -658,8 +658,10 @@ class Model {
 		$from = " from ".$tableName." ".$firstTableAlias;
 		$entProps = array();
 		$this->getClassPropertiesTransitive($type, $entProps); //1511.Свойство сущности
+		$searchFlag = 0;
 		foreach ($entProps as $entProp) {
 			if ($entProp->items[5084] == 1) { //5084.Флаг внешнего свойства
+				$searchFlag = 1;
 				$propId = $entProp->items[5082];
 				$tableCounter++;
 				$tableAlias = "l".$tableCounter;
@@ -667,6 +669,7 @@ class Model {
 				$from = $from." left join triplets ".$tableAlias." on ".$tableAlias.".subj_id=".$firstTableAlias.".id and ".$tableAlias.".prop_id=".$propId." and ".$tableAlias.".end_date='9999-01-01'";
 			}
 		}
+		if ($searchFlag == 0) return $resources1;
 
 		if (!empty($filters[50114])) $where = " where ".$firstTableAlias.".end_date = '9999-01-01'";
 
