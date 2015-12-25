@@ -12,7 +12,8 @@ class FilterTextViewer{
     }
     public function show($cell, $params){
         // $cell->value
-        $result[0]='FilterTextViewer<br>';
+        $result[0]='<input type="text" class="form-control filter-input'.$params[1].'" placeholder="Поиск" id="'.$params[2].'">';
+        //$result[0]='FilterTextViewer<br>';
         return $result;
     }
 }

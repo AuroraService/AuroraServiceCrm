@@ -79,10 +79,35 @@ function sendData2(data, elemId, req, req_data, req_elemId) {
       var statusElem = document.getElementById(elemId);
       //alert(data);
       //statusElem.innerHTML = data;
-      alert($(elemId).attr("id"));
+      //alert($(elemId).attr("id"));
       $(elemId).text("");
       $(elemId).append(data);
       if (req) sendData2(req_data, req_elemId);
+      switch (data){
+        case 0: ShowMessage('Сохранено');
+        break;
+      }
+    }
+  });
+}
+
+
+function sendDataJSON(data, elemId) {
+  var str = 'data='+JSON.stringify(data);
+  var elemId=elemId || 'dop_form_interface';
+  //alert(str);
+  $.ajax({
+    type: 'POST',
+    url: '/core/ajax/interface.php',
+    dataType: 'json',
+    cache: false,
+    data: str,
+    success: function(data,status,xhr) {
+      alert(data);
+      var statusElem = document.getElementById(elemId);
+      $(elemId).text("");
+      //alert(data);
+      $(elemId).append(data);
       switch (data){
         case 0: ShowMessage('Сохранено');
         break;

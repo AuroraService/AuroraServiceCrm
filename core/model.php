@@ -143,6 +143,8 @@ class Model {
 	}
   
 	public function getViewer($id, $params = null, $model = null){
+		chdir ($_SERVER['DOCUMENT_ROOT']);
+		//echo getcwd();
 		require_once($this->viewers[$id]->items[503]);
 		$className = $this->viewers[$id]->items[501].'Fabrica';
 		$viewerFactory = new $className;

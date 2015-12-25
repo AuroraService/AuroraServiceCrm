@@ -2,6 +2,7 @@ var zoom_counter=1;
 var find_timer1;
 var find_timer2;
 var find_timer3;
+var find_counter = 0;
 function CreateZoom(){
   var cell="div-cell";
   zoom_counter=1;
@@ -87,20 +88,36 @@ $("#clear_filter_btn_2").click(function(){
 $("#find_input1").keyup(function(){
   clearTimeout(find_timer1);
   var ft=$("#find_input1").val();
-  if ((ft!="") && (ft!=" ")) find_timer1=setTimeout(function() {getFind(1, ft);}, 500);
+  find_timer1=setTimeout(function() {getFind(1, ft);}, 500);
 
 })
 $("#find_input2").keyup(function(){
   clearTimeout(find_timer2);
   var ft=$("#find_input2").val();
-  if ((ft!="") && (ft!=" ")) find_timer2=setTimeout(function() {getFind(2, ft);}, 500);
+  find_timer2=setTimeout(function() {getFind(2, ft);}, 500);
 })
 
 function getFind(tp, val){
   //$("#win_1").append(tp+": "+val+"<br />");
+  clearTimeout(find_timer1);
+  clearTimeout(find_timer2);
+
+  $("#win_1").append(val+"<br />");
   data['5058']="2354";
   data['5055']="1016";
   data['50178']="1212";
   data['5091']=val;
   sendData2(data, "#find_res_2");
+}
+
+function updateFilter(obj){
+  var frm=$(obj).attr("form");
+  var propId=$(obj).attr("propId");
+  var action=$(obj).attr("action");
+  data[frm]['5095'][propId]=$(obj).val();
+  if (action!=""){
+     data['5058']=action;
+     sendData2(data, '');
+   }
+  //alert($(obj).val());
 }

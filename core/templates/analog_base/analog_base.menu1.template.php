@@ -4,22 +4,7 @@
     <h3 class="panel-title">Поиск модели</h3>
 
   </div>
-  <div class="filter-form">
-  <select class="form-control filter-input f1">
-  <option value="0">Все бренды</option>
-  <? foreach ($ret3 as $val) {
-       echo '<option>'.$val->items[50139].'</option>';
-     } ?>
-  </select>
-  <select class="form-control filter-input f1">
-  <option value="0">Все типы техники</option>
-  <? foreach ($ret as $val) {
-       echo '<option>'.$val->items[50139].'</option>';
-     } ?>
-  </select>
-
-  <input type="text" class="form-control filter-input" placeholder="Поиск" id="find_input1">
-  </div>
+  <div class="filter-form"><? echo $ret5[0]; ?></div>
   <div class="panel-body nbody" style="max-height: 200px; overflow-y: scroll;">
     <div class="list-group ngroup" style="background-color: white;"><? include 'item-1.php'; ?></div>
   </div>
@@ -44,7 +29,7 @@
        echo '<option>'.$val->items[50139].'</option>';
      } ?>
   </select>
-  <select class="form-control filter-input f2">
+  <select class="form-control filter-input f2" onchange="updateFilter();">
   <option value="0">Все группы запчастей</option>
   <? foreach ($ret2 as $val) {
        echo '<option>'.$val->items[50139].'</option>';
