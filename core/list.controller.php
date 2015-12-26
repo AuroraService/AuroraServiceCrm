@@ -20,7 +20,8 @@ class ListController {
             //if (!empty($params[50186][$result->items[5055]])) $viewerParams = $params[50186][$result->items[5055]]; else $viewerParams = $params[50186];
             if (empty($viewer)) $viewerEnt=$model->getViewer($result->items[50178][0],$params[50186],$model);
             $result = $viewerEnt->show($result,$params[50186]);
-            $ret[0] = $ret[0].$result[0];
+            $ret['0'] = $ret['0'].$result['0'];
+			$ret['1'] = $ret['1'].$result['1'];
         }
         return $ret;
         //echo $ret[0];

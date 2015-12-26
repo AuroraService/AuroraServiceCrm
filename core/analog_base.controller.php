@@ -20,6 +20,25 @@ class AnalogBaseController {
         $params[50186][2]="find_input1"; // id для текстового поля
         $params[50186][50185]="1";
         $ret5 = $controller->executeAction(2354,$params);
+        echo $ret5[1];
+        $params[5055]=163;
+        $params[5095][50109]='%COLUMN%=15214';
+        $params[50186][1]=" f1"; // дополнительный класс
+        $params[50186][2]="find_input1"; // id для текстового поля
+        $params[50186][50185]="1";
+        $ret5 = $controller->executeAction(2354,$params);
+        $params[5055]=163;
+        $params[5095][50109]='%COLUMN%=15215';
+        $params[50186][1]=" f2"; // дополнительный класс
+        $params[50186][2]="find_input2"; // id для текстового поля
+        $params[50186][50185]="2";
+        $ret6 = $controller->executeAction(2354,$params);
+        $params[5055]=163;
+        $params[5095][50109]='%COLUMN%=15216';
+        $params[50186][1]=" f3"; // дополнительный класс
+        $params[50186][2]="find_input3"; // id для текстового поля
+        $params[50186][50185]="3";
+        $ret7 = $controller->executeAction(2354,$params);
 		require_once('templates/analog_base/analog_base.template.php');
     }
 

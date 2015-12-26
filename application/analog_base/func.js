@@ -76,22 +76,22 @@ $("#btn_win_2").click(function(){
 });
 
 $("#clear_filter_btn_1").click(function(){
-  $(".f1 [value='0']").attr("selected", "selected");
+  $(".f1 [value='']").attr("selected", "selected");
 });
 
 $("#clear_filter_btn_2").click(function(){
-  $(".f2 [value='0']").attr("selected", "selected");
+  $(".f2 [value='']").attr("selected", "selected");
 });
 
 
 
-$("#find_input1").keyup(function(){
+$("#find_input122").keyup(function(){
   clearTimeout(find_timer1);
   var ft=$("#find_input1").val();
   find_timer1=setTimeout(function() {getFind(1, ft);}, 500);
 
 })
-$("#find_input2").keyup(function(){
+$("#find_input222").keyup(function(){
   clearTimeout(find_timer2);
   var ft=$("#find_input2").val();
   find_timer2=setTimeout(function() {getFind(2, ft);}, 500);
@@ -111,13 +111,37 @@ function getFind(tp, val){
 }
 
 function updateFilter(obj){
+  alert('fd');
   var frm=$(obj).attr("form");
   var propId=$(obj).attr("propId");
   var action=$(obj).attr("action");
-  data[frm]['5095'][propId]=$(obj).val();
+  var viewer=$(obj).attr("viewer");
+  var domain=$(obj).attr("domain");
+  data['50129']=frm;
+  if (data[frm]===undefined) data[frm]={};
+  if (data[frm]['5095']===undefined) data[frm]['5095']={};
+  data[frm]['5055']=domain;
+  data[frm]['50178']=viewer;
+  if ($(obj).val()!="") data[frm]['5095'][propId]='%COLUMN%='+$(obj).val(); else data[frm]['5095'][propId]="";
   if (action!=""){
      data['5058']=action;
-     sendData2(data, '');
+     //alert(data);
+     //sendData2(data, "#find_res_"+frm);
+     sendDataJSON(data, "#find_res_"+frm);
+     //alert(action);
    }
   //alert($(obj).val());
+}
+
+function updateFilter2(frm,propId,value){
+  alert('newUpdate');
+  if (data[frm]===undefined) data[frm]={};
+  if (data[frm]['5095']===undefined) data[frm]['5095']={};
+  if (value!="") data[frm]['5095'][propId]=value; else data[frm]['5095'][propId]="";
+}
+
+function sendForm(frm,action,resultContainer){
+  data['50129']=frm;
+  if (action!=null) data[frm]['5058']=action;
+  sendDataJSON(data, "#find_res_"+frm);
 }
