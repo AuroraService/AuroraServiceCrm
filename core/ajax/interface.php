@@ -11,6 +11,7 @@ $json = json_decode($_POST['data'], true);
 if ($action==""){
 	$action=$json[5058];
 }
+if (empty($action)) $action=$json[$json[50129]][5058];
 //$action = 2316;
 //echo "Test";
 require_once('main.controller.php');
