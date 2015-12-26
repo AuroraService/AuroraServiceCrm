@@ -1703,6 +1703,8 @@ insert into entities(id, location,namespace,counter) values(1027, 'models',1534,
 
 insert into entities(id, location,namespace,counter) values(1020, 'manufacturers',1528,100);
 
+insert into entities(id, location,namespace,counter) values(1617, 'forms',1536,100);
+
 -- Создание таблицы свойств сущности
 drop table if exists ent_properties;
 create table ent_properties(
@@ -1901,7 +1903,10 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511229,163
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511230,163,50183,'sort_flag',135);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511231,163,50184,'add_prop',132);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511232,163,5055,'domain',132);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511233,163,50187,'php_code',132);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511233,163,50187,'php_code',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511234,163,50188,'handler',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511235,163,50189,'null_elem_name',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511236,163,50190,'result_domain',132);
 
 -- 50.Свойство
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511125,50,5048,'id',50,0,0);
@@ -2022,6 +2027,12 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) 
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511222,1020,50139,'show_name',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511223,1020,50178,'prem_flag',135);
 
+-- 1617.Форма
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511225,163,50180,'result_viewer',12);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511226,163,5058,'action',23);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511227,163,50181,'result_container',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511236,163,50190,'result_domain',132);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511236,163,50191,'handler_text',134);
 -- 1511223
 
 select * from ent_properties;
@@ -2442,7 +2453,10 @@ create table actionFilters(
   sort_flag int default 0,
   add_prop bigint,
   domain bigint,
-  php_code varchar(1024)
+  php_code varchar(1024),
+  handler varchar(1024),
+  null_elem_name varchar(256),
+  result_domain bigint
 );
 
 
@@ -2452,9 +2466,19 @@ insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position
 
 insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15213,15174,'Строк на странице:',50147,15189,1,1); -- 50146.Limit
 
-insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain,php_code) values(15214,50137,1,1214,1213,2354,'find_res_1','%COLUMN%=%VALUE%',1020,'$filters[50178]="%COLUMN%=1";');
-insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain,php_code) values(15214,50165,2,1214,1213,2354,'find_res_1','%COLUMN%=%VALUE%',1017,'$filters[5057]="%COLUMN%=1525170";');
-insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain) values(15214,50165,3,1215,1213,2354,'find_res_1','%COLUMN%=LIKE("%VALUE%")',134);
+insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain,php_code,handler,null_elem_name,result_domain) values(15214,50137,1,1214,1213,2354,'find_res_1','%COLUMN%=%VALUE%',1020,'$filters[50178]="%COLUMN%=1";','onchange="updateFilter(this);"','Все бренды',1027);
+insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain,php_code,handler,null_elem_name,show_name,result_domain) values(15214,50165,2,1214,1213,2354,'find_res_1','%COLUMN%=%VALUE%',1017,'$filters[5057]="%COLUMN%=1525171";','onchange="updateFilter(this);"','Все типы техники','Тип техники:',1027);
+insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain,handler,result_domain) values(15214,50165,3,1215,1213,2354,'find_res_1','%COLUMN%=LIKE("%VALUE%")',134,'oninput="updateFilter(this);"',1027);
+
+insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain,php_code,handler,null_elem_name,result_domain) values(15215,50137,1,1214,1212,2354,'find_res_2','%COLUMN%=%VALUE%',1020,'$filters[50178]="%COLUMN%=1";','onchange="updateFilter(this);"','Все бренды',1016);
+insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain,php_code,handler,null_elem_name,result_domain) values(15215,50165,2,1214,1212,2354,'find_res_2','%COLUMN%=%VALUE%',1017,'$filters[5057]="%COLUMN%=1525171";','onchange="updateFilter(this);"','Все типы техники',1016);
+insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain,php_code,handler,null_elem_name,result_domain) values(15215,50172,2,1214,1212,2354,'find_res_2','%COLUMN%=%VALUE%',1017,'$filters[5057]="%COLUMN%=1525170";','onchange="updateFilter(this);"','Все группы запчастей',1016);
+insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain,handler,result_domain) values(15215,50165,3,1215,1212,2354,'find_res_2','%COLUMN%=LIKE("%VALUE%")',134,'oninput="updateFilter(this);"',1016);
+
+insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain,php_code,handler,null_elem_name,result_domain) values(15216,50137,1,1214,1212,2354,'find_res_3','%COLUMN%=%VALUE%',1020,'$filters[50178]="%COLUMN%=0";','onchange="updateFilter(this);"','Все бренды',1016);
+insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain,php_code,handler,null_elem_name,result_domain) values(15216,50165,2,1214,1212,2354,'find_res_3','%COLUMN%=%VALUE%',1017,'$filters[5057]="%COLUMN%=1525171";','onchange="updateFilter(this);"','Все типы техники',1016);
+insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain,php_code,handler,null_elem_name,result_domain) values(15216,50172,2,1214,1212,2354,'find_res_3','%COLUMN%=%VALUE%',1017,'$filters[5057]="%COLUMN%=1525170";','onchange="updateFilter(this);"','Все группы запчастей',1016);
+insert into actionFilters(param_id,prop_id,position,viewer,result_viewer,action,result_container,sql_code,domain,handler,result_domain) values(15216,50165,3,1215,1213,2354,'find_res_3','%COLUMN%=LIKE("%VALUE%")',134,'oninput="updateFilter(this);"',1016);
 
 select * from actionFilters;
 
@@ -2667,11 +2691,19 @@ insert into triplets(subj_id,prop_id,obj_id) values(15341,50166,123456);
 
 insert into models(id, show_name) values(15341,'Test Model');
 insert into models(id, show_name) values(15342,'Название модели');
+insert into models(id, show_name,manufacturer_id,tech_type) values(15343,'IW 1476.0 W',152820,15256);
+insert into models(id, show_name,manufacturer_id,tech_type) values(15344,'IGV 6609.2',152820,15256);
+
+
+select * from product_categories;
 
 insert into dim_resource(id,type) values(15341,1027);
 insert into dim_resource(id,type) values(15342,1027);
+insert into dim_resource(id,type) values(15343,1027);
+insert into dim_resource(id,type) values(15344,1027);
 
 select * from models;
+select * from manufacturers;
 select * from dim_resource;
 
 -- Создание таблицы продуктов
@@ -2766,3 +2798,21 @@ set p.provider_id = 15161;
 */
 insert into dim_resource(id, name,type, start_date)
 select id, show_name,1016, '2015-10-01 00:00:00' from products;
+
+delete from products;
+insert into products(id,articul,show_name,manufacturer_id,provider_id,image,buy_cost,sell_cost,start_date,end_date,state,add_cost,cnt)
+select id,articul,show_name,manufacturer_id,provider_id,image,buy_cost,sell_cost,start_date,end_date,state,add_cost,cnt from products2;
+
+update 
+-- select * from
+products p 
+  join triplets2 t on p.id = t.subj_id
+  -- join product_categories c on c.id = t.obj_id
+  join triplets3 t2 on t2.subj_id = t.obj_id and t2.prop_id = 5061 
+  join product_categories c on c.id = t2.obj_id
+  -- join product_categories c2 on c2.id = c.pid
+set p.part_group = t2.obj_id
+13558
+select * from products;
+select * from product_categories
+select * from triplets2

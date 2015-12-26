@@ -38,6 +38,36 @@ class Controller{
 			//$layout_elements = $model->getResources(1613);//1613.Элемент макета
 			//print_r($layout_elements[15221]);
 
+
+
+		echo '<br><br><br>';
+		//$filters[50114]="%COLUMN%=15341";
+		//$orders[5048]=1;
+		//$models = $model->getResources2Opt(1027,$filters,$orders);
+		//echo '<br><br><br>';
+		//print_r($models);
+
+		//$filters[5057]="%COLUMN%=1525171";
+		//$ret = $model->getResources(1017,$filters);
+		//print_r($ret);
+
+		//$filters[5057]="%COLUMN%=1525170";
+		//$filters[50139]="UPPER(%COLUMN%) LIKE '%АН%'";
+		//$ret = $model->getResources(1017,$filters);
+
+		//$filters[50178]="%COLUMN%=1";
+		//$ret = $model->getResources(1020,$filters);
+
+		//$filters[50178]="%COLUMN%=1";
+		//$ret = $model->getResources(1016,null);//1016.Продукт(запчасть)
+		//print_r($ret);
+
+		//$filters[50109]="%COLUMN%=15214";
+		//$orders[504]=1;
+		//$actFilters = $model->getResources2Opt(163,$filters,$orders);
+		//print_r($actFilters);
+
+
 		if ($model->CheckLogin()!=1){
 			$clogin=$model->LogIn();
 			if ($clogin!=100){
@@ -46,7 +76,12 @@ class Controller{
 			}
 		}
 		$model->loadPermissions();
-
+//TEST START
+		$params[5055]=163;
+		$params[5095][50109]='%COLUMN%=15214';
+		$ret = $this->executeAction(2354,$params);
+		echo $ret[0];
+//TEST END
 		require_once('core/menu.controller.php');
 		$menu = new MenuController();
 		$menu->execute(1131,null);
