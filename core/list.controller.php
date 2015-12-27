@@ -23,6 +23,7 @@ class ListController {
             $ret['0'] = $ret['0'].$result['0'];
 			$ret['1'] = $ret['1'].$result['1'];
         }
+        //echo $ret[1];
         return $ret;
         //echo $ret[0];
         //echo 'ListController';

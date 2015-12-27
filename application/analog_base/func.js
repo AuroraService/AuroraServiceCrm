@@ -140,8 +140,12 @@ function updateFilter2(frm,propId,value){
   if (value!="") data[frm]['5095'][propId]=value; else data[frm]['5095'][propId]="";
 }
 
-function sendForm(frm,action,resultContainer){
+function sendForm(frm){
   data['50129']=frm;
-  if (action!=null) data[frm]['5058']=action;
-  sendDataJSON(data, "#find_res_"+frm);
+  resultContainer = data[frm]['50181'];
+  sendDataJSON(data, resultContainer);
+}
+
+function generateFilterValue(value){
+  if (value!="") return "%COLUMN%="+value; else return value;
 }

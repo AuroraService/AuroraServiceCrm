@@ -83,20 +83,22 @@ switch ($action) {
         echo  ShowFindForm($json); // Не удалять
         break;
     case '2354':
-        //file_put_contents("log","2354");
+        file_put_contents("log","2354");
         $selectedForm=$json[50129];//5055.Домен
         $params[5055]=$json[$selectedForm][5055];//5055.Домен
         $params[5091]=$json[5091];//5091.Поисковый запрос
         $params[50178]=$json[$selectedForm][50178];//50178.Отображатель
         $params[5095]=$json[$selectedForm][5095];//5095.Фильтры
+		file_put_contents("log",$params[5055].",".$params[5091].",".$params[50178].",".$params[5095]);
         //echo $json[$selectedForm][50178];
         //$ret=json_encode($mainController->executeAction(2354, $params));//2354.Получение списка
         $ret=$mainController->executeAction(2354, $params);//2354.Получение списка
-        //file_put_contents("log",$ret);
-        $ret['1']='rfdswfds';
-        $ret['2']='123';
-        $ret['3']['4']=5;
+        file_put_contents("log",$ret);
+        //$ret['1']='rfdswfds';
+        //$ret['2']='123';
+        //$ret['3']['4']=5;
         $ret=json_encode($ret);
+
         echo $ret;
         //return $ret;
         //echo 'Type='.$json[5055];

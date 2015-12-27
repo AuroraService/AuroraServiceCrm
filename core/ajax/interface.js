@@ -111,10 +111,10 @@ function sendDataJSON(data, elemId) {
       //alert(data);
       var statusElem = document.getElementById(elemId);
       $(elemId).text("");
-      //alert(data);
+      alert(data);
       $(elemId).append(data);
       mdata = data[2];
-      alert(mdata);
+      //alert(mdata);
       
 
       switch (data){
