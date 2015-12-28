@@ -10,7 +10,7 @@ class ListController {
         $model = Model::getModel();
         if (!empty($query)) $filters[50139] = "UPPER(%COLUMN%) LIKE '%".strtoupper($query)."%'";
         //print_r($filters);
-        $results = $model->getResourcesOpt($type,$filters);
+        $results = $model->getResources2Opt($type,$filters);
         //print_r($results);
         //echo 'Viewer='.$viewer;
         if (!empty($viewer)) $viewerEnt=$model->getViewer($viewer,$params[50186],$model);

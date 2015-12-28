@@ -1705,13 +1705,17 @@ insert into entities(id, location,namespace,counter) values(1024, 'base_elements
 insert into entities(id, location,namespace,counter,name_template) values(1026, 'op_notes',1532,100,'%5066%');
 
 insert into entities(id, location,namespace,counter) values(1616, 'triplets',1533,100);
-insert into entities(id, location,namespace,counter) values(1029, 'products',1526,100);
+-- insert into entities(id, location,namespace,counter) values(1029, 'products',1526,100);
 insert into entities(id, location,namespace,counter) values(1027, 'models',1534,100);
 
 insert into entities(id, location,namespace,counter) values(1020, 'manufacturers',1528,100);
 
 insert into entities(id, location,namespace,counter) values(1617, 'forms',1536,100);
 insert into entities(id, location,namespace,counter) values(1618, 'dim_resource',1537,100);
+
+insert into entities(id, location,namespace,counter) values(1029, 'products_prem',1538,100);
+
+insert into entities(id, location,namespace,counter) values(1018, 'files',1527,100);
 
 -- Создание таблицы свойств сущности
 drop table if exists ent_properties;
@@ -2045,6 +2049,17 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511242,161
 -- 1618.Набор фильтров
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511244,1618,5048,'id',1618,0,0);
 
+-- 1029.Продукт премиальной техники
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511246,1029,5048,'id',1029,0,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511247,1029,50168,'position',135);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511248,1029,50169,'deliv_flag',135);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511249,1029,50170,'man_articul',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511250,1029,50166,'schema_id',1019);
+-- 1018.Файлы
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511251,1018,5048,'id',1018,0,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511252,1018,50142,'ph_name',135);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511253,1018,5051,'type',135);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511254,1018,50177,'path',135);
 -- 1511245
 
 select * from ent_properties;
@@ -2579,19 +2594,6 @@ create table  product_categories(
   PRIMARY KEY(id,end_date)
 );
 
--- Создание таблицы файлов
-drop table if exists files;
-create table  files(
-  id  bigint,
-  ph_name varchar(256),
-  type  bigint,
-  start_date datetime default '2015-10-01',
-  end_date   datetime default '9999-01-01',
-  state  bigint,
-  PRIMARY KEY(id,end_date)
-);
-
-
 
 -- Создание таблицы накрутки
 drop table if exists add_prices;
@@ -2604,6 +2606,24 @@ create table  add_prices(
 );
 
 */
+
+-- Создание таблицы файлов
+drop table if exists files;
+create table  files(
+  id  bigint,
+  ph_name varchar(256),
+  path varchar(256),
+  type  bigint,
+  start_date datetime default '2015-10-01',
+  end_date   datetime default '9999-01-01',
+  state  bigint,
+  PRIMARY KEY(id,end_date)
+);
+
+insert into files(id,ph_name,path,type) values(15271,'15271.jpg','files/images/models/schemas',1019);
+insert into files(id,ph_name,path,type) values(15272,'15272.jpg','files/images/models/schemas',1019);
+insert into files(id,ph_name,path,type) values(15273,'15273.jpg','files/images/models/schemas',1019);
+select * from files;
 
 -- Создание таблицы записок
 drop table if exists op_notes;
@@ -2651,8 +2671,9 @@ create table models(
   PRIMARY KEY(id,end_date)
 );
 
-insert into triplets(subj_id,prop_id,obj_id) values(15341,50166,12345);
-insert into triplets(subj_id,prop_id,obj_id) values(15341,50166,123456);
+insert into triplets(subj_id,prop_id,obj_id) values(15341,50166,15271);
+insert into triplets(subj_id,prop_id,obj_id) values(15341,50166,15272);
+insert into triplets(subj_id,prop_id,obj_id) values(15341,50166,15273);
 
 insert into models(id, show_name) values(15341,'Test Model');
 insert into models(id, show_name) values(15342,'Название модели');
@@ -2701,6 +2722,17 @@ insert into products(id,articul,show_name) values(15262,'xxx','Test 1');
 -- insert into dim_resource(id,type) values(1526,1016);
 
 select * from products;
+
+-- Создание таблицы премиальных продуктов
+drop table if exists products_prem;
+create table  products_prem(
+  id               bigint,
+  position int,
+  deliv_flag int,
+  man_articul varchar(1024),
+  schema_id bigint
+);
+
 
 -- Создание таблицы производителей
 drop table if exists manufacturers;
@@ -2791,7 +2823,6 @@ insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,handl
 
 
 
-sele
 select * from actionFilters;
 
 -- Создание таблицы производителей
@@ -2812,6 +2843,8 @@ insert into forms(id,result_viewer,action,result_container,result_domain,pid) va
 insert into forms(id,result_viewer,action,result_container,result_domain,pid) values(15364,null,2354,'#find_res_4',163,15373);
 
 insert into forms(id,result_viewer,action,result_container,result_domain,pid) values(15366,1219,2354,'#win_2',1027,15371);
+
+insert into forms(id,result_viewer,action,result_container,result_domain,pid) values(15368,1212,2354,'#find_res_2',1016,15371);
 
 select * from actionFilters;
   

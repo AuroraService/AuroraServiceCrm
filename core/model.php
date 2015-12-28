@@ -476,6 +476,13 @@ class Model {
 		return $resources[0];
 	}
 
+	public function getResourceOpt($resourceId, $type = null){
+		if (empty($type)) $type = $this->getResProperty($resourceId,5051);
+		$filters[5048] = '%COLUMN% = '.$resourceId;
+		$resources = $this->getResourcesOpt($type,$filters);
+		return $resources[0];
+	}
+
 	public function getResource2($resourceId, $type = null){
 		if (empty($type)) $type = $this->getResProperty($resourceId,5051);
 		$filters[5048] = '%COLUMN% = '.$resourceId;
@@ -715,7 +722,7 @@ class Model {
 			}
 		}
 
-		echo $query;
+		//echo $query;
 		return $resources1;
 	}
 
