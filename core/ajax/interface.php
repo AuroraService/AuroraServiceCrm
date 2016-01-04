@@ -85,6 +85,8 @@ switch ($action) {
     case '2354':
         file_put_contents("log","2354");
         $selectedForm=$json[50129];//5055.Домен
+		$nestedForm = $json[$selectedForm][50198];
+		if (!empty($nestedForm)) $params[50186]=$json[$nestedForm];
         $params[5055]=$json[$selectedForm][5055];//5055.Домен
         $params[5091]=$json[5091];//5091.Поисковый запрос
         $params[50178]=$json[$selectedForm][50178];//50178.Отображатель

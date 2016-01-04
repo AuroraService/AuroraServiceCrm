@@ -22,11 +22,13 @@ class FiltersSetViewer{
             $resultViewer = $form->items[50180][0];
             $resultContainer = $form->items[50181][0];
             $formAction = $form->items[5058][0];
+			$nestedForm = $form->items[50198][0];
 
             $ret[1]=$ret[1].$this->genarateJavaScript(5058,$formAction,$formId);
             $ret[1]=$ret[1].$this->genarateJavaScript(5055,$resultDomain,$formId);
             $ret[1]=$ret[1].$this->genarateJavaScript(50178,$resultViewer,$formId);
             $ret[1]=$ret[1].$this->genarateJavaScript(50181,$resultContainer,$formId);
+			$ret[1]=$ret[1].$this->genarateJavaScript(50198,$nestedForm,$formId);
         }
 
 

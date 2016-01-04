@@ -82,7 +82,17 @@ border: none;
 .zoom-btn:hover{
   color: white;
 }
+.dop-filter-win{
+  width: 90%;
+  margin: auto;
+}
 
+.zc-viewer-btn{
+  border: none;
+}
+.zc-viewer-btn:hover{
+  background: none;
+}
 
 @media (min-width: 1200px) {
   /* Pull out the header and footer */

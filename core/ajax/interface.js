@@ -100,7 +100,7 @@ function sendData2(data, elemId, req, req_data, req_elemId) {
 function sendDataJSON(data, elemId) {
   var str = 'data='+JSON.stringify(data);
   var elemId=elemId || 'dop_form_interface';
-  alert(str);
+  //alert(str);
   $.ajax({
     type: 'POST',
     url: '/core/ajax/interface.php',
@@ -111,11 +111,9 @@ function sendDataJSON(data, elemId) {
       //alert(data);
       var statusElem = document.getElementById(elemId);
       $(elemId).text("");
-      alert(data);
-      $(elemId).append(data);
-      mdata = data[2];
-      //alert(mdata);
-      
+      $(elemId).append(data[0]);
+      //alert(data[1]);
+      eval(data[1]);
 
       switch (data){
         case 0: ShowMessage('Сохранено');

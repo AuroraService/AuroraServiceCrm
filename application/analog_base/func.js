@@ -4,22 +4,23 @@ var find_timer2;
 var find_timer3;
 var find_counter = 0;
 function CreateZoom(){
-  var cell="div-cell";
+  var cell="win_z_1";
   zoom_counter=1;
-  $("#"+cell).append('<div id="zoom-div" style="position: absolute; top: 200px; left: 40px; height: 150px; width: 35px; background-color: rgba(0,0,0,0.5); text-align: center; padding: 12px 3px; border-radius: 3px;  ">');
-  $("#zoom-div").append('<span class="glyphicon glyphicon-check zoom-btn" style="font-size: 24pt;" id="inall_btn" onclick="InAllImg()"></span>');
-  $("#zoom-div").append('<span class="glyphicon glyphicon-zoom-out zoom-btn" style="font-size: 18pt;" onclick="ZoomOut()"></span>');
-  $("#zoom-div").append('<span id="zoom_span_counter" style="font-size: 18pt; font-weight: bold; cursor: default">1</span>');
-  $("#zoom-div").append('<span class="glyphicon glyphicon-zoom-in zoom-btn" style="font-size: 18pt;" onclick="ZoomIn()"></span>');
+  
+  $("#"+cell).append('<div id="zoom-div" style="margin: auto; height: 40px; width: 210px; background-color: rgba(0,0,0,0.5); text-align: center; border-radius: 3px; -moz-user-select: none; -webkit-user-select: none;">');
+  $("#zoom-div").append('<span class="glyphicon glyphicon-check zoom-btn" style="font-size: 24pt; margin: 0px 10px;" id="inall_btn" onclick="InAllImg()"></span>');
+  $("#zoom-div").append('<span class="glyphicon glyphicon-zoom-out zoom-btn" style="font-size: 18pt; margin: 0px 10px;" onclick="ZoomOut()"></span>');
+  $("#zoom-div").append('<span id="zoom_span_counter" style="font-size: 18pt; margin: 0px 10px; font-weight: bold; cursor: default">1</span>');
+  $("#zoom-div").append('<span class="glyphicon glyphicon-zoom-in zoom-btn" style="font-size: 18pt; margin: 0px 10px;" onclick="ZoomIn()"></span>');
 }
 
 function ZoomIn(){
   if (zoom_counter<10){
   zoom_counter=zoom_counter+1
 ;  $("#zoom_span_counter").text(zoom_counter);
-  var th=$("#img_zoom").attr("height");
+  var th=$("#img_zoom").css("height");
   var nh=parseInt(th)+500;
-  $("#img_zoom").attr("height", nh);
+  $("#img_zoom").css("height", nh);
 }
 }
 
@@ -27,24 +28,26 @@ function ZoomOut(){
   if (zoom_counter>1){
   zoom_counter=zoom_counter-1;
   $("#zoom_span_counter").text(zoom_counter);
-  var th=$("#img_zoom").attr("height");
+  var th=$("#img_zoom").css("height");
   var nh=parseInt(th)-500;
-  $("#img_zoom").attr("height", nh);
+  $("#img_zoom").css("height", nh);
 }
 }
 
 function InAllImg(){
-  $("#img_zoom").attr("height", "584");
-  $("#img_zoom").css("margin", "0px auto");
+  $("#img_zoom").css("height", "584");
+  //$("#img_zoom").css("margin", "0px auto");
   zoom_counter=1;
   $("#zoom_span_counter").text(zoom_counter);
 }
 
-
-
-$(document).ready(function(){
+function changeShemas(pth){
+  var cell="div-cell";
+  $("#"+cell).text("");
+  $("#win_z_1").text("");
+  $("#"+cell).append('<img id="img_zoom" height="584" src="/'+pth+'"></img>');
   CreateZoom();
-});
+}
 
 $("#btn_win_1").click(function(){
   if ($("#win_1").css("display")=="none"){
@@ -61,13 +64,13 @@ $("#btn_win_1").click(function(){
 });
 
 $("#btn_win_2").click(function(){
-  if ($("#win_2").css("display")=="none"){
-  $("#win_2").slideDown(function(){
+  if ($("#win_12").css("display")=="none"){
+  $("#win_12").slideDown(function(){
     $("#zoom-div").css("display", "inline");
     $("#btn_win_").removeClass();
     $("#btn_win_2").addClass("glyphicon glyphicon-chevron-up");
   }); } else {
-  $("#win_2").slideUp(function(){
+  $("#win_12").slideUp(function(){
     $("#btn_win_2").removeClass();
     $("#btn_win_2").addClass("glyphicon glyphicon-chevron-down");
   });
@@ -111,7 +114,7 @@ function getFind(tp, val){
 }
 
 function updateFilter(obj){
-  alert('fd');
+  //alert('fd');
   var frm=$(obj).attr("form");
   var propId=$(obj).attr("propId");
   var action=$(obj).attr("action");
@@ -134,7 +137,7 @@ function updateFilter(obj){
 }
 
 function updateFilter2(frm,propId,value){
-  alert('newUpdate');
+  //alert('newUpdate');
   if (data[frm]===undefined) data[frm]={};
   if (data[frm]['5095']===undefined) data[frm]['5095']={};
   if (value!="") data[frm]['5095'][propId]=value; else data[frm]['5095'][propId]="";
@@ -148,4 +151,32 @@ function sendForm(frm){
 
 function generateFilterValue(value){
   if (value!="") return "%COLUMN%="+value; else return value;
+}
+
+
+
+var down = 0;
+var x = 0;
+var y = 0;
+var dx;
+var dy;
+
+$("#img_zoom").mousedown(function(){
+  down=1;
+})
+
+function imMouseDown(){
+  down=1;
+}
+
+$(document).mouseup(function(){
+  down=0;
+})
+
+function imMouseUp(){
+  down=0;
+}
+
+function imMouseOut(){
+  alert(down);
 }

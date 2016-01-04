@@ -10,7 +10,7 @@
     <h3 class="panel-title">Окно поиска</h3>
 
   </div>
-  <div id="win_1" style="padding: 10px;">тест</div>
+  <div id="find_res_5" style="padding: 10px;">тест</div>
   </div>
 
   <div class="panel panel-default">
@@ -18,7 +18,11 @@
     <span class="glyphicon glyphicon-chevron-up" style="float: right; cursor: pointer" id="btn_win_2"></span>
     <h3 class="panel-title">Окно отображения</h3>
   </div>
-  <div id="win_2" style="padding: 10px;"><? include 'analog_base.topmenu.template.php'; include 'table.php'; ?></div>
+  <div id="win_12" style="padding: 10px;">
+    <div id="win_2"></div>
+
+    <div id="find_res_6" style="padding: 10px;"><?include 'table.php'; ?></div>
+  </div>
   
   </div>
 

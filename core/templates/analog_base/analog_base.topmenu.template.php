@@ -32,4 +32,4 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-<div style="height:600px; background-color: gray; overflow: scroll; margin-bottom: 10px;" id="div-cell"><img id="img_zoom" height="584" src="images/shemes/34.png"></img></div>
+<div style="height:600px; background-color: gray; overflow: scroll; margin-bottom: 10px; position: relative;" id="div-cell"><img id="img_zoom" height="584" src="images/shemes/34.png"></img></div>
