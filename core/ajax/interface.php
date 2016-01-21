@@ -91,11 +91,12 @@ switch ($action) {
         $params[5091]=$json[5091];//5091.Поисковый запрос
         $params[50178]=$json[$selectedForm][50178];//50178.Отображатель
         $params[5095]=$json[$selectedForm][5095];//5095.Фильтры
-		file_put_contents("log",$params[5055].",".$params[5091].",".$params[50178].",".$params[5095]);
+		//file_put_contents("log",$params[5055].",".$params[5091].",".$params[50178].",".$params[5095]);
         //echo $json[$selectedForm][50178];
         //$ret=json_encode($mainController->executeAction(2354, $params));//2354.Получение списка
         $ret=$mainController->executeAction(2354, $params);//2354.Получение списка
-        file_put_contents("log",$ret);
+		$ret[0]=$ret[0].' ';
+        file_put_contents("log","END".$ret[0],FILE_APPEND);
         //$ret['1']='rfdswfds';
         //$ret['2']='123';
         //$ret['3']['4']=5;

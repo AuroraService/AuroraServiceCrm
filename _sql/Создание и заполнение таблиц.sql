@@ -181,6 +181,10 @@ insert into dim_resource(id,name,type) values(15371,'Набор 1',1637);
 insert into dim_resource(id,name,type) values(15372,'Набор 2',1637);
 insert into dim_resource(id,name,type) values(15373,'Набор 3',1637);
 
+-- Формы просмотра
+insert into dim_resource(id,name,type) values(15391,'Форма1',111);
+insert into dim_resource(id,name,type) values(15392,'Форма2',111);
+
 -- 1119,11110,1157,1158 / 1013,104
 -- Создание таблицы высказываний
 drop table if exists triplets;
@@ -212,11 +216,14 @@ insert into triplets(subj_id, prop_id,obj_id) values(15213,5058,2346);
 -- Иерархия классов заявок
 insert into triplets(subj_id, prop_id,obj_id) values(103,5061,1612);
 insert into triplets(subj_id, prop_id,obj_id) values(109,5061,103);
+-- delete from triplets where subj_id = 109 and prop_id = 5061
 insert into triplets(subj_id, prop_id,obj_id) values(1010,5061,103);
 insert into triplets(subj_id, prop_id,obj_id) values(1011,5061,103);
 insert into triplets(subj_id, prop_id,obj_id) values(1012,5061,103);
 -- Иерархии
 insert into triplets(subj_id, prop_id,obj_id) values(1027,5061,132);
+
+insert into triplets(subj_id, prop_id,obj_id) values(1525212,5061,1016);
 -- Отношения между свойствами
 insert into triplets(subj_id, prop_id,obj_id) values(5050,5049,5028);
 insert into triplets(subj_id, prop_id,obj_id) values(50120,5049,5057);
@@ -1541,7 +1548,26 @@ insert into sColumns(id, name, position, type, template,editable,form,pid,viewer
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
  values( 112486,'',8, 0, NULL,1,11518,NULL,1210,1511202); 
 
-  
+-- 15391.Форма просмотра запчастей (Поиск аналогов)
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 15047,'Артикул',1, 0, NULL,1,15391,NULL,1210,1511174);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 15041,'Поставка',2, 0, NULL,1,15391,NULL,1210,1511201);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 15042,'Изображение',3, 0, NULL,1,15391,NULL,1210,1511178);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 15043,'Название',4, 0, NULL,1,15391,NULL,1210,1511175);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 15044,'Поставщик',5, 0, NULL,1,15391,NULL,1210,1511177);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 15045,'Цена покупки',6, 0, NULL,1,15391,NULL,1210,1511179);
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 15046,'Аналоги',7, 0, NULL,1,15391,NULL,1210,1511205);
+ 
+ -- 15392.Форма просмотра запчастей премиальной техники (Поиск аналогов)
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+ values( 15048,'Артикул',1, 0, NULL,1,15392,NULL,1210,1511174);
+ 
 select max(id) from sColumns;
  
 -- counter 112485
@@ -1716,6 +1742,10 @@ insert into entities(id, location,namespace,counter) values(1618, 'dim_resource'
 insert into entities(id, location,namespace,counter) values(1029, 'products_prem',1538,100);
 
 insert into entities(id, location,namespace,counter) values(1018, 'files',1527,100);
+
+insert into entities(id, location,namespace,counter) values(111, 'dim_resource',1539,100);
+
+insert into entities(id, location,namespace,counter) values(1525212, 'products_belts',1526,100);
 
 -- Создание таблицы свойств сущности
 drop table if exists ent_properties;
@@ -1919,6 +1949,7 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511233,163
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511234,163,50188,'handler',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511235,163,50189,'null_elem_name',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511236,163,50190,'result_domain',132);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511262,163,50192,'null_elem_value',134);
 
 -- 50.Свойство
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511125,50,5048,'id',50,0,0);
@@ -1945,8 +1976,8 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,auto) values(151114
 insert into ent_properties(id, ent_id, prop_id, alias,domain,auto) values(1511142,164,50106,'flag',136,1);
 
 -- 1612.Версионная сущность
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511146,1612,50113,'start_date',136);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511147,1612,50114,'end_date',136);
+-- insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511146,1612,50113,'start_date',136);
+-- insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511147,1612,50114,'end_date',136);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511168,1612,50131,'version_state',1615);
 
 -- 1613.Элемент верстки
@@ -2046,6 +2077,7 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511239,161
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511240,1617,50181,'result_container',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511241,1617,50190,'result_domain',132);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511242,1617,5057,'pid',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511256,1617,50198,'nested_form',1617);
 -- 1618.Набор фильтров
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511244,1618,5048,'id',1618,0,0);
 
@@ -2060,7 +2092,18 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) 
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511252,1018,50142,'ph_name',135);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511253,1018,5051,'type',135);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511254,1018,50177,'path',135);
--- 1511245
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511255,1018,50197,'description',135);
+
+-- 111.Форма просмотра
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511257,111,5048,'id',111,0,0);
+
+-- 1525212.Ремень приводной
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511258,1525212,5048,'id',1525212,0,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511259,1525212,50194,'length',135);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511260,1525212,50195,'profile_type',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511261,1525212,50196,'dent_count',135);
+
+-- 1511262
 
 select * from ent_properties;
 
@@ -2347,6 +2390,7 @@ insert into sCrmElements(id,name,location,type) values(1216,'FilterNumberViewer'
 insert into sCrmElements(id,name,location,type) values(1217,'FilterNumber2Viewer','core/viewers/filter.number2.viewer.php',12);
 insert into sCrmElements(id,name,location,type) values(1218,'FiltersSetViewer','core/viewers/filters_set.viewer.php',12);
 insert into sCrmElements(id,name,location,type) values(1219,'TechModel2Viewer','core/viewers/tech_model2.viewer.php',12);
+insert into sCrmElements(id,name,location,type) values(1220,'SetFormViewer','core/viewers/set_form.viewer.php',12);
 
 -- Создание таблицы адресов (страна, область, район, населенный пункт, улица, дом, корпус, квартира
 drop table if exists addresses;
@@ -2614,15 +2658,19 @@ create table  files(
   ph_name varchar(256),
   path varchar(256),
   type  bigint,
+  description varchar(256),
   start_date datetime default '2015-10-01',
   end_date   datetime default '9999-01-01',
   state  bigint,
   PRIMARY KEY(id,end_date)
 );
 
-insert into files(id,ph_name,path,type) values(15271,'15271.jpg','files/images/models/schemas',1019);
-insert into files(id,ph_name,path,type) values(15272,'15272.jpg','files/images/models/schemas',1019);
-insert into files(id,ph_name,path,type) values(15273,'15273.jpg','files/images/models/schemas',1019);
+insert into files(id,ph_name,path,type,description) values(15271,'15271.jpg','files/images/models/schemas',1019,'Схема1');
+insert into files(id,ph_name,path,type,description) values(15272,'15272.jpg','files/images/models/schemas',1019,'Схема2');
+insert into files(id,ph_name,path,type,description) values(15273,'15273.jpg','files/images/models/schemas',1019,'Схема3');
+
+insert into files(id,ph_name,path,type,description) values(15274,'15274.jpg','files/images/models/schemas',1019,'Фото1');
+insert into files(id,ph_name,path,type,description) values(15275,'15275.jpg','files/images/models/schemas',1019,'Фото2');
 select * from files;
 
 -- Создание таблицы записок
@@ -2671,9 +2719,15 @@ create table models(
   PRIMARY KEY(id,end_date)
 );
 
-insert into triplets(subj_id,prop_id,obj_id) values(15341,50166,15271);
-insert into triplets(subj_id,prop_id,obj_id) values(15341,50166,15272);
-insert into triplets(subj_id,prop_id,obj_id) values(15341,50166,15273);
+insert into triplets(subj_id,prop_id,obj_id) values(15344,50166,15271);
+insert into triplets(subj_id,prop_id,obj_id) values(15344,50166,15272);
+insert into triplets(subj_id,prop_id,obj_id) values(15344,50166,15273);
+
+insert into triplets(subj_id,prop_id,obj_id) values(15344,50167,15274);
+insert into triplets(subj_id,prop_id,obj_id) values(15344,50167,15275);
+
+select * from triplets where prop_id = 50166;
+select * from models;
 
 insert into models(id, show_name) values(15341,'Test Model');
 insert into models(id, show_name) values(15342,'Название модели');
@@ -2732,6 +2786,28 @@ create table  products_prem(
   man_articul varchar(1024),
   schema_id bigint
 );
+
+select * from products_prem;
+
+-- insert into products_prem(id,position,deliv_flag);
+
+-- Создание таблицы ремней приводных
+drop table if exists products_belts;
+create table  products_belts(
+  id               bigint,
+  length int,
+  profile_type varchar(256),
+  dent_count int,
+  start_date       datetime default '2015-10-01',
+  end_date         datetime default '9999-01-01',
+  state            bigint,
+  PRIMARY KEY(id,end_date)
+);
+
+insert into products_belts(id,dent_count) values(15261,12);
+insert into products_belts(id) values(15262);
+
+select * from products;
 
 
 -- Создание таблицы производителей
@@ -2793,7 +2869,8 @@ create table actionFilters(
   php_code varchar(1024),
   handler varchar(1024),
   null_elem_name varchar(256),
-  result_domain bigint
+  result_domain bigint,
+  null_elem_value varchar(256)
 );
 
 
@@ -2803,23 +2880,24 @@ insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position
 
 insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15213,15174,'Строк на странице:',50147,15189,1,1); -- 50146.Limit
 
-insert into actionFilters(param_id,prop_id,position,viewer,domain,php_code,handler,null_elem_name) values(15371,50137,1,1214,1020,'$filters[50178]="%COLUMN%=1";','onchange="updateFilter2(15361,50137,%VALUE%);sendForm(15361);"','Все бренды');
-insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,php_code,handler,null_elem_name,show_name) values(15371,50165,2,1214,'%COLUMN%=%VALUE%',1017,'$filters[5057]="%COLUMN%=1525171";','onchange="updateFilter(this);"','Все типы техники','Тип техники:');
-insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,handler) values(15371,50165,3,1215,'%COLUMN%=LIKE("%VALUE%")',134,'oninput="updateFilter(this);"');
+insert into actionFilters(param_id,prop_id,position,viewer,domain,php_code,handler,null_elem_name) values(15371,50137,1,1214,1020,'$filters[50178]="%COLUMN%=1";','onchange="updateFilter2(15361,50137,generateFilterValue(%VALUE%));sendForm(15361);"','Все бренды');
+insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,php_code,handler,null_elem_name,show_name) values(15371,50165,2,1214,'%COLUMN%=generateFilterValue(%VALUE%)',1017,'$filters[5057]="%COLUMN%=1525171";','onchange="updateFilter(this);"','Все типы техники','Тип техники:');
+insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,handler) values(15371,50165,3,1215,'%COLUMN%=LIKE("generateFilterValue(%VALUE%)")',134,'oninput="updateFilter(this);"');
 
-insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,php_code,handler,null_elem_name) values(15372,50137,1,1214,'%COLUMN%=%VALUE%',1020,'$filters[50178]="%COLUMN%=1";','onchange="updateFilter2(15362,50137,%VALUE%);sendForm(15362);"','Все бренды');
-insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,php_code,handler,null_elem_name) values(15372,50165,2,1214,'%COLUMN%=%VALUE%',1017,'$filters[5057]="%COLUMN%=1525171";','onchange="updateFilter2(15362,50165,%VALUE%);sendForm(15362);"','Все типы техники');
-insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,php_code,handler,null_elem_name) values(15372,50172,2,1214,'%COLUMN%=%VALUE%',1017,'$filters[5057]="%COLUMN%=1525170";','onchange="updateFilter2(15362,50172,%VALUE%);sendForm(15362);"','Все группы запчастей');
-insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,handler) values(15372,50165,3,1215,'%COLUMN%=LIKE("%VALUE%")',134,'oninput="updateFilter(this);"');
+insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,php_code,handler,null_elem_name) values(15372,50137,1,1214,'%COLUMN%=generateFilterValue(%VALUE%)',1020,'$filters[50178]="%COLUMN%=1";','onchange="updateFilter2(15362,50137,generateFilterValue(%VALUE%));sendForm(15362);"','Все бренды');
+insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,php_code,handler,null_elem_name) values(15372,50165,2,1214,'%COLUMN%=generateFilterValue(%VALUE%)',1017,'$filters[5057]="%COLUMN%=1525171";','onchange="updateFilter2(15362,50165,generateFilterValue(%VALUE%));sendForm(15362);"','Все типы техники');
+insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,php_code,handler,null_elem_name) values(15372,50172,2,1214,'%COLUMN%=generateFilterValue(%VALUE%)',1017,'$filters[5057]="%COLUMN%=1525170";','onchange="updateFilter2(15362,50172,generateFilterValue(%VALUE%));sendForm(15362);"','Все группы запчастей');
+insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,handler) values(15372,50165,3,1215,'%COLUMN%=LIKE("generateFilterValue(%VALUE%)")',134,'oninput="updateFilter(this);"');
 
-insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,php_code,handler,null_elem_name) values(15373,50137,1,1214,'%COLUMN%=%VALUE%',1020,'$filters[50178]="%COLUMN%=0";','onchange="updateFilter2(15363,50137,%VALUE%);sendForm(15363);"','Все бренды');
-insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,php_code,handler,null_elem_name) values(15373,50165,2,1214,'%COLUMN%=%VALUE%',1017,'$filters[5057]="%COLUMN%=1525171";','onchange="updateFilter2(15363,50165,%VALUE%);sendForm(15363);"','Все типы техники');
-insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,php_code,handler,null_elem_name) values(15373,50172,2,1214,'%COLUMN%=%VALUE%',1017,'$filters[5057]="%COLUMN%=1525170";','onchange="updateFilter2(15363,50172,%VALUE%);sendForm(15363);updateFilter2(15364,50184,%VALUE%);sendForm(15364);"','Все группы запчастей');
-insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,handler) values(15373,50165,3,1215,'%COLUMN%=LIKE("%VALUE%")',134,'oninput="updateFilter(this);"');
+insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,php_code,handler,null_elem_name) values(15373,50137,1,1214,'%COLUMN%=generateFilterValue(%VALUE%)',1020,'$filters[50178]="%COLUMN%=0";','onchange="updateFilter2(15363,50137,generateFilterValue(%VALUE%));sendForm(15363);updateFilter2(15365,5048,\'%COLUMN%=15391\');sendForm(15365);"','Все бренды');
+insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,php_code,handler,null_elem_name) values(15373,50165,2,1214,'%COLUMN%=generateFilterValue(%VALUE%)',1017,'$filters[5057]="%COLUMN%=1525171";','onchange="updateFilter2(15363,50165,generateFilterValue(%VALUE%));sendForm(15363);"','Все типы техники');
+insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,php_code,handler,null_elem_name,null_elem_value) values(15373,50172,2,1214,'%COLUMN%=generateFilterValue(%VALUE%)',1017,'$filters[5057]="%COLUMN%=1525170";','onchange="updatePropValue(15363,5055,%VALUE%);sendForm(15363);updateFilter2(15364,50184,generateFilterValue(%VALUE%));sendForm(15364);"','Все группы запчастей','1016');
+-- updateFilter2(15363,50172,generateFilterValue(%VALUE%));
+insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,handler) values(15373,50165,3,1215,'%COLUMN%=LIKE("generateFilterValue(%VALUE%)")',134,'oninput="updateFilter(this);"');
 
-insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,handler,add_prop,show_name) values(15374,50196,1,1217,'%COLUMN%=%VALUE%',1020,'onchange="updateFilter2(15363,50194,%VALUE%);sendForm(15363);"',1525212,'Длина:');
-insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,handler,add_prop,show_name) values(15374,50196,1,1216,'%COLUMN%=%VALUE%',1020,'onchange="updateFilter2(15363,50195,%VALUE%);sendForm(15363);"',1525212,'Тип профиля:');
-insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,handler,add_prop,show_name) values(15374,50196,1,1216,'%COLUMN%=%VALUE%',1020,'onchange="updateFilter2(15363,50196,%VALUE%);sendForm(15363);"',1525212,'Кол-во зубьев:');
+insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,handler,add_prop,show_name) values(15374,50196,1,1217,'%COLUMN%=generateFilterValue(%VALUE%)',1020,'onchange="updateFilter2(15363,50194,generateFilterValue(%VALUE%));sendForm(15363);"',1525212,'Длина:');
+insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,handler,add_prop,show_name) values(15374,50196,1,1216,'%COLUMN%=generateFilterValue(%VALUE%)',1020,'onchange="updateFilter2(15363,50195,generateFilterValue(%VALUE%));sendForm(15363);"',1525212,'Тип профиля:');
+insert into actionFilters(param_id,prop_id,position,viewer,sql_code,domain,handler,add_prop,show_name) values(15374,50196,1,1216,'%COLUMN%=generateFilterValue(%VALUE%)',1020,'onchange="updateFilter2(15363,50196,generateFilterValue(%VALUE%));sendForm(15363);"',1525212,'Кол-во зубьев:');
 
 
 
@@ -2833,7 +2911,8 @@ create table  forms(
   action bigint,
   result_container varchar(1024),
   result_domain bigint,
-  pid bigint
+  pid bigint,
+  nested_form bigint
 );
   
   
@@ -2841,11 +2920,13 @@ insert into forms(id,result_viewer,action,result_container,result_domain,pid) va
 insert into forms(id,result_viewer,action,result_container,result_domain,pid) values(15362,1212,2354,'#find_res_2',1016,15372);
 insert into forms(id,result_viewer,action,result_container,result_domain,pid) values(15363,1212,2354,'#find_res_3',1016,15373);
 insert into forms(id,result_viewer,action,result_container,result_domain,pid) values(15364,null,2354,'#find_res_4',163,15373);
-
+insert into forms(id,result_viewer,action,result_container,result_domain,pid,nested_form) values(15365,1220,2354,'#find_res_5',111,15373,15363);
 insert into forms(id,result_viewer,action,result_container,result_domain,pid) values(15366,1219,2354,'#win_2',1027,15371);
-
+insert into forms(id,result_viewer,action,result_container,result_domain,pid,nested_form) values(15367,1220,2354,'#find_res_6',111,15371,15368);
 insert into forms(id,result_viewer,action,result_container,result_domain,pid) values(15368,1212,2354,'#find_res_2',1016,15371);
 
+insert into forms(id,result_viewer,action,result_container,result_domain,pid) values(15369,null,2354,null,1016,15372);
+-- 
 select * from actionFilters;
   
 select * from manufacturers;
@@ -2893,3 +2974,5 @@ set p.part_group = t2.obj_id;
 select * from products;
 select * from product_categories;
 select * from triplets2;
+
+insert into requests (dep_time,dep_date,cost,id,creation_time,user_id,client_id,tel,address,state,poss_problem,comment,type,start_date,end_date,version_state,start_date) values(1208,"0000-00-00","10000",15031,"2012-10-20 15:00:00",15012,15021,15091,15082,1203,"123456789","la-la-la",109,"2016-01-20 14:09:30","9999-01-01",152417,'2016-01-20 14:09:30')

@@ -434,6 +434,19 @@ class Model {
 		return $ret;
 	}
 
+	public function getResPropertyGen($id,$propId,$valIsResource = 1){
+		$query = "select obj_id, value from triplets where subj_id = $id and prop_id = $propId and end_date='9999-01-01'";
+		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query .', ResourceId='.$id.', PropId='.$propId.','. mysqli_error());
+		$colNum = 0;
+		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
+			if ($valIsResource == 1) $ret[$colNum] = $line['obj_id'];
+			else $ret[$colNum] = $line['value'];
+			$colNum++;
+		}
+		mysqli_free_result($result);
+		return $ret;
+	}
+
 
   
   //Получение идентификатора элемента интерфейса для просмотра единичной сущности по идентификатору класса
@@ -487,6 +500,25 @@ class Model {
 		if (empty($type)) $type = $this->getResProperty($resourceId,5051);
 		$filters[5048] = '%COLUMN% = '.$resourceId;
 		$resources = $this->getResources2($type,$filters);
+		return $resources[0];
+	}
+
+	public function getResource2Opt($resourceId, $type = null){
+		if (empty($type)) $type = $this->getResProperty($resourceId,5051);
+		$filters[5048] = '%COLUMN% = '.$resourceId;
+		$resources = $this->getResourcesOpt($type,$filters);
+
+		$entProps = array();
+		$this->getClassPropertiesTransitive($type, $entProps); //1511.Свойство сущности
+		if (!empty($resources[0])) foreach ($entProps as $entProp) {
+			if ($entProp->items[5084] == 1) { //5084.Флаг внешнего свойства
+				$propId = $entProp->items[5082];
+				$domain = $entProp->items[5055];
+				$propValues = $this->getResPropertyGen($resourceId,$propId,!$this->isSubclassOf($domain,133));
+				$resources[0]->items[$propId]=$propValues;
+			}
+		}
+
 		return $resources[0];
 	}
 
@@ -707,7 +739,7 @@ class Model {
 		//print_r($extProps);
 		//echo '<br><br>';
 
-		foreach ($resources1 as $resource1){
+		if (!empty($resources1)) foreach ($resources1 as $resource1){
 			$id = $resource1->items[5048][0];
 			foreach ($entProps as $entProp) {
 				if ($entProp->items[5084] == 1) { //5084.Флаг внешнего свойства
@@ -754,6 +786,7 @@ class Model {
 		if (!empty($where)) $where = " where ".substr($where,5);
 		if (!empty($order)) $order = " order by ".substr($order,1);
 		$query = "select ".substr($select,1).$from.$where.$order;
+		file_put_contents("log_sql","\n".$query."\n",FILE_APPEND);
 		//echo "<br>".$query."<br>";
 
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'Query:'.$query.','. mysqli_error());
@@ -953,6 +986,7 @@ class Model {
 		$columns = substr($columns,1);
 		$values = substr($values,1);
 		$query = 'insert into '.$tableName.' ('.$columns.') values('.$values.')';
+		echo $query;
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
 		return $resource2->items[5048][0];
 	}
@@ -1009,7 +1043,7 @@ class Model {
 		$resourceId = $resource2->items[5048][0];//5048.Идентификатор
 		if (empty($type)) $type = $this->getResProperty($resourceId,5051);//5051.Тип
 		$tableName = $this->getResProperty($type,503,0,0); //503.Местоположение
-		$oldResource = $this->getCurrentResource2($resource2->items[5048][0],$type);
+		$oldResource = $this->getResource2Opt($resource2->items[5048][0],$type);
 		echo 'OldState:'.$oldResource->items[50131][0];
 		$compareFlag = $this->compare($resource2,$oldResource, $formId,0,$type);
 		$localCompareFlag = $this->compare($resource2,$oldResource, $formId,1,$type);
@@ -1035,9 +1069,11 @@ class Model {
 			$entProps = array();
 			$this->getClassPropertiesTransitive($type,$entProps);
 			foreach($entProps as $entProp){
+
 				$propId = $entProp->items[5082];//5082.Идентификатор свойства
+				echo 'Prop='.$propId;
 				if ($formPropsIds[$entProp->items[5048]] != 1){//5048.ID
-					echo 'OldProp='.$propId;
+					echo 'OldProp='.$propId.",".$oldResource->items[$propId][0];
 					if (!empty($oldResource->items[$propId])) foreach ($oldResource->items[$propId] as $propKey => $propValue){
 						$resource2->items[$propId][$propKey] = $propValue;
 					}
@@ -1048,7 +1084,7 @@ class Model {
 			$resource2->items[50113][0] = $close_date; //50113.StartDate
 			$resource2->items[50114][0] = '9999-01-01'; //50114.CloseDate
 			$resource2->items[50131][0] = $newState; //50131.Версионное состояние
-			$this->insertBody($resource2,$type,$formPropsIds,$entProps,$tableName);
+			$this->insertBody($resource2,$type,null,$entProps,$tableName);
 		}
 		if ($compareFlag != 1){
 			$entProps = array();

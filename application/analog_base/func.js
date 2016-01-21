@@ -143,6 +143,10 @@ function updateFilter2(frm,propId,value){
   if (value!="") data[frm]['5095'][propId]=value; else data[frm]['5095'][propId]="";
 }
 
+function updatePropValue(frm,propId,value){
+  data[frm][propId]=value;
+}
+
 function sendForm(frm){
   data['50129']=frm;
   resultContainer = data[frm]['50181'];
