@@ -27,6 +27,10 @@ class EshowController {
 		if (!empty($val->cols)) foreach ($val->cols as $col_value) {
 			$propId = $col_value->property;
 			
+			$params[5013] = $id;
+			$params[5082] = $propId;
+			$params[5055] = $col_value->domain; //507.Представление
+			
 			$params[5042] = $col_value->editable; //5042.Редактируемость
 			$params[507] = $col_value->domain; //507.Представление
 			$params[5082] = $col_value->property; //5082.Идентификатор свойства
@@ -40,6 +44,7 @@ class EshowController {
 			$viewer = $model->getViewer($col_value->viewer,$params2,$model);
 
 			if (!empty($resource2->items[$propId])) foreach ($resource2->items[$propId] as $valueCounter =>$propValue) {
+				$params[5066]=$propValue;
 					//$propId = $col_value->property;
 					if ($col_value->type == 0) {
 						$idValue = $resource2->items[$propId][$valueCounter];

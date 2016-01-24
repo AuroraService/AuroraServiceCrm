@@ -36,6 +36,9 @@ class ShowController {
 			foreach ($val as $col_value) {
 				$params[5055] = $table->cols[$colNum]->domain;
 				$params[5048] = $val[0]->id; //Переписать
+				$params[50199]=$table->cols[$colNum]->res->items[50199][0];
+				$params[50200]=$table->cols[$colNum]->res->items[50200][0];
+				$params[50201]=$table->cols[$colNum]->res->items[50201][0];
 				$viewer = $model->getViewer($table->cols[$colNum]->viewer,$params,$this);
 				echo '<td>'.$viewer->show($col_value,$params).'</td>';
 				$this->printJavaScript($formCounter,$val[0]->id,$table->cols[$colNum]->property,0,$col_value->value); //Переписать

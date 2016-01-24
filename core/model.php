@@ -226,19 +226,20 @@ class Model {
 		$retval = new Table();
 
 		$filters[5065] = '%COLUMN%='.$formId; $orders[504] = 1;
-		$columns = $this->getResources(112, $filters, $orders);
+		$columns = $this->getResourcesOpt(112, $filters, $orders);
 		if (!empty($columns)) foreach ($columns as $line){
-			$col = new Column($line->items['5048'],$line->items['501'],$line->items['504'],null,null,null,$line->items['5051'],$line->items['5085'],$line->items['5052'],null,$line->items['5057'],null);
-			$filters2[5048] = '%COLUMN%='.$line->items[5087];
-			$property = $this->getResources(1511, $filters2);
-			$col->property = $property[0]->items[5082];
-			$col->alias = $property[0]->items[506];
-			$col->domain = $property[0]->items[5055];
+			$col = new Column($line->items['5048'][0],$line->items['501'][0],$line->items['504'][0],null,null,null,$line->items['5051'][0],$line->items['5085'][0],$line->items['5052'][0],null,$line->items['5057'][0],null);
+			$col->res = $line;
+			$filters2[5048] = '%COLUMN%='.$line->items[5087][0];
+			$property = $this->getResourcesOpt(1511, $filters2);
+			$col->property = $property[0]->items[5082][0];
+			$col->alias = $property[0]->items[506][0];
+			$col->domain = $property[0]->items[5055][0];
 			//echo 'domain'.$col->domain;
-			$col->external = $property[0]->items[5084];
+			$col->external = $property[0]->items[5084][0];
 			//echo 'external'.$col->external;
-			$col->viewer = $line->items['5086'];
-			$col->value_template = $line->items['50112'];
+			$col->viewer = $line->items['5086'][0];
+			$col->value_template = $line->items['50112'][0];
 			$retval->cols[$lineNum]=$col;
 			$lineNum++;
 		}
@@ -279,7 +280,7 @@ class Model {
 				if ($line->type == 0){
 					$childCols = $this->getChildColumns($line->id);
 					$location = $this->getResProperty($line->domain,503);
-					if (!empty($childCols)) $columns = $columns . ", " . "(select concat($childCols) from $location where $location .id = $tableName.$line->alias) ".$line->alias."_value";
+					if (!empty($childCols)) $columns = $columns . ", " . "(select concat($childCols) from $location where $location .id = $tableName.$line->alias and $location.end_date='9999-01-01') ".$line->alias."_value";
 					else $columns = $columns . ", " . $line->alias . " ".$line->alias."_value";
 				}
 				if ($line->type == 3) $column = "DATE_FORMAT(".$line->alias.",'".$line->template."') ".$line->alias; else $column = $line->alias;
@@ -1281,6 +1282,7 @@ class Column{
 	public $value_template;
 	
 	public $viewer;
+	public $res;
 	
 	function __construct($id,$name,$position,$property,$alias,$domain,$type,$template,$editable,$location,$parentId,$external){
 		$this->id = $id;

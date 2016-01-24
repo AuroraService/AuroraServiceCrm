@@ -1,6 +1,8 @@
 <?php
 //file_put_contents("log","start");
+//error_reporting(0);
 chdir('../../');
+
 require_once('core/model.php');
 $model = Model::getModel();
 
@@ -18,6 +20,8 @@ require_once('main.controller.php');
 $mainController = Controller::getController();
 //echo 'USER:'.$json[50126][5079];
 $mainController->loadPermissions($json[50126][5079]);
+
+file_put_contents("log",'ActionId='.$action);
 switch ($action) {
     case '2315':
 		$params[5048] = $json[50128]; //5048.Идентификатор
@@ -74,19 +78,34 @@ switch ($action) {
         break;
     case '2336':
 		$params[5058] = 2336;
-		//$mainController -> executeAction(2336, $params);//2336.Печать содержимого поиска выбора
-        echo search($json); // Не удалять
+		$selectedForm = $json['50129'];
+		$params['5013']=$json['-1']['5013'];
+		$params['5082']=$json[$selectedForm]['5082'];
+		$params['5055']=$json[$selectedForm]['5055'];
+		$params['5066']=$json[$selectedForm]['5066'];
+		$params['50178']=$json[$selectedForm]['50178'];
+		$params['5091']=$json[$selectedForm]['5091'];
+		$params['50185']=$json[$selectedForm]['50185'];//50185.Выделенная форма результата
+	
+		$ret =  $mainController -> executeAction(2336, $params);//2336.Печать содержимого поиска выбора
+		echo json_encode($ret);
+        //echo search($json); // Не удалять
         break;
     case '2340':
+		file_put_contents("log","\nACTION=2340",FILE_APPEND);
 		$params[5058] = 2340;
-		//$mainController -> executeAction(2340, $params);//2340. Печать формы поиска выбора
-        echo  ShowFindForm($json); // Не удалять
+		//$params[]
+		$ret = $mainController -> executeAction(2340, $params);//2340. Печать формы поиска выбора
+		file_put_contents("log","\nRESULT:".json_encode($ret),FILE_APPEND);
+		echo json_encode($ret);
+        //echo  ShowFindForm($json); // Не удалять
         break;
     case '2354':
-        file_put_contents("log","2354");
+        //file_put_contents("log","2354");
         $selectedForm=$json[50129];//5055.Домен
 		$nestedForm = $json[$selectedForm][50198];
 		if (!empty($nestedForm)) $params[50186]=$json[$nestedForm];
+		else $params[50186]=$json[$selectedForm][50186];
         $params[5055]=$json[$selectedForm][5055];//5055.Домен
         $params[5091]=$json[5091];//5091.Поисковый запрос
         $params[50178]=$json[$selectedForm][50178];//50178.Отображатель
@@ -94,13 +113,18 @@ switch ($action) {
 		//file_put_contents("log",$params[5055].",".$params[5091].",".$params[50178].",".$params[5095]);
         //echo $json[$selectedForm][50178];
         //$ret=json_encode($mainController->executeAction(2354, $params));//2354.Получение списка
+		file_put_contents("log","\nFLAG1".$params[5055].','.$params[5091].','.$params[50178].','.',',FILE_APPEND);
         $ret=$mainController->executeAction(2354, $params);//2354.Получение списка
 		$ret[0]=$ret[0].' ';
-        file_put_contents("log","END".$ret[0],FILE_APPEND);
+        //file_put_contents("log","END".$ret[0],FILE_APPEND);
         //$ret['1']='rfdswfds';
         //$ret['2']='123';
         //$ret['3']['4']=5;
+		file_put_contents("log","\nHTML=".$ret[0],FILE_APPEND);
+		file_put_contents("log","\nERROR:".$php_errormsg,FILE_APPEND);
         $ret=json_encode($ret);
+		//$error = 0/0;
+		file_put_contents("log","\nERROR:".$php_errormsg,FILE_APPEND);
 
         echo $ret;
         //return $ret;
