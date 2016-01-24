@@ -157,6 +157,25 @@ body {
   background-size: 20px;
   cursor: pointer;
 }
+.popup_header{
+  color: gray;
+  margin-left: 20px;
+  font-size: 10pt;
+  cursor: default;
+}
+.btn_popup_close{
+  float: right;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.btn_popup_close:hover{
+  float: right;
+  margin-bottom: 5px;
+  cursor: pointer;
+  color: red;
+  transition: 0.3s;
+}
 
 .message_box_disp_1_1{
   position: fixed;

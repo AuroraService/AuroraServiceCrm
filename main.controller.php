@@ -1,6 +1,6 @@
 
 <?
-	
+require_once('core/model.php');	
 class Controller{
 	static $controller;
 
@@ -25,7 +25,6 @@ class Controller{
 		} else echo 'ActionId='.$actionId.', Domain='.$domain.',-Нет прав';
 }
 	public function execute(){
-		require_once('core/model.php');
 		global $var_pth_template;
 		global $var_template_index;
 		global $template_body_start;

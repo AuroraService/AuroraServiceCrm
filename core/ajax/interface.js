@@ -69,7 +69,7 @@ function sendData2(data, elemId, req, req_data, req_elemId) {
   var req_elemId=req_elemId || null;
   var str = 'data='+JSON.stringify(data);
   var elemId=elemId || 'dop_form_interface';
-  alert(str);
+  //alert(str);
   $.ajax({
     type: 'POST',
     url: '/core/ajax/interface.php',
@@ -101,6 +101,7 @@ function sendDataJSON(data, elemId) {
   var str = 'data='+JSON.stringify(data);
   var elemId=elemId || 'dop_form_interface';
   //alert(str);
+  //alert('step2');
   $.ajax({
     type: 'POST',
     url: '/core/ajax/interface.php',
@@ -108,11 +109,15 @@ function sendDataJSON(data, elemId) {
     cache: false,
     data: str,
     success: function(data,status,xhr) {
-      //alert(data);
-      var statusElem = document.getElementById(elemId);
+      alert(elemId);
+	  //alert(elemId);
+	  //alert(data[0]);
+      //var statusElem = document.getElementById(elemId);
+	  //alert(statusElem);
+	  //statusElem.innerHTML=data[0];
       $(elemId).text("");
+	  //$(elemId).append('gdsgdsg');
       $(elemId).append(data[0]);
-      //alert(data[1]);
       eval(data[1]);
 
       switch (data){
@@ -179,20 +184,25 @@ function ShowMessage(text, type, position){
   window.timerId=setInterval("RemoveMessage()", 3000);
 }
 
-function InputKeyUp(resId, elem, action, domain){
-  var form_data=[];
-  form_data['5055']=domain;
-  form_data['5058']=action;
-  form_data['9092']=elem.value;
-
-  sendData2(form_data, resId.id);
-}
 
 
 
 
 
 //===================
+var find_timer;
+function resetFindTimer(str){
+  clearTimeout(find_timer);
+  find_timer=setTimeout(function() {findObj(str);}, 500);
+}
+
+function findObj(str){
+  clearTimeout(find_timer);
+  data['-1']['5091']=str;
+  data['50129']='-1';
+  data['-1']['5058']='2336'; 
+  sendDataJSON(data, '#find_list_div');
+}
 
 function setFormParams(selector, form, height, width, offsetTop, offsetLeft, classes, top, left){
   var offsetTop=parseInt(offsetTop) || 0; 
@@ -224,11 +234,28 @@ function setFormParams(selector, form, height, width, offsetTop, offsetLeft, cla
   $('#'+form).addClass(classes); 
 }
 
-function findFormV(obj){
+function findFormV(obj,objId,propId,propDomain,propValue,objViewer,resultForm){ // Выставляет параметры окна поиска
   //formView('popup_window', 300,600,'fds', obj);
-  var form_data=[];
+  //var form_data=[];
   setFormParams(obj, 'popup_window', 300,600,10,10);
-  form_data['5058']="2340";
-  data['5058']="2340";
-  sendData2(data, '#popup_window')
+  //form_data['5058']="2340";
+  data['5058']="";
+  data['50129']='-1';
+  data['-1']={};
+  data['-1']['5058']='2340';
+  data['-1']['5013']=objId;
+  data['-1']['5082']=propId;
+  data['-1']['5055']=propDomain;
+  data['-1']['5066']=propValue;
+  data['-1']['50178']=objViewer;
+  data['-1']['50185']=resultForm;
+  //alert("test:"+objId);
+  sendDataJSON(data, '#popup_window')
+}
+
+function sendForm(frm){
+  data['50129']=frm;
+  resultContainer = data[frm]['50181'];
+  //alert('start');
+  sendDataJSON(data, resultContainer);
 }
