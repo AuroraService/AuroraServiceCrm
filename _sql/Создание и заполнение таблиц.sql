@@ -505,11 +505,46 @@ select * from triplets where obj_id = 2315;
 -- 15012.Лобанов Станислав
 insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,231);
 insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,232);
-insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2326);
-insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2315);
+-- insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2326);
+-- insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2315);
 insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2321);
 insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,233);
 insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,234);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2328);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2329);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2330);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2331);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,235);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,236);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2325);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2332);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2324);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,237);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,238);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2323);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2322);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2333);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2314);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,239);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2310);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2311);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2312);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2313);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2335); 
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2338);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2341);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2342);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2334);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2344);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2345);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2346);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2347);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2348);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2340);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2336);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2352);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2353);
+insert into triplets(subj_id, prop_id,obj_id) values(15012,5011,2354);
 
 -- 15014.Зякина Валентина
 insert into triplets(subj_id, prop_id,obj_id) values(15014,5011,2335);
@@ -706,6 +741,9 @@ create table sColumns(
   viewer    bigint,
   value_template varchar(256), -- Шаблон отображения ресурса
   ent_prop_id bigint,
+  event_form bigint,
+  event_form_viewer bigint,
+  event_form_container varchar(256),
   start_date datetime default '2015-11-01',
   end_date   datetime default '9999-01-01',
   PRIMARY KEY(id,end_date)
@@ -810,10 +848,10 @@ insert into sColumns(id, name, position, property, alias, domain, type, template
 insert into sColumns(id, name, position, property, alias, domain, type, template,editable,location,form,pid,external,viewer) 
   values(112290, 'Время выезда', 2, 5048, 'name', null, 0,NULL,1,'',null,11222,0,121);
   
-
+select * from dim_resource where id = 1114;
 -- 1114
-insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(11298, 'Id', 1, 0, NULL,0,1114,NULL,129,151155);
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,event_form,event_form_viewer,event_form_container) 
+  values(11298, 'Id', 1, 0, NULL,0,1114,NULL,129,151155,1154,null,'main_data_container');
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(11228,'Дата создания',2,1, NULL,1,1114,NULL,1210,151156);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
@@ -1821,6 +1859,11 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151139,112,5087,'ent_prop_id',1511,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511145,112,50112,'value_template',134,0);
 
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511263,112,50199,'event_form',132,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511264,112,50200,'event_form_viewer',132,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511265,112,50201,'event_form_container',134,0);
+
+
 
 -- 101.Клиент
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151140,101,5048,'id',101,0,0);
@@ -1918,7 +1961,7 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511104,101
 
 -- 1014.Телефон
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511113,1014,5048,'id',1014,0,0);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511114,1014,5067,'number',1014);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511114,1014,5067,'number',134);
 
 -- 161.Фильтр
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511115,161,5048,'id',161,0,0);
@@ -2103,7 +2146,7 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511259,152
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511260,1525212,50195,'profile_type',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511261,1525212,50196,'dent_count',135);
 
--- 1511262
+-- 1511265
 
 select * from ent_properties;
 
@@ -2391,6 +2434,8 @@ insert into sCrmElements(id,name,location,type) values(1217,'FilterNumber2Viewer
 insert into sCrmElements(id,name,location,type) values(1218,'FiltersSetViewer','core/viewers/filters_set.viewer.php',12);
 insert into sCrmElements(id,name,location,type) values(1219,'TechModel2Viewer','core/viewers/tech_model2.viewer.php',12);
 insert into sCrmElements(id,name,location,type) values(1220,'SetFormViewer','core/viewers/set_form.viewer.php',12);
+insert into sCrmElements(id,name,location,type) values(1221,'EntityViewer','core/viewers/entity.viewer.php',12);
+
 
 -- Создание таблицы адресов (страна, область, район, населенный пункт, улица, дом, корпус, квартира
 drop table if exists addresses;
@@ -2935,7 +2980,7 @@ select * from dim_resource where type = 1016;
 -- 
 select * from products;
 select * from triplets where prop_id = 50165;
-select * from requests;
+select * from requests; 
 select * from triplets;
 select * from files;
 -- delete from products;
@@ -2944,6 +2989,7 @@ select * from files;
 select * from entities;
 select * from executions;
 select * from dim_resource;
+select * from telephones;
 
 select l1.id '5048',l2.obj_id '50166',l3.obj_id '50167' from models l1 left join triplets l2 on l2.subj_id=l1.id and l2.prop_id=50166 and l2.end_date='9999-01-01' left join triplets l3 on l3.subj_id=l1.id and l3.prop_id=50167 and l3.end_date='9999-01-01' where l1.end_date = '9999-01-01'
 ;
@@ -2975,4 +3021,9 @@ select * from products;
 select * from product_categories;
 select * from triplets2;
 
-insert into requests (dep_time,dep_date,cost,id,creation_time,user_id,client_id,tel,address,state,poss_problem,comment,type,start_date,end_date,version_state,start_date) values(1208,"0000-00-00","10000",15031,"2012-10-20 15:00:00",15012,15021,15091,15082,1203,"123456789","la-la-la",109,"2016-01-20 14:09:30","9999-01-01",152417,'2016-01-20 14:09:30')
+update dim_resource set search_name = name;
+select * from dim_resource;
+
+update sColumns set event_form = 1154;
+select * from scolumns
+update scolumns set event_form_container = '#main_data_container' where id = 11298
