@@ -4,7 +4,7 @@ class Model {
 	
 	private $db_host = '127.0.0.1';
 	private $db_user = 'root';
-	private $db_passwd = '';
+	private $db_passwd = 'admin611root';
 	private $link;
 	
 	private $perm;         //Массив доступа [b_action_id][domain][action/perm/contr]
@@ -320,19 +320,23 @@ class Model {
 			$filter[$filterNum] = "type = '".$classId."'";
 			$filterNum++;
 		}
-		if ($filterNum != 0) {
-			$where = " where ";
-			foreach ($filter as $condition) {
+		//if ($filterNum != 0) {
+			$where = $tableName.'.end_date="9999-01-01"'." and ";
+			if ($filterNum != 0) foreach ($filter as $condition) {
 				$where = $where . $condition ." and ";
-			}
-			$where = substr($where,0,strlen($where)-5);
+		//	}
+		//echo ('Where2='.$where2);
+			
 		}
-		if (!empty($where2)) if (!empty($where))$where = $where . ' and '. substr($where2,5); else $where = ' where '.substr($where2,5);
+		if (empty($where2)) $where = substr($where,0,strlen($where)-5);
+		//if (!empty($where2)) if (!empty($where))$where = $where . ' and '. substr($where2,5); else $where = ' where '.substr($where2,5);
+		$where = ' where '.$where.substr($where2,5);
 		//if (!empty($where)) $where = $where . ' and '. substr($where2,5); else if (!empty($where2)) $where = ' where '.substr($where2,5);
 		$columns = substr($columns,2);
 		if (!empty($filters[50147])) $limit = ' limit '.$filters[50147]; else $limit = '';
 		//echo 'LIMIT='.$filters[50147];
 		$query = "select SQL_CALC_FOUND_ROWS ". $columns. " from ".$tableName." ".$where . $limit;
+		file_put_contents("log_sql","\n$query",FILE_APPEND);
 		//echo $query;
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
 		$lineNum = 0;
