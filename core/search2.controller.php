@@ -6,6 +6,7 @@ class Search2Controller {
 	}
 
 	private function showForm($params){
+		$rets['0']=$rets['0'].'Hello';
 	   $rets['0']='<span onclick="click_close_btn(this)" class="glyphicon glyphicon-remove btn_popup_close"></span><span class="popup_header">Поиск по сотрудникам</span>
        <input type="text" class="form-control control_form_1" placeholder="Поиск" onkeyup="resetFindTimer(this.value);" style="margin-bottom: 10px;">
        <div class="list-group" id="find_list_div" style="overflow-y: scroll; height: 210px; border: 1px solid rgb(204,204,204);"></div>';
@@ -17,28 +18,23 @@ class Search2Controller {
 	}
 
 	public function find($params){
-		//$rets['0']='Поиск';
-		//$rets['0']=$rets['0'].','.$params['5013'];
-		//$rets['0']=$rets['0'].','.$params['5082'];
-		//$rets['0']=$rets['0'].','.$params['5055'];
-		//$rets['0']=$rets['0'].','.$params['5066'];
-		//$rets['0']=$rets['0'].','.$params['50178'];
-		//
-		//$rets['0']=$rets['0'].','.$params['50185'];
-		$filt_array=split ('[/.-: ]', strtoupper($params['5091']));
+		$filt_array=preg_split("/[\s,]+/", strtoupper($params['5091']));
 		$fltrs="";
         foreach ($filt_array as $item) {
         	if ($fltrs!="") $fltrs=$fltrs.' AND ';
         	$fltrs=$fltrs.'UPPER(%COLUMN%) LIKE "%'.$item.'%"';
         }
-        //$rets['0']=$fltrs;
-		//$filters[50100]='UPPER(%COLUMN%) LIKE "%'.strtoupper($params['5091']).'%"';
 		$filters[50100]=$fltrs;
+		$orders[501]=1;
 		$model = Model::getModel();
-		$list = $model->getResourcesGen($filters,$params['5055']);
+		$list = $model->getResourcesGen($filters,$params['5055'],$orders);
+		
 		if (!empty($list)) foreach ($list as $element){
-            $rets['0']=$rets['0'].'<span class="list-group-item" style="cursor: pointer" onclick="data[\''.$params['50185'].'\'][\''.$params['5013'].'\'][\''.$params['5082'].'\'][0]='.$element->items[5048].';">'.$element->items[501].'</span>';
-		}
+			$active="";
+			if ($params['5066']==$element->items[5048]) $active=" active";
+			if (empty($params[50202])) $reqFlag = 'false'; else $reqFlag = true;
+            $rets['0']=$rets['0'].'<span id="group_item_'.$element->items[5048].'" class="list-group-item'.$active.'" style="cursor: pointer" onclick="data[\''.$params['50185'].'\'][\''.$params['5013'].'\'][\''.$params['5082'].'\'][0]='.$element->items[5048].';data[\'50129\']='.$params['50185'].'; data[\'50146\']='.$params['5013'].'; data[\''.$params['50185'].'\'][\'5058\']=2334; sendForm2('.$params[50185].','.$reqFlag.',\''.$params[50202].'\');">'.$element->items[501].'</span>';
+		} else $rets['0']=$rets['0'].'<br>';
 		return $rets;
 	}
 

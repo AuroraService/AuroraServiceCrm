@@ -63,10 +63,11 @@ function sendData(action, elemId) {
 }
 
 function sendData2(data, elemId, req, req_data, req_elemId) {
-  //alert(data[-1]['5066']);
+  //alert(data);
   var req=req || false;
   var req_data=req_data || null;
   var req_elemId=req_elemId || null;
+  //alert(data['1']['15032']['5014']['0']);
   var str = 'data='+JSON.stringify(data);
   var elemId=elemId || 'dop_form_interface';
   //alert(str);
@@ -83,7 +84,8 @@ function sendData2(data, elemId, req, req_data, req_elemId) {
       //alert($(elemId).attr("id"));
       $(elemId).text("");
       $(elemId).append(data);
-      alert(data);
+	  //$(elemId).append(data);
+      //alert(data);
       if (req) sendData2(req_data, req_elemId);
       switch (data){
         case 0: ShowMessage('Сохранено');
@@ -109,16 +111,17 @@ function sendDataJSON(data, elemId) {
     cache: false,
     data: str,
     success: function(data,status,xhr) {
-      alert(elemId);
+      //alert(elemId);
 	  //alert(elemId);
-	  //alert(data[0]);
+	  //alert(data[1]);
       //var statusElem = document.getElementById(elemId);
 	  //alert(statusElem);
 	  //statusElem.innerHTML=data[0];
       $(elemId).text("");
 	  //$(elemId).append('gdsgdsg');
       $(elemId).append(data[0]);
-      eval(data[1]);
+	  //$(elemId).append('<>'.data[1]);
+      window.eval(data[1]);
 
       switch (data){
         case 0: ShowMessage('Сохранено');
@@ -234,7 +237,7 @@ function setFormParams(selector, form, height, width, offsetTop, offsetLeft, cla
   $('#'+form).addClass(classes); 
 }
 
-function findFormV(obj,objId,propId,propDomain,propValue,objViewer,resultForm){ // Выставляет параметры окна поиска
+function findFormV(obj,objId,propId,propDomain,propValue,objViewer,resultForm,refreshForm){ // Выставляет параметры окна поиска
   //formView('popup_window', 300,600,'fds', obj);
   //var form_data=[];
   setFormParams(obj, 'popup_window', 300,600,10,10);
@@ -249,6 +252,11 @@ function findFormV(obj,objId,propId,propDomain,propValue,objViewer,resultForm){ 
   data['-1']['5066']=propValue;
   data['-1']['50178']=objViewer;
   data['-1']['50185']=resultForm;
+  data['-1']['50202']=refreshForm;
+  
+  data['-1']['50186']={};
+  
+
   //alert("test:"+objId);
   sendDataJSON(data, '#popup_window')
 }
@@ -258,4 +266,30 @@ function sendForm(frm){
   resultContainer = data[frm]['50181'];
   //alert('start');
   sendDataJSON(data, resultContainer);
+}
+
+
+function sendForm2(frm, req, req_frm) {
+   var req = req || false;
+  data['50129']=frm;
+  resultContainer = data[frm]['50181'];
+  //alert(resultContainer);
+  var str = 'data='+JSON.stringify(data);
+  //var elemId=elemId || 'dop_form_interface';
+  $.ajax({
+    type: 'POST',
+    url: '/core/ajax/interface.php',
+    dataType: 'json',
+    cache: false,
+    data: str,
+    success: function(data,status,xhr) {
+		//alert(data[0]);
+		if (resultContainer != undefined){
+			$(resultContainer).text("");
+			$(resultContainer).append(data[0]);
+		}
+      window.eval(data[1]);
+	if (req) sendForm2(req_frm);
+    }
+  });
 }

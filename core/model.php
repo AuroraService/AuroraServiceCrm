@@ -58,7 +58,7 @@ class Model {
 				$propId = $prop->items[5082]; //5082.Идентификатор свойства
 
 				if ($prop->items[50111] == 1) {//50111.Кардинальность
-					echo '<br>' . $propId . ',' . $resource1->items[$propId][0] . ',' . $resource2->items[$propId][0] . '<br>';
+					//echo '<br>' . $propId . ',' . $resource1->items[$propId][0] . ',' . $resource2->items[$propId][0] . '<br>';
 					if ($resource1->items[$propId][0] != $resource2->items[$propId][0]) return 0;
 				} else {
 
@@ -93,7 +93,7 @@ class Model {
 				if ($value1 == $value2) {$existFlag = 1; break;}
 			}
 			if ($existFlag == 0){
-				echo 'Compare:'.$lineNum.',' .$value1.'<br>';
+				//echo 'Compare:'.$lineNum.',' .$value1.'<br>';
 				if (!empty($value1)) $ret[$lineNum] = $value1;
 				$lineNum++;
 			}
@@ -331,7 +331,7 @@ class Model {
 		//if (!empty($where)) $where = $where . ' and '. substr($where2,5); else if (!empty($where2)) $where = ' where '.substr($where2,5);
 		$columns = substr($columns,2);
 		if (!empty($filters[50147])) $limit = ' limit '.$filters[50147]; else $limit = '';
-		echo 'LIMIT='.$filters[50147];
+		//echo 'LIMIT='.$filters[50147];
 		$query = "select SQL_CALC_FOUND_ROWS ". $columns. " from ".$tableName." ".$where . $limit;
 		//echo $query;
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
@@ -372,7 +372,7 @@ class Model {
 		$filters[5065] = '%COLUMN%=' . $formId;
 		$formProps = $this->getResources(112, $filters);
 		foreach ($formProps as $formProp) {
-			echo '';
+			//echo '';
 			$formPropsIds[$formProp->items[5087]] = 1; //5087.Свойство сущности
 		}
 		return $formPropsIds;
@@ -507,6 +507,7 @@ class Model {
 	public function getResource2Opt($resourceId, $type = null){
 		if (empty($type)) $type = $this->getResProperty($resourceId,5051);
 		$filters[5048] = '%COLUMN% = '.$resourceId;
+		$filters[50114] = '%COLUMN% = "9999-01-01"';
 		$resources = $this->getResourcesOpt($type,$filters);
 
 		$entProps = array();
@@ -532,7 +533,7 @@ class Model {
 	}
 
 	//todo
-	function getResourcesGen($filters = null, $type = null){
+	function getResourcesGen($filters = null, $type = null, $orders = null){
 		if (!empty($type)) {
 			$result = array();
 			$this->getSubClass($type,$result);
@@ -546,11 +547,17 @@ class Model {
 		if (!empty($filters[5048])) $filterId = 'and '.str_replace('%COLUMN%', 'id', $filters[5048]);
 		if (!empty($filters[501])) $filterName = 'and '.str_replace('%COLUMN%', 'name', $filters[501]);
 		if (!empty($filters[50100])) $filterSearchName = 'and '.str_replace('%COLUMN%', 'search_name', $filters[50100]);
+		
+		if (!empty($orders[5048])) $order = $order . "," . 'id';
+		if (!empty($orders[501])) $order = $order . "," . 'name';
+		if (!empty($orders[50100])) $order = $order . "," . 'search_name';
 
 		$where = substr($whereType.$filterId.$filterName.$filterSearchName,4);
 		if (!empty($where)) $where = ' where '.$where;
+		if (!empty( $order))  $order = ' order by '.substr($order,1);
 
-		$query = "select id,name,search_name,present_name,name_template,search_name_template,present_name_template,type from dim_resource ".$where;
+		$query = "select id,name,search_name,present_name,name_template,search_name_template,present_name_template,type from dim_resource ".$where.$order;
+		file_put_contents("log",$query,FILE_APPEND);
 		//echo $query;
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
 		$lineNum = 0;
@@ -625,11 +632,11 @@ class Model {
 					//echo $entProp->items[5082];
 					$inversePropId = $this->getResProperty($entProp->items[5082],5049); //5082.Идентификатор свойства, 5049.Является обратным
 					$propId = $entProp->items[5082];
-					echo 'PropId = '.$propId.'<BR>';
+					//echo 'PropId = '.$propId.'<BR>';
 					//$inversePropId = $inverseProp[0];
-					echo 'InverseProp = '.$inversePropId.'<BR>';
+					//echo 'InverseProp = '.$inversePropId.'<BR>';
 					foreach ($ret as $line){
-						echo 'ParentId = '.$line->items[$inversePropId].', ChildId = '.$line->items[5048].'<br>';
+						//echo 'ParentId = '.$line->items[$inversePropId].', ChildId = '.$line->items[5048].'<br>';
 						$prop = $ret[$line->items[$inversePropId]]->items[$propId];
 						$ret[$line->items[$inversePropId]]->items[$propId][count($prop)] = $line->items[5048] ;//5082.Идентификатор свойства,5048.Идентификатор
 					}
@@ -781,6 +788,7 @@ class Model {
 			$select = $select.$propList[0];
 			$where = $where.$propList[1];
 			$order = $order.$propList[2];
+			if (!empty($filters[50114])) $where = $where . " and ".$tableAlias.".end_date = '9999-01-01'";
 			if (!empty($propList[0])||!empty($propList[1])||!empty($propList[2])) $from = $from." join ".$tableName." ".$tableAlias." on ".$tableAlias.".id=".$firstTableAlias.".id";
 		}
 		if (!empty($filters[50114])) $where = $where . " and ".$firstTableAlias.".end_date = '9999-01-01'";
@@ -987,7 +995,7 @@ class Model {
 		$columns = substr($columns,1);
 		$values = substr($values,1);
 		$query = 'insert into '.$tableName.' ('.$columns.') values('.$values.')';
-		echo $query;
+		//echo $query;
 		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
 		return $resource2->items[5048][0];
 	}
@@ -1045,7 +1053,9 @@ class Model {
 		if (empty($type)) $type = $this->getResProperty($resourceId,5051);//5051.Тип
 		$tableName = $this->getResProperty($type,503,0,0); //503.Местоположение
 		$oldResource = $this->getResource2Opt($resource2->items[5048][0],$type);
-		echo 'OldState:'.$oldResource->items[50131][0];
+		//echo 'OLDID='.$resource2->items[5048][0];
+		//echo 'OldState:'.$oldResource->items[50131][0];
+		//echo 'FormId:'.$formId;
 		$compareFlag = $this->compare($resource2,$oldResource, $formId,0,$type);
 		$localCompareFlag = $this->compare($resource2,$oldResource, $formId,1,$type);
 		if ($localCompareFlag != 1) {
@@ -1072,9 +1082,9 @@ class Model {
 			foreach($entProps as $entProp){
 
 				$propId = $entProp->items[5082];//5082.Идентификатор свойства
-				echo 'Prop='.$propId;
+				//echo 'Prop='.$propId;
 				if ($formPropsIds[$entProp->items[5048]] != 1){//5048.ID
-					echo 'OldProp='.$propId.",".$oldResource->items[$propId][0];
+					//echo 'OldProp='.$propId.",".$oldResource->items[$propId][0];
 					if (!empty($oldResource->items[$propId])) foreach ($oldResource->items[$propId] as $propKey => $propValue){
 						$resource2->items[$propId][$propKey] = $propValue;
 					}
@@ -1094,11 +1104,11 @@ class Model {
 		}
 		$end_time = date("Y-m-d H:i:s:u");
 		if (!empty($executeId)) $this->updateProperty2($executeId,50122,$end_time,1614,null);//50122.Время окончания,1614.Исполнение действия
-		echo 'CompareFlag='.$compareFlag;
+		//echo 'CompareFlag='.$compareFlag;
 	}
 
 	public function updateExternalProperties($newResource2,$oldResource2,$entProps,$formPropsIds,$closeDate = null){
-		echo 'UpdateExternal';
+		//echo 'UpdateExternal';
 		if (empty($closeDate)) $closeDate = date("Y-m-d H:i:s");
 		$resourceId = $newResource2->items[5048][0];
 		foreach ($entProps as $propId => $prop) {
@@ -1109,7 +1119,7 @@ class Model {
 					$isResource = !$this->isSubclassOf($prop->items[5055],133);
 					$findFlag = 0;
 					if (!empty($newResource2->items[$propId])) foreach ($newResource2->items[$propId] as $newValue) {
-						echo 'OldValue='.$oldValue.',NewValue='.$newValue.'<br>';
+						//echo 'OldValue='.$oldValue.',NewValue='.$newValue.'<br>';
 						if ($oldValue == $newValue) {$findFlag = 1; break 1;}
 					}
 					if ($findFlag == 0) $this->closeCurrentVersionTriplet($resourceId,$propId,$oldValue,$isResource,$closeDate);
@@ -1118,7 +1128,7 @@ class Model {
 					$isResource = !$this->isSubclassOf($prop->items[5055],133);
 					$findFlag = 0;
 					if (!empty($oldResource2->items[$propId])) foreach ($oldResource2->items[$propId] as $oldValue) {
-						echo 'OldValue='.$oldValue.',NewValue='.$newValue.'<br>';
+						//echo 'OldValue='.$oldValue.',NewValue='.$newValue.'<br>';
 						if ($oldValue == $newValue) {$findFlag = 1; break 1;}
 					}
 					if ($findFlag == 0) $this->insertTriplets(null,$resourceId,$propId,$newValue,$isResource,$closeDate);
@@ -1147,7 +1157,7 @@ class Model {
 	}
 
 	private function quotation($value, $domain){
-		echo $value;
+		//echo $value;
 		if (($domain == 134)||($domain == 136)) $value = '"'.$value.'"';
 		return $value;
 	}

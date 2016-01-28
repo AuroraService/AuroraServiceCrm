@@ -65,7 +65,7 @@ switch ($action) {
 		$mainController -> executeAction(2345, $params);//2345.Создание сущности
 		break;
 	case '2334':
-		echo 'Step';
+		//echo 'Step';
 		$selectedForm = $json[50129];
 		$selectedEntity = $json[50146];
 		if (empty($json[$selectedForm][$selectedEntity][5048][0])) $json[$selectedForm][$selectedEntity][5048][0] = $selectedEntity;
@@ -73,19 +73,25 @@ switch ($action) {
 		$params[5013] = $resource2;//5013.Объект
 		$params[5065] = $json[$selectedForm][5065];//5065.Форма
 		$params[5055] = $json[$selectedForm][5055];//5055.Домен
-		echo 'Domain='.$params[5055];
+		//echo 'Domain='.$params[5055];
 		$mainController -> executeAction(2334, $params);//2334.Изменение сущности
+		$ret[0]='<br>';
+		echo json_encode($ret);
+		
+		//$result = $mainController -> executeAction(2334, $params);//2354.Отображение списка
         break;
     case '2336':
+		//$params = $json['-1']['50186'];
 		$params[5058] = 2336;
 		$selectedForm = $json['50129'];
-		$params['5013']=$json['-1']['5013'];
+		$params['5013']=$json[$selectedForm]['5013'];
 		$params['5082']=$json[$selectedForm]['5082'];
 		$params['5055']=$json[$selectedForm]['5055'];
 		$params['5066']=$json[$selectedForm]['5066'];
 		$params['50178']=$json[$selectedForm]['50178'];
 		$params['5091']=$json[$selectedForm]['5091'];
 		$params['50185']=$json[$selectedForm]['50185'];//50185.Выделенная форма результата
+		$params['50202'] = $json[$selectedForm]['50202'];
 	
 		$ret =  $mainController -> executeAction(2336, $params);//2336.Печать содержимого поиска выбора
 		echo json_encode($ret);
@@ -93,6 +99,8 @@ switch ($action) {
         break;
     case '2340':
 		file_put_contents("log","\nACTION=2340",FILE_APPEND);
+		$params = $json['-1']['50186'];
+		$params[50202] = $json['-1']['50202'];
 		$params[5058] = 2340;
 		//$params[]
 		$ret = $mainController -> executeAction(2340, $params);//2340. Печать формы поиска выбора
@@ -102,7 +110,7 @@ switch ($action) {
         break;
     case '2354':
         //file_put_contents("log","2354");
-        $selectedForm=$json[50129];//5055.Домен
+        $selectedForm=$json[50129];
 		$nestedForm = $json[$selectedForm][50198];
 		if (!empty($nestedForm)) $params[50186]=$json[$nestedForm];
 		else $params[50186]=$json[$selectedForm][50186];
@@ -110,6 +118,8 @@ switch ($action) {
         $params[5091]=$json[5091];//5091.Поисковый запрос
         $params[50178]=$json[$selectedForm][50178];//50178.Отображатель
         $params[5095]=$json[$selectedForm][5095];//5095.Фильтры
+		$params[50186][50202]=$json[$selectedForm][50202];
+		$params[50186][50130]=$json[50130];
 		//file_put_contents("log",$params[5055].",".$params[5091].",".$params[50178].",".$params[5095]);
         //echo $json[$selectedForm][50178];
         //$ret=json_encode($mainController->executeAction(2354, $params));//2354.Получение списка

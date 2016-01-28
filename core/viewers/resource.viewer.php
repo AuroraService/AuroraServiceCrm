@@ -20,7 +20,7 @@ class ResourceViewer{
     $link = "&id=".$cell->id;
     if ($flag_link) $link1='<a href="?action=2315'.$link.'" class="hrf_nmrg" style="margin-left: 10px;"><span class="glyphicon glyphicon-share-alt" style="color:black"></span></a>';
     //if ($flag_edit) $link2='<a href="#" class="hrf_nmrg interface_edit" id="select_form" domain="'.$this->params[5055].'" selectid="'.$cell->id.'" item-id="'.$id.'" win_width="600" win_height="300"><span class="glyphicon glyphicon-pencil" style="color:black"></span></a>';
-    if ($flag_edit) $link2='<a href="#" class="hrf_nmrg interface_edit" id="select_form" onclick="findFormV(this,\''.$params['5013'].'\',\''.$params['5082'].'\',\''.$params['5055'].'\',\''.$params['5066'].'\',null,\''.$params['50129'].'\')"><span class="glyphicon glyphicon-pencil" style="color:black"></span></a>';
+    if ($flag_edit) $link2='<a href="#" class="hrf_nmrg interface_edit" id="select_form" onclick="findFormV(this,\''.$params['5013'].'\',\''.$params['5082'].'\',\''.$params['5055'].'\',\''.$params['5066'].'\',null,\''.$params['50129'].'\',\''.$params['50202'].'\')"><span class="glyphicon glyphicon-pencil" style="color:black"></span></a>';
     
 
     if ($flag_delete) $link3='<a class="hrf_nmrg" onclick="editField(\''.$id.'\', \'\');"><span class="glyphicon glyphicon-remove" style="color:black"></span></a>';

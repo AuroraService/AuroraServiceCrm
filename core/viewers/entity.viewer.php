@@ -15,12 +15,14 @@ class EntityViewer{
 		$resId = $params[5048];
 		$formId = $cell->items[5048][0];
 		
-		if (empty($iParams[50130])) $formCounter = 1; else $formCounter = ++$iParams[50130];
+		if (empty($params[50130])) $formCounter = 1; else $formCounter = ++$params[50130];
 		
-		$result['0']=$result['0'].'EntityViewer';
-		$result['0']=$result['0'].$params[5048];
-		$result['0']=$result['0'].$params[5055];
-		$result['0']=$result['0'].$cell->items[5048][0];
+		//$result['0']=$result['0'].'EntityViewer';
+		//$result['0']=$result['0'].$params[5048];
+		//$result['0']=$result['0'].$params[5055];
+		//$result['0']=$result['0'].$cell->items[5048][0];
+		
+		//$result['0']=$result['0'].'FormId='.$formId;
 		
 		$result['1']=$result['1'].'data["50129"]='.$formCounter.'; data["50130"]='.$formCounter.'; data["'.$formCounter.'"]={};data["'.$formCounter.'"]["5065"] = '.$formId.'; data["'.$formCounter.'"]["'.$resId.'"]={};data["'.$formCounter.'"]["5055"]='.$params[5055].';';
 		
@@ -69,10 +71,12 @@ class EntityViewer{
 					$cell = new Cell($idValue, $value);
 					$echo = $viewer->show($cell, $params);
 					$viewerData[50115][$propId][$valueCounter]=$echo;//50115.Набор свойств для отображения
-					$result[0]=$result[0].'ID_VALUE='.$idValue;
-					$result[1]=$result[1].$this->printJavaScript($formCounter,$id,$col_value->property, $valueCounter,$idValue);
+					//$result[0]=$result[0].'ID_VALUE='.$idValue;
+					$result[1]=$result[1].$this->printJavaScript($formCounter,$resId,$col_value->property, $valueCounter,$idValue);
+					//$result[0]=$result[0].$this->printJavaScript($formCounter,$resId,$col_value->property, $valueCounter,$idValue);
 			} else {
-				$result[1]=$result[1].$this->printJavaScript($formCounter,$id,$col_value->property, 0,null);
+				$result[1]=$result[1].$this->printJavaScript($formCounter,$resId,$col_value->property, 0,null);
+				//$result[0]=$result[0].$this->printJavaScript($formCounter,$resId,$col_value->property, 0,null);
 				$cell = new Cell(null,null);
 				$viewerData[50115][$propId][0]=$viewer->show($cell, $params);
 			}
@@ -102,17 +106,18 @@ class EntityViewer{
 		$result[0]=$result[0]. '</div>
               <div class="col-md-4" id="dop_form_interface">';
         $result[0]=$result[0]. '</div></div>';
-		$result[0]=$result[0]. '<a onclick="data[\'50129\']='.$formCounter.'; data[\'50146\']='.$resId.'; data[\'5058\']=2334; sendData2(data,dop_form_interface,false);">Сохранить</a>';
-		
+		$result[0]=$result[0]. '<a onclick="data[\'50129\']='.$formCounter.'; data[\'50146\']='.$resId.'; data[\''.$formCounter.'\'][\'5058\']=2334; sendForm2('.$formCounter.');">Сохранить</a>';
+		//$result[1]=$result[1].'alert(data["1"][\'15032\'][\'5014\'][\'0\']);';
 		return $result;
     }
 	
 	private function printJavaScript($formCounter, $entId, $propId, $valueCounter, $propValue){
-		$ret=$ret. '<script language ="JavaScript">';
+		//$ret=$ret. '<script language ="JavaScript">';
 		$mas = 'mas'.$formCounter.'_'.$entId.'_'.$propId;
 		if ($valueCounter == 0) $ret=$ret. "var ".$mas." = {};";
-		$ret=$ret. $mas."[".$valueCounter."]='".$propValue."';
+		$ret=$ret. $mas."['".$valueCounter."']='".$propValue."';
 		data['".$formCounter."']['". $entId."']['".$propId."'] = ".$mas.";";
-		$ret=$ret. "</script>";
+		//$ret=$ret. "</script>";
+		return $ret;
 	}
 }

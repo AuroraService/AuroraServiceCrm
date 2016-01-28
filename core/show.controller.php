@@ -1,12 +1,13 @@
 <?php
 class ShowController {
 	public function execute($params){
-
-	if (empty($iParams[50130])) $formCounter = 1; else $formCounter = ++$iParams[50130];
+	echo 'ActionId='.$params[5058];
+	if (empty($params[50130])) $formCounter = 1; else $formCounter = ++$params[50130];
 	$filters=$params[5095];
 	$model = Model::getModel();
 	$action = $model->getAction($params[5058]); //5058.Действие
 	$formId = $action->items[5065];
+	echo 'FormId='.$formId;
 	$columns = $model->getColumns2($formId);
 	if ($params[50125] == 1) $id = 1; else $id = null; //50125.Флаг поискового запроса
 	$table = $model->getDataSet($columns, $formId,$id,$filters);
@@ -15,8 +16,9 @@ class ShowController {
 
     echo '<script>
             if (data===undefined) data = {};
+			data[\'50130\']='.$formCounter.';
             if (data["'.$formCounter.'"]===undefined) data["'.$formCounter.'"]={};
-            if (data[50126]===undefined) data["50126"]={};
+            if (data["50126"]===undefined) data["50126"]={};
             data["50126"]["5079"]='.$userId.';
            </script>';
     echo '<div class="table-responsive" id="data_container"><div id ="data_dataset_container"><table class="table table-striped table-hover table-condensed"><thead><tr>';
@@ -39,6 +41,7 @@ class ShowController {
 				$params[50199]=$table->cols[$colNum]->res->items[50199][0];
 				$params[50200]=$table->cols[$colNum]->res->items[50200][0];
 				$params[50201]=$table->cols[$colNum]->res->items[50201][0];
+				$params[50130]=$formCounter;
 				$viewer = $model->getViewer($table->cols[$colNum]->viewer,$params,$this);
 				echo '<td>'.$viewer->show($col_value,$params).'</td>';
 				$this->printJavaScript($formCounter,$val[0]->id,$table->cols[$colNum]->property,0,$col_value->value); //Переписать
@@ -84,7 +87,7 @@ class ShowController {
 		echo '<script language ="JavaScript">';
 		$mas = 'mas'.$formCounter.'_'.$entId.'_'.$propId;
 		if ($valueCounter == 0) echo "var ".$mas." = {};";
-		echo $mas."[".$valueCounter."]='".$propValue."';
+		echo $mas."['".$valueCounter."']='".$propValue."';
 		data['".$formCounter."']['". $entId."']['".$propId."'] = ".$mas.";";
 		echo "</script>";
 	}

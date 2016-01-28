@@ -11,18 +11,23 @@ class EshowController {
 		$userId = $_SESSION['id'];
 		if (empty($userId)) $userId = $iParams[50126][5079];//50126.Технические параметры, 5079.Пользователь
 
-		if (empty($elemId) && !empty($id)) {
+		$domain=$iParams[5055];
+		echo 'FLAG='.$iParams[15132];
+		if (empty($elemId) && !empty($id)  && ($iParams[15132]!=1)) {
 			$domain = $model->getResProperty($id,5051,0); //5051.Type
 			$elemId=$model->getForm($actionId,$domain);
 		}
-		echo ' <script language ="JavaScript">var data = {};  t={}; t["5079"]= '.$userId.'; t["50127"]="'.$_SESSION['hash'].'";data["50126"]=t; data["50129"]='.$formCounter.'; data["50130"]='.$formCounter.'; data["'.$formCounter.'"]={};data["'.$formCounter.'"]["5065"] = '.$elemId.'; data["'.$formCounter.'"]["'.$id.'"]={};data["'.$formCounter.'"]["5055"]='.$domain.'</script>';
+		
+		
+		if (empty($id)) $id = 0;
+		echo ' <script language ="JavaScript">var data = {};  t={}; t["5079"]= '.$userId.'; t["50127"]="'.$_SESSION['hash'].'";data["50126"]=t; data["50129"]='.$formCounter.'; data["50130"]='.$formCounter.'; data["'.$formCounter.'"]={};data["'.$formCounter.'"]["5065"] = '.$elemId.'; data["'.$formCounter.'"]["'.$id.'"]={};data["'.$formCounter.'"]["5055"]='.$domain.';data["'.$formCounter.'"]={};data["'.$formCounter.'"]["'.$id.'"]={};</script>';
 		//$this->printJavaScript(5055,$iParams[5055],0,0,$formCounter);//5055.Домен
 		$val = $model->getColumns2($elemId);
 		$viewerData = array();
 		$viewerData[5093] = $val->cols;
 		$lineNum = 0;
-		if (!empty($id)) $resource2 = $model->getCurrentResource2($id);
-		else {echo '<script language ="JavaScript">data['.$formCounter.'][5051] = mas'.$formCounter.'_0;</script>';}
+		if (!empty($id) && ($id != 0) && ($iParams[15132]!=1)) $resource2 = $model->getCurrentResource2($id);
+		//else {echo '<script language ="JavaScript">data['.$formCounter.'][5051] = mas'.$formCounter.'_0;</script>';}
 
 		if (!empty($val->cols)) foreach ($val->cols as $col_value) {
 			$propId = $col_value->property;
