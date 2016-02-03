@@ -12,9 +12,18 @@ class CreateController {
         
         $elemId = $pAction->items[5065]; //5065.Форма
 		
-		$items[5048][0]=$id;
+		//$items[5048][0]=$id;
 		$items[5051][0]=$domain;
 		$resource2=new Resource2($items);
+        /*
+        $nEntsIds = $model->getResProperty2($domain,50216);//50216.Домен
+        if (!empty($nEnt)) foreach ($nEntsIds as $nEntId){
+            $items2[5051][0]=$nEntId;
+            $nEnt = new Resource2($items2);
+            $nEntInstId=$model->insert($nEnt,$domain);
+            $resource2->items[]=$nEntInstId;
+        }
+        */
 		$id=$model->insert($resource2,$domain);
 		$java="<script language =\"JavaScript\">
 		window.onload = function () {
@@ -35,8 +44,8 @@ data['1']['50186']={};
 data['1']['50186']['5048']=".$id.";
 data['1']['50186']['5055']=".$domain."; 
 data['1']['50202']=1; 
-alert('send');
-alert(data['1']['5095']['5048']);
+//alert('send');
+//alert(data['1']['5095']['5048']);
 		sendForm(1);}</script>";
 echo $java;
         

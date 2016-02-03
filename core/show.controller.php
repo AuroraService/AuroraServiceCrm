@@ -1,13 +1,13 @@
 <?php
 class ShowController {
 	public function execute($params){
-	echo 'ActionId='.$params[5058];
+	//echo 'ActionId='.$params[5058];
 	if (empty($params[50130])) $formCounter = 1; else $formCounter = ++$params[50130];
 	$filters=$params[5095];
 	$model = Model::getModel();
 	$action = $model->getAction($params[5058]); //5058.Действие
 	$formId = $action->items[5065];
-	echo 'FormId='.$formId;
+	//echo 'FormId='.$formId;
 	$columns = $model->getColumns2($formId);
 	if ($params[50125] == 1) $id = 1; else $id = null; //50125.Флаг поискового запроса
 	$table = $model->getDataSet($columns, $formId,$id,$filters);

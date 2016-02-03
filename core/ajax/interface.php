@@ -74,6 +74,8 @@ switch ($action) {
 		$params[5065] = $json[$selectedForm][5065];//5065.Форма
 		$params[5055] = $json[$selectedForm][5055];//5055.Домен
 		//echo 'Domain='.$params[5055];
+		$str=json_encode($json[$selectedForm][$selectedEntity]);
+		file_put_contents("log",'RESOURCE='.$str,FILE_APPEND);
 		$mainController -> executeAction(2334, $params);//2334.Изменение сущности
 		$ret[0]='<br>';
 		echo json_encode($ret);

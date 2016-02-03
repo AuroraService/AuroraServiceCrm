@@ -1,5 +1,5 @@
 <?
-ini_set('session.save_path', $_SERVER['DOCUMENT_ROOT'] .'../sessions/');
+ini_set('session.save_path', $_SERVER['DOCUMENT_ROOT'] .'/sessions/');
 ini_set('session.cookie_lifetime', 1000);
 session_start();
 

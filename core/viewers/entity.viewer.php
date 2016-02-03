@@ -37,8 +37,9 @@ class EntityViewer{
 		$lineNum = 0;
 		//if (!empty($id)) $resource2 = $model->getCurrentResource2($id);
 		//else {echo '<script language ="JavaScript">data['.$formCounter.'][5051] = mas'.$formCounter.'_0;</script>';}
-
+		$innerFormCounter = $formCounter;
 		if (!empty($val->cols)) foreach ($val->cols as $col_value) {
+			//$formCounter++;
 			$propId = $col_value->property;
 			
 			$params[5013] = $resId;
@@ -51,14 +52,22 @@ class EntityViewer{
 			$params[5088] = 0; //5088.Номер значение
 			$params[50129] = $formCounter;
 			$params[5048] = $id; //5048.Идентификатор сущности
+			$params[50199] = $col_value->res->items[50199][0]; //50208.Стандартная форма
+			//$result[0]=$result[0].'FORM='.$params[50199];
+
+
 			
 			$params2[5055] = $col_value->domain; //5055.Домен
+
 
 			
 			$viewer = $model->getViewer($col_value->viewer,$params2,$model);
 
 			if (!empty($resource2->items[$propId])) foreach ($resource2->items[$propId] as $valueCounter =>$propValue) {
+
 				$params[5066]=$propValue;
+				$innerFormCounter++;
+				$params[50210] = $innerFormCounter;
 
 					//$propId = $col_value->property;
 					if ($col_value->type == 0) {
@@ -108,6 +117,7 @@ class EntityViewer{
         $result[0]=$result[0]. '</div></div>';
 		$result[0]=$result[0]. '<a onclick="data[\'50129\']='.$formCounter.'; data[\'50146\']='.$resId.'; data[\''.$formCounter.'\'][\'5058\']=2334; sendForm2('.$formCounter.');">Сохранить</a>';
 		//$result[1]=$result[1].'alert(data["1"][\'15032\'][\'5014\'][\'0\']);';
+		$result[1]=$result[1].'data["50129"]='.$innerFormCounter.'; data["50130"]='.$innerFormCounter.';';
 		return $result;
     }
 	

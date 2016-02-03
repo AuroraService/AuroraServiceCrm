@@ -6,7 +6,7 @@
      $var_db_name='kb1';
 
 // Paths
-     $var_pth_templatesfolder='/templates/';
+     $var_pth_templatesfolder='templates/';
 
 
 

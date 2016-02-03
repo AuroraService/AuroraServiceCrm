@@ -20,6 +20,9 @@ class Model {
 		if (empty($this->user_id)) $this->user_id = $_SESSION['id'];
 		//echo 'UserId"'.$this->user_id;
 		$this->link = mysqli_connect($this->db_host, $this->db_user, $this->db_passwd, 'kb1');
+		mysqli_query($this->link,"SET NAMES 'utf8'");
+		mysqli_query($this->link,"SET CHARACTER SET 'utf8'");
+		mysqli_query($this->link,"SET SESSION collation_connection = 'utf8_general_ci'");
 		if (!$this->link) die('Ошибка соединения: ' . mysqli_error());  
 		$this->loadVievers();
 		$this->loadActions();
@@ -114,10 +117,14 @@ class Model {
 	public function find($text, $domain){
 		$text = strtoupper($text);
 		$query = 'delete from find';
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		$query = 'insert into find(id,type) select id,type from dim_resource where Upper(name) LIKE "%'.$text.'%" and type = '.$domain;
 		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'Query:'.$query. mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 	}
 
 	private function findController($actionId){
@@ -156,7 +163,9 @@ class Model {
 		$next = (++$this->entities[$domain]->items[5090]);
 		$id = $this->entities[$domain]->items[5089].$next;
 		$query = 'update entities set counter = '.$next.' where id='.$domain;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:' .$query. mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		return $id;
 	}
 
@@ -168,7 +177,9 @@ class Model {
 		$query =
 			"select alias from sColumns
          where pid = $columnId order by CAST(position AS SIGNED)";
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		$columns = '';
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
 			$columns = $columns . ',' .$line['alias'];
@@ -195,11 +206,12 @@ class Model {
 	}
 
 	public function getClassProperties($classId){
-		$query = "select id, ent_id, prop_id, alias, domain, external,virtual, editable, cardinal
+		$query = "select id, ent_id, prop_id, alias, domain, external,virtual, editable, cardinal, ne_create_flag
 		from ent_properties
 		where ent_id = $classId";
-		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 
 		$propNum = 0;
 		$props = array();
@@ -215,6 +227,7 @@ class Model {
 			$props[$propNum]->items[5052] = $line['editable'];
 			$props[$propNum]->items[50110] = $line['virtual'];
 			$props[$propNum]->items[50111] = $line['cardinal'];
+			$props[$propNum]->items[50216] = $line['ne_create_flag'];
 			$propNum++;
 		}
 		//print_r($props);
@@ -250,7 +263,9 @@ class Model {
 		$query = "select r.id id, r.name from triplets t
                   join dim_resource r on t.subj_id = r.id
                 where t.obj_id = $boxId and t.prop_id = 502";
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		$lineNum = 0;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
 			$items[$lineNum] = new Cell($line[id], $line[name]);
@@ -264,6 +279,19 @@ class Model {
 		$actId = $this->actions[$actionId]->items[5062];
 		$domain = $this->actions[$actionId]->items[5055];
 		return $this->perm[$actId][$domain]['contr'];
+	}
+
+	public function getController2($id){
+		chdir ($_SERVER['DOCUMENT_ROOT']);
+		//echo getcwd();
+		$contr = $this->controllers[$id];
+		//print_r($this->controllers);
+		//echo 'CONTR='.$contr->items[503];
+		//echo 'ID='.$id;
+		require_once($contr->items[503]);
+		$className = $contr->items[501];
+		$contr = new $className;
+		return $contr;
 	}
 
 	public function getDataSet($table, $formId, $id, $filters = null){
@@ -298,7 +326,9 @@ class Model {
                     join $location on ".$location.".id  = triplets.$relation2
                     where triplets.prop_id = $property ".$where;
 				//echo $query.'<br>'.$line->property;
-				$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+				$this->log("QUERY:".$query);
+				$result = mysqli_query($this->link, $query);
+				if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 				$valNum = 0;
 				while ($res = mysqli_fetch_array($result, MYSQL_ASSOC)) {
 					if ($prevProp != $line->property) $valNum = 0; else $valNum++;
@@ -338,7 +368,9 @@ class Model {
 		$query = "select SQL_CALC_FOUND_ROWS ". $columns. " from ".$tableName." ".$where . $limit;
 		file_put_contents("log_sql","\n$query",FILE_APPEND);
 		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		$lineNum = 0;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
 			$flag=1;
@@ -357,7 +389,9 @@ class Model {
 			$lineNum++;
 		}
 		$query = "SELECT FOUND_ROWS() count" ;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		$line = mysqli_fetch_array($result, MYSQL_ASSOC);
 		$table->numRow=$line["count"];
 		//echo 'Rows:'.$return[3];
@@ -385,6 +419,14 @@ class Model {
 	public function getLeafAction($actionId,$domain){
 		$realAction = $this->getRealAction($actionId, $domain);
 		return $this->perm[$realAction->items[5062]][$domain]['action'];
+	}
+
+	public function generate($contrId,$newResource){
+		$contr = $this->getController2($contrId);
+		$params[5013] = $newResource;
+		$newResource = $contr->execute($params);
+		//$newResource->items[5066][0]="'$contrId'";
+		return $newResource;
 	}
 	
 	public function getRealAction($actionId, $domain){
@@ -420,7 +462,10 @@ class Model {
 			where id = $id";
 		} else if ($propId == 503){ //503.Местоположение
 			$query = "select location res from entities e where e.id = $id";
-		} else {
+		} else if ($propId == 50215) {
+			$query = "select save_contr res from entities e where e.id = $id";
+		}
+		else {
 			if ($direct == 0) {$relation1 = 'subj_id'; $relation2 = 'obj_id';} else {$relation1 = 'obj_id'; $relation2 = 'subj_id';}
 			if ($resource == 0) $relation2 = 'value';
 			$query = 
@@ -429,7 +474,9 @@ class Model {
 			where $relation1 = $id and prop_id = $propId and end_date='9999-01-01'";
 		}
 		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query .', ResourceId='.$id.', PropId='.$propId.','. mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		$colNum = 0;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
 			$ret[$colNum] = $line['res'];
@@ -441,7 +488,9 @@ class Model {
 
 	public function getResPropertyGen($id,$propId,$valIsResource = 1){
 		$query = "select obj_id, value from triplets where subj_id = $id and prop_id = $propId and end_date='9999-01-01'";
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query .', ResourceId='.$id.', PropId='.$propId.','. mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		$colNum = 0;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
 			if ($valIsResource == 1) $ret[$colNum] = $line['obj_id'];
@@ -490,6 +539,7 @@ class Model {
 	public function getResource($resourceId, $type = null){
 		if (empty($type)) $type = $this->getResProperty($resourceId,5051);
 		$filters[5048] = '%COLUMN% = '.$resourceId;
+		$filters[50114] = '%COLUMN% = "9999-01-01"';
 		$resources = $this->getResources($type,$filters);
 		return $resources[0];
 	}
@@ -504,6 +554,7 @@ class Model {
 	public function getResource2($resourceId, $type = null){
 		if (empty($type)) $type = $this->getResProperty($resourceId,5051);
 		$filters[5048] = '%COLUMN% = '.$resourceId;
+		$filters[50114] = '%COLUMN% = "9999-01-01"';
 		$resources = $this->getResources2($type,$filters);
 		return $resources[0];
 	}
@@ -556,14 +607,17 @@ class Model {
 		if (!empty($orders[501])) $order = $order . "," . 'name';
 		if (!empty($orders[50100])) $order = $order . "," . 'search_name';
 
-		$where = substr($whereType.$filterId.$filterName.$filterSearchName,4);
-		if (!empty($where)) $where = ' where '.$where;
+		$where = substr($whereType.$filterId.$filterName.$filterSearchName,0);
+		$where = ' where end_date="9999-01-01" '.$where;
 		if (!empty( $order))  $order = ' order by '.substr($order,1);
 
 		$query = "select id,name,search_name,present_name,name_template,search_name_template,present_name_template,type from dim_resource ".$where.$order;
-		file_put_contents("log",$query,FILE_APPEND);
+		$this->log("QUERY:".$query);
+		//file_put_contents("log",$query,FILE_APPEND);
 		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		$lineNum = 0;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
 			$ret[$lineNum] = new Resource();
@@ -620,7 +674,9 @@ class Model {
 		if (!empty($order)) $order = " order by ".substr($order,1); else $order = "";
 		$query = "select ".$columns." from ".$tableName.$where.$order;
 		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'Query:'.$query.','. mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		$lineNum = 0;
 		if ($innerVirtualFlag == 1) $resultSet = 1;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
@@ -727,7 +783,9 @@ class Model {
 		if (!empty($filters[50114])) $where = " where ".$firstTableAlias.".end_date = '9999-01-01'";
 
 		$query = "select ".substr($select,1).$from.$where;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'Query:'.$query.','. mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		$oldId = null;
 		$valueCounter = null;
 		while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
@@ -799,10 +857,11 @@ class Model {
 		if (!empty($where)) $where = " where ".substr($where,5);
 		if (!empty($order)) $order = " order by ".substr($order,1);
 		$query = "select ".substr($select,1).$from.$where.$order;
-		file_put_contents("log_sql","\n".$query."\n",FILE_APPEND);
+		//file_put_contents("log_sql","\n".$query."\n",FILE_APPEND);
 		//echo "<br>".$query."<br>";
-
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'Query:'.$query.','. mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		$lineNum = 0;
 		$entProps = array();
 		$this->getClassPropertiesTransitive($type, $entProps); //1511.Свойство сущности
@@ -844,7 +903,9 @@ class Model {
 	function getStorageClass($tableName){
 		$query = "select class_id from sTables t
               where t.name = '".$tableName."'";
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		$line = mysqli_fetch_array($result, MYSQL_ASSOC);
 		mysqli_free_result($result);
 		return $line['class_id'];
@@ -906,7 +967,9 @@ class Model {
 
 		}
 		$query = "update dim_resource set name = '".$nameTemplate."', search_name = '".$searchNameTemplate."', present_name = '".$presentNameTemplate."' where id = ".$resource2->items[5048][0];
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		//echo 'Templates:'.$nameTemplate.$searchNameTemplate.$presentNameTemplate;
 
 	}
@@ -941,6 +1004,16 @@ class Model {
 		$this->getClassPropertiesTransitive($type,$entProps);
 		if (empty($resource2->items[5048][0])) $resource2->items[5048][0] = $this->getId($type);
 		$tableName = $this->getResProperty($type,503,0,0);
+		//исполнение дополнительных действий START
+		foreach ($entProps as $propId => $prop) {
+			if ($prop->items[50216][0] == 1) {
+				$items2[5051][0] = $prop->items[5055];
+				$nEntInst = new Resource2($items2);
+				$nEntInstId = $this->insert($nEntInst, $prop->items[5055]);
+				$resource2->items[$prop->items[5082]][0] = $nEntInstId;
+			}
+		}
+		//исполнение дополнительных действий END
 		$this->insertBody($resource2,$type,$formPropsIds,$entProps,$tableName);
 		$this->insertDimResource($resourceId,$type,$start_date);
 
@@ -983,6 +1056,14 @@ class Model {
 
 	public function insertBody($resource2, $type, $formPropsIds, $entProps, $tableName){
 		foreach ($entProps as $propId => $prop){
+			/*
+			if ($prop->items[50216][0]==1) {
+				$items2[5051][0] = $prop->items[5055];
+				$nEntInst = new Resource2($items2);
+				$nEntInstId = $this->insert($nEntInst,$prop->items[5055]);
+				$resource2->items[$prop->items[5082]][0]=$nEntInstId;
+			}
+			*/
 			if (//($prop->items[50108] != 1) &&
 				($prop->items[50110] != 1) &&
 				($prop->items[5084] != 1) &&
@@ -999,29 +1080,40 @@ class Model {
 		$columns = substr($columns,1);
 		$values = substr($values,1);
 		$query = 'insert into '.$tableName.' ('.$columns.') values('.$values.')';
-		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		return $resource2->items[5048][0];
 	}
 
 	public function insertDimResource($id,$type,$startDate){
 		$query = 'insert into dim_resource(id,type,start_date) values ('.$id.','.$type.',"'.$startDate.'")';
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		$this->generateName($id, $type); //Генерация имен ресурса
 	}
+
 
 	public function insertTriplets($id, $subjId,$propId,$value,$isResource = 1, $startDate = null){
 		if ($isResource) $value_name = 'obj_id'; else $value_name = 'value';
 
 		if (empty($startDate)) $startDate = date("Y-m-d H:i:s");
 		$query = "insert into triplets(subj_id,prop_id,".$value_name.",start_date,end_date) values(".$subjId.",".$propId.",".$value.",'".$startDate."','9999-01-01')";
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .'Query='.$query. mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		return $startDate;
 	}
 
 	//todo
 	public function tripletsInsert($id, $subj_id, $prop_id, $obj_id, $value, $is_resource, $start_date){
 
+	}
+
+	public function log($text){
+		$date = date("Y-m-d H:i:s");
+		file_put_contents("log_sql",$date.' '.$text,FILE_APPEND);
 	}
 	
 	public function isSubclassOf($classId,$pClassId){
@@ -1038,7 +1130,9 @@ class Model {
 		//echo $close_date;
 		$query = "update ".$table." set end_date = '".$close_date."' where id = ".$resourceId." and end_date = '9999-01-01'";
 		//echo $query;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		return $close_date;
 	}
 
@@ -1046,7 +1140,9 @@ class Model {
 		if (empty($close_date)) $close_date = date("Y-m-d H:i:s");
 		if ($isResource) $value_name = 'obj_id'; else {$value_name = 'value'; $value = '\''.$value.'\'';}
 		$query = "update triplets set end_date = '".$close_date."' where subj_id = ".$subj_id." and prop_id = ".$prop_id." and ".$value_name."=".$value." and end_date = '9999-01-01'";
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' .$query. mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		return $close_date;
 	}
 
@@ -1056,7 +1152,10 @@ class Model {
 		$resourceId = $resource2->items[5048][0];//5048.Идентификатор
 		if (empty($type)) $type = $this->getResProperty($resourceId,5051);//5051.Тип
 		$tableName = $this->getResProperty($type,503,0,0); //503.Местоположение
+		$saveContr = $this->getResProperty($type,50215,0,0); //50215.Контроллер сохранения
 		$oldResource = $this->getResource2Opt($resource2->items[5048][0],$type);
+
+
 		//echo 'OLDID='.$resource2->items[5048][0];
 		//echo 'OldState:'.$oldResource->items[50131][0];
 		//echo 'FormId:'.$formId;
@@ -1099,6 +1198,9 @@ class Model {
 			$resource2->items[50113][0] = $close_date; //50113.StartDate
 			$resource2->items[50114][0] = '9999-01-01'; //50114.CloseDate
 			$resource2->items[50131][0] = $newState; //50131.Версионное состояние
+
+			if (!empty($saveContr)) $resource2 = $this->generate($saveContr,$resource2);
+
 			$this->insertBody($resource2,$type,null,$entProps,$tableName);
 		}
 		if ($compareFlag != 1){
@@ -1106,6 +1208,7 @@ class Model {
 			$this->getClassPropertiesTransitive($type,$entProps);
 			$this->updateExternalProperties($resource2,$oldResource,$entProps,$formPropsIds);
 		}
+		$this->generateName($resourceId, $type); //Генерация имен ресурса
 		$end_time = date("Y-m-d H:i:s:u");
 		if (!empty($executeId)) $this->updateProperty2($executeId,50122,$end_time,1614,null);//50122.Время окончания,1614.Исполнение действия
 		//echo 'CompareFlag='.$compareFlag;
@@ -1147,8 +1250,11 @@ class Model {
 		if (empty($type)) $type = $this->getResProperty($entId,5051,0,0);//5051.Тип
 		$tableName = $this->getResProperty($type,503,0,0); //503.Местоположение
 		if (($prop->items[5055] == 134)||($prop->items[5055] == 136)) $value = '"'.$propValue.'"'; else $value = $propValue;
-		if ($prop->items[5084] == 0) {$query = 'update '.$tableName.' set '.$prop->items[506].' = '.$value.' where id = '.$entId;
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: Query:'.$query . mysqli_error());
+		if ($prop->items[5084] == 0) {
+			$query = 'update '.$tableName.' set '.$prop->items[506].' = '.$value.' where id = '.$entId;
+			$this->log("QUERY:".$query);
+			$result = mysqli_query($this->link, $query);
+			if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		}
 	}
 	//Изменение свойства сущности с передачей идентификатора свойства
@@ -1221,7 +1327,9 @@ class Model {
 
 		if ($uhash=="") { $uhash='432423423';}
 		$query = "select hash from users where id = '".$uid."'";
-		$result = mysqli_query($this->link, $query) or die('Запрос не удался: ' . mysqli_error());
+		$this->log("QUERY:".$query);
+		$result = mysqli_query($this->link, $query);
+		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 		$line = mysqli_fetch_array($result, MYSQL_ASSOC);
 		$this->user_id = $uid;
 
@@ -1237,7 +1345,9 @@ class Model {
 		} else {
 			$upswd=md5(md5($upswd));
 			$query = "select id,paswd from users where login='".$ulogin."'";
+			$this->log("QUERY:".$query);
 			$result = mysqli_query($this->link, $query);
+			if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 			$row_cnt = $result->num_rows;
 			$line = mysqli_fetch_array($result, MYSQL_ASSOC);
 			//Maxim Chernov 2015-10-15 START
@@ -1255,7 +1365,9 @@ class Model {
                 $uid=$line['id'];
 				$uhash=$this->generateCode(10);
 				$query = "update users set hash='".$uhash."' where id = $uid";
+				$this->log("QUERY:".$query);
 				$result = mysqli_query($this->link, $query);
+				if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
 				$_SESSION['id']=$uid;
 				$_SESSION['hash']=$uhash;
 				$this->user_id=$uid;
