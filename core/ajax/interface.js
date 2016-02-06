@@ -285,7 +285,7 @@ function sendForm2(frm, req, req_frm) {
     success: function(data,status,xhr) {
 		//alert(data[0]);
 		if (resultContainer != undefined){
-          alert(data[0]);
+          //alert(data[0]);
 			$(resultContainer).text("");
 			$(resultContainer).append(data[0]);
 		}

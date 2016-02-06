@@ -1004,9 +1004,21 @@ class Model {
 		$this->getClassPropertiesTransitive($type,$entProps);
 		if (empty($resource2->items[5048][0])) $resource2->items[5048][0] = $this->getId($type);
 		$tableName = $this->getResProperty($type,503,0,0);
-		//исполнение дополнительных действий START
+		//исполнение дополнительных действий и проставление формата даты START
 		foreach ($entProps as $propId => $prop) {
-			if ($prop->items[50216][0] == 1) {
+
+			if ($prop->items[5055] == 136) {
+				if (!empty($resource2->items[$prop->items[5082]][0])) {
+					$date_array = date_parse($resource2->items[$prop->items[5082]][0]);
+					$date = date('Y-m-d H:i:s', mktime($date_array['hour'], $date_array['minute'], $date_array['second'], $date_array['month'], $date_array['day'], $date_array['year']));
+				}
+				if (empty($date) && ($prop->items[50108] == 1)) $date = date("Y-m-d H:i:s");
+				$this->log("DATE:".$date);
+				$resource2->items[$prop->items[5082]][0] = $date;
+				$this->log("DATE2:".$resource2->items[$prop->items[5082]][0]);
+			}
+
+			if ($prop->items[50216] == 1) {
 				$items2[5051][0] = $prop->items[5055];
 				$nEntInst = new Resource2($items2);
 				$nEntInstId = $this->insert($nEntInst, $prop->items[5055]);
@@ -1183,11 +1195,15 @@ class Model {
 			$entProps = array();
 			$this->getClassPropertiesTransitive($type,$entProps);
 			foreach($entProps as $entProp){
+				//Формат для полей со значением даты START
+				if ($entProp->items[5055] == 136) {
+					$date = strtotime($resource2->items[$entProp->items[5082]][0]);
+					$resource2->items[$entProp->items[5082]][0] = date("Y-m-d H:i:s", $date);
+				}
+				//Формат для полей со значением даты END
 
 				$propId = $entProp->items[5082];//5082.Идентификатор свойства
-				//echo 'Prop='.$propId;
 				if ($formPropsIds[$entProp->items[5048]] != 1){//5048.ID
-					//echo 'OldProp='.$propId.",".$oldResource->items[$propId][0];
 					if (!empty($oldResource->items[$propId])) foreach ($oldResource->items[$propId] as $propKey => $propValue){
 						$resource2->items[$propId][$propKey] = $propValue;
 					}
@@ -1269,6 +1285,7 @@ class Model {
 	private function quotation($value, $domain){
 		//echo $value;
 		if (($domain == 134)||($domain == 136)) $value = '"'.$value.'"';
+		$this->log('VALUE:'.$value);
 		return $value;
 	}
 
