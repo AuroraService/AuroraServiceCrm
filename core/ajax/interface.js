@@ -294,3 +294,83 @@ function sendForm2(frm, req, req_frm) {
     }
   });
 }
+
+function messageAdd(msg_text, msg_type, msg_container){
+  var msg_text = msg_text || '';
+  var msg_type = msg_type || 1;
+  var msg_container = msg_container || "#msg_cont";
+  var msg_wrapper = $(msg_container).find("ul");
+  var add_class='';
+  switch (msg_type) {
+    case 1:
+      add_class='msg-alert';
+      break;
+    case 2:
+      add_class='msg-warning';
+      break;
+    default:
+      add_class='';
+}
+
+  $(msg_wrapper).append('<li class="dritem '+add_class+'">'+msg_text+'</li>')
+
+}
+
+function fileUpload(obj){
+  var formData = new FormData(obj.get(0));
+  var fl_input=obj.children('#inp_file'); // находим инпут файла
+  var view_div=obj.children('#file_name_view'); // обертка заголовка
+  var span_name=view_div.children('#file_name_span');
+  var prog_wrap=obj.children('#div_prg'); // обертка прогресс бара
+  var prog_bar=prog_wrap.children('.progress-bar'); // находим прогресс бар
+  var div_vv=obj.children('#div_viewer');
+  prog_bar.css('width', '0'); // значение прогресс бара на ноль
+      $.ajax({
+      url: '/core/ajax/upload.php',
+      type: 'post',
+      contentType: false, // важно - убираем форматирование данных по умолчанию
+      processData: false, // важно - убираем преобразование строк по умолчанию
+      data: formData,
+      xhr: function(){
+        var xhr = $.ajaxSettings.xhr();
+        xhr.upload.addEventListener('progress', function(evt){ 
+          if(evt.lengthComputable) { 
+            var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
+            prog_wrap.css('display', 'block');
+            prog_bar.css('width', percentComplete+'%');
+          }
+        }, false);
+        return xhr;
+      },
+      success: function(data){
+          obj.attr('fl_data', data);
+          fl_input.css('display', 'none');
+          var str=fl_input.val();
+          str=str.substring(str.lastIndexOf('\'')+1,str.length)
+          alert(str);
+          span_name.text(fl_input.val().substring(fl_input.val().lastIndexOf('/')+1,fl_input.val().length));
+          view_div.css('display', 'inline');
+          var fl_ext=fl_input.val().substr(fl_input.val().length-3,3).toLowerCase();
+          var str_app="";
+          if ((fl_ext=="jpg") || (fl_ext=="png") || (fl_ext=="bmp") || (fl_ext=="gif"))
+            str_app='<img src="core/ajax/'+data+'" style="width: 100%;"></img>';
+             else
+            str_app='<a href="core/ajax/'+data+'">Скачать</a>';
+          div_vv.append(str_app);
+      }
+    });
+}
+
+function fileRemove(obj){
+  var fl_name=obj.attr('fl_data');
+      $.ajax({
+      url: '/core/ajax/remove.php?filename='+fl_name,
+      type: 'post',
+      contentType: false,
+      processData: false,
+      success: function(data){
+          if (data==0) obj.text('Файл удален');
+            else obj.text('Ошибка при удалении файла');
+      }
+    });
+}

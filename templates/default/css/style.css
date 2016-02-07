@@ -164,15 +164,10 @@ body {
   cursor: default;
 }
 .btn_popup_close{
-  float: right;
-  margin-bottom: 5px;
   cursor: pointer;
   transition: 0.3s;
 }
 .btn_popup_close:hover{
-  float: right;
-  margin-bottom: 5px;
-  cursor: pointer;
   color: red;
   transition: 0.3s;
 }
