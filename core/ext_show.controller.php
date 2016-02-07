@@ -23,6 +23,7 @@ class ExtShowController {
 				require_once(substr($contr[0]->items[503], 5));   //503.Местоположение
 				$contr = new $contr[0]->items[501]; //501.Название
 				$params2[5048] = $aFilter->items[5095];
+				$params2[5082] =  $aFilter->items[5082];
 				$contr->execute($params2);
 
 				$filters2[5048] = '%COLUMN%=' . $aFilter->items[5094];
@@ -37,7 +38,9 @@ class ExtShowController {
 		$params[50149]=1;
 		$params[50147]=$filters3[50147];
 		$mainController = Controller::getController();
+
 		$ret = $mainController->executeAction($actionId,$params);
+
 		return $ret;
 	}
 }

@@ -10,10 +10,12 @@ class FilterController {
 		//print_r($filter);
 		$filters[5095] = '%COLUMN%='.$filterId;//5095.Фильтр
 		$fields = $model->getResources(162,$filters);
+		//$propId = $filter[0]->items[5082];
+		$propId = $params[5082];
 		//print_r($filter[0]);
-		echo ' <script language ="JavaScript">data["'.$formId.'"]["5095"]["'.$filterId.'"] = '.$filter[0]->items[5094].'; </script>';//5094.Значение по умолчанию
+		echo ' <script language ="JavaScript">data["'.$formId.'"]["5095"]["'.$propId.'"] = '.$filter[0]->items[5094].'; </script>';//5094.Значение по умолчанию
 		//echo '<script language ="JavaScript">data["'.$formId.'"]["5095"]["'.$filterId.'"]=</script>';
-		echo "<select onchange='editFilter(".$formId.",".$filterId.",this.options[this.selectedIndex].value); data[\"".$formId."\"][\"50149\"]=1; sendData2(data,data_container,false);'>";
+		echo "<select onchange='editFilter(".$formId.",".$params[5082].",this.options[this.selectedIndex].value); data[\"".$formId."\"][\"50149\"]=1; sendData2(data,data_container,false);'>";
 		foreach($fields as $field){
 			if ($field->items[5048] == $filter[0]->items[5094]) {
 				$selected = 'selected';

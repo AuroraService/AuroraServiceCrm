@@ -29,8 +29,8 @@ class EntityViewer{
 		
 		$resource2 = $model->getResource2Opt($resId,null);
 		$result['0']=$result['0'].$resource->items[5048][0];
-		
-		
+
+		$model->log("EntityViewer: FormId=".$formId);
 		$val = $model->getColumns2($formId);
 		$viewerData = array();
 		$viewerData[5093] = $val->cols;
@@ -48,10 +48,10 @@ class EntityViewer{
 
 			$params[5042] = $col_value->editable; //5042.Редактируемость
 			$params[507] = $col_value->domain; //507.Представление
-			$params[5082] = $col_value->property; //5082.Идентификатор свойства
+			//$params[5082] = $col_value->property; //5082.Идентификатор свойства
 			$params[5088] = 0; //5088.Номер значение
 			$params[50129] = $formCounter;
-			$params[5048] = $id; //5048.Идентификатор сущности
+			//$params[5048] = $id; //5048.Идентификатор сущности
 			$params[50199] = $col_value->res->items[50199][0]; //50208.Стандартная форма
 			//$result[0]=$result[0].'FORM='.$params[50199];
 
@@ -60,7 +60,7 @@ class EntityViewer{
 			$params2[5055] = $col_value->domain; //5055.Домен
 
 
-			
+			$model->log("EntityViewer: ResId=".$params[5013]." ,"."PropId=".$params[5082]." ,"."Domain=".$params[5055]." ,"."Editable=".$params[5042]." ,"."FormCounter=".$params[50129]." ,"."Form=".$params[50199]);
 			$viewer = $model->getViewer($col_value->viewer,$params2,$model);
 
 			if (!empty($resource2->items[$propId])) foreach ($resource2->items[$propId] as $valueCounter =>$propValue) {
@@ -89,6 +89,7 @@ class EntityViewer{
 				$cell = new Cell(null,null);
 				$viewerData[50115][$propId][0]=$viewer->show($cell, $params);
 			}
+			$model->log("EntityViewer: FieldOk");
 			$lineNum++;
 		}
 
@@ -118,6 +119,7 @@ class EntityViewer{
 		$result[0]=$result[0]. '<a onclick="data[\'50129\']='.$formCounter.'; data[\'50146\']='.$resId.'; data[\''.$formCounter.'\'][\'5058\']=2334; sendForm2('.$formCounter.');">Сохранить</a>';
 		//$result[1]=$result[1].'alert(data["1"][\'15032\'][\'5014\'][\'0\']);';
 		$result[1]=$result[1].'data["50129"]='.$innerFormCounter.'; data["50130"]='.$innerFormCounter.';';
+		$model->log("EntityViewer: ReturnResult");
 		return $result;
     }
 	

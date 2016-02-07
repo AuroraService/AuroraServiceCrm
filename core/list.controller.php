@@ -5,9 +5,10 @@ class ListController {
         $query = $params[5091];//5091.Поисковый запрос
         $viewer = $params[50178];//50178.Отображатель
         $filters= $params[5095];//5095.Фильтр
-        //echo $query;
+        //echo "QUERY=".$query."VIEWER=".$viewer;
 
         $model = Model::getModel();
+        $model->log("ListController: DOMAIN=".$type.", QUERY=".$query.", VIEWER=".$viewer);
         if (!empty($query)) $filters[50139] = "UPPER(%COLUMN%) LIKE '%".strtoupper($query)."%'";
         //print_r($filters);
         $results = $model->getResources2Opt($type,$filters);

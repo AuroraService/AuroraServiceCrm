@@ -9,10 +9,13 @@ class DateTimeViewer{
     $length=16;
     $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789";
     $code = "";
-    $clen = strlen($chars) - 1;  
+    $clen = strlen($chars) - 1;
+        /*
     while (strlen($code) < $length) {
-            $code .= $chars[mt_rand(0,$clen)];  
-    } 
+            $code .= $chars[mt_rand(0,$clen)];
+    }
+        */
+        $code = $params[50129]."-".$params[5013]."-".$params[5082]."-".$params[5088];
         $for_date=date_create($cell->value);
         $for_date=date_format($for_date, 'd.m.Y H:i');
 		$result='<div class="form-group" style="width: 300px;">

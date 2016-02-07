@@ -44,9 +44,10 @@ switch ($action) {
 		$f1[50109] = '%COLUMN%='.$json[$formCounter][50109];//50109.Идентификатор набора параметра
 		$filters = $model->getResources(163,$f1);//163.Фильтр
 		foreach($filters as $filter){
-			$f2[5048] = '%COLUMN%='.$params[5095][$filter->items[5095]];//5095.Фильтр [5095]->[$filterId]->[$fieldId]
+			$f2[5048] = '%COLUMN%='.$params[5095][$filter->items[5082]];//5095.Фильтр [5095]->[$filterId]->[$fieldId]
 			$field = $model->getResources(162,$f2);//162.Поле фильтра
 			$expFilters[$filter->items[5082]]=$field[0]->items[5096];//5096.SQL
+			//print_r($expFilters);
 		}
 		$params[50147] = $expFilters[50147];//50147.Количество строк
 		if (!empty($expFilters[50147]) && !empty($startRow)) $expFilters[50147] = $startRow.','.$expFilters[50147];

@@ -882,6 +882,7 @@ class Model {
 	}
 
 	public function getResourceValue($resourceId,$template){
+		$this->log("Model.getResourceValue: START: ResourceId=".$resourceId.", Template=".$template);
 		if (empty($resourceId)) return '';
 		$type = $this->getResProperty($resourceId,5051);
 		$resource = $this->getResource($resourceId, $type);
@@ -896,6 +897,7 @@ class Model {
 				$template = str_replace('%' . $propId . '%', $resource->items[$propId], $template);//5082.Идентификатор свойства
 			}
 		}
+		$this->log("Model.getResourceValue: END: Template=".$template);
 		return $template;
 	}
 
@@ -1125,7 +1127,7 @@ class Model {
 
 	public function log($text){
 		$date = date("Y-m-d H:i:s");
-		file_put_contents("log_sql",$date.' '.$text,FILE_APPEND);
+		file_put_contents("log_sql","\n".$date.' '.$text,FILE_APPEND);
 	}
 	
 	public function isSubclassOf($classId,$pClassId){

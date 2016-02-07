@@ -10,7 +10,9 @@ class Controller{
 	}
 
 	public function executeAction($actionId, $params){
+		//echo 'ACTION='.$actionId;
 		$model = Model::getModel();
+		$model->log("MainController.executeAction: ACTION=".$actionId);
 		//$model->loadPermissions();
 		$domain = $params[5055];//5055.Домен
 		//echo 'ActionId='.$actionId.', Domain='.$domain.',-Нет прав';
@@ -22,7 +24,7 @@ class Controller{
 			$contrEnt = new $contr->items[501]; //501.Название
 			$ret = $contrEnt->execute($params);
 			return $ret;
-		} else echo 'ActionId='.$actionId.', Domain='.$domain.',-Нет прав';
+		} else $model->log("MainController.executeAction: ERROR:Недостаточно прав");//echo 'ActionId='.$actionId.', Domain='.$domain.',-Нет прав';
 }
 	public function execute(){
 		global $var_pth_template;
@@ -76,10 +78,10 @@ class Controller{
 		}
 		$model->loadPermissions();
 //TEST START
-		$params[5055]=163;
-		$params[5095][50109]='%COLUMN%=15214';
-		$ret = $this->executeAction(2354,$params);
-		echo $ret[0];
+		//$params[5055]=163;
+		//$params[5095][50109]='%COLUMN%=15214';
+		//$ret = $this->executeAction(2354,$params);
+		//echo $ret[0];
 //TEST END
 		require_once('core/menu.controller.php');
 		$menu = new MenuController();
