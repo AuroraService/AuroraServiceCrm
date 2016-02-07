@@ -15,10 +15,12 @@ class File2Viewer{
 
 	public function show($cell, $params){
 		$fileId = $cell->id;
-		$file = $this->model->getResourceOpt($fileId,1018);//1018.Файл
-		if (empty($cell->id)) {
+		if (!empty($fileId)) {
+			$file = $this->model->getResourceOpt($fileId,1018);//1018.Файл
+			return 'FileViewer'.$cell->id.",".$file->items[50142][0].",".$file->items[50177][0];
+		} else{
 			$viewer = $this->model->getViewer(1223, $this->params, $this->model);//1223.FileViewer
 			return $viewer->show($cell, $params);
-		} else return 'FileViewer'.$cell->id.",".$file->items[50142][0].",".$file->items[50177][0];
+		}
 	}
 }
