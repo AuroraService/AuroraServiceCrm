@@ -262,18 +262,21 @@ function findFormV(obj,objId,propId,propDomain,propValue,objViewer,resultForm,re
 }
 
 function sendForm(frm){
-  data['50129']=frm;
   resultContainer = data[frm]['50181'];
   //alert('start');
   sendDataJSON(data, resultContainer);
 }
 
 
-function sendForm2(frm, req, req_frm) {
+function sendForm2(frm, req, req_frm,rewriteFlag1,rewriteFlag2) {
+  alert(rewriteFlag1);
+  if (rewriteFlag1 == undefined) rewriteFlag1=true;
+  if (rewriteFlag2 == undefined) rewriteFlag2=true;
+  var rewriteFlag2=rewriteFlag2 || true;
    var req = req || false;
   data['50129']=frm;
   resultContainer = data[frm]['50181'];
-  //alert(resultContainer);
+  alert(resultContainer);
   var str = 'data='+JSON.stringify(data);
   //var elemId=elemId || 'dop_form_interface';
   $.ajax({
@@ -283,14 +286,14 @@ function sendForm2(frm, req, req_frm) {
     cache: false,
     data: str,
     success: function(data,status,xhr) {
-		//alert(data[0]);
+		alert(data[0]);
 		if (resultContainer != undefined){
-          //alert(data[0]);
-			$(resultContainer).text("");
+            //alert(rewriteFlag1);
+			if (rewriteFlag1) $(resultContainer).text("");
 			$(resultContainer).append(data[0]);
 		}
       window.eval(data[1]);
-	if (req) sendForm2(req_frm);
+	if (req) sendForm2(req_frm,false,rewriteFlag2);
     }
   });
 }
@@ -327,6 +330,7 @@ function fileUpload(obj){
   prog_bar.css('width', '0'); // значение прогресс бара на ноль
       $.ajax({
       url: '/core/ajax/upload.php',
+        dataType: 'json',
       type: 'post',
       contentType: false, // важно - убираем форматирование данных по умолчанию
       processData: false, // важно - убираем преобразование строк по умолчанию
@@ -373,4 +377,15 @@ function fileRemove(obj){
             else obj.text('Ошибка при удалении файла');
       }
     });
+}
+
+function getViewer(formCnt,resId,propId,propCounter,resultContainer,viewer){
+  alert(12345);
+  data['-2'] = {};
+  data['-2']['5058']=2359;
+  data['-2']['50181']=resultContainer;
+  data['-2']['50178']=viewer;
+  data['50146']=resId;
+  sendForm2(-2, false, null,false);
+  alert(123456);
 }

@@ -245,6 +245,7 @@ class Model {
 			$col->res = $line;
 			$filters2[5048] = '%COLUMN%='.$line->items[5087][0];
 			$property = $this->getResourcesOpt(1511, $filters2);
+			$col->prop = $property[0];
 			$col->property = $property[0]->items[5082][0];
 			$col->alias = $property[0]->items[506][0];
 			$col->domain = $property[0]->items[5055][0];
@@ -1425,6 +1426,7 @@ class Column{
 	public $parentId;
 	public $external;
 	public $value_template;
+	public $prop;
 	
 	public $viewer;
 	public $res;

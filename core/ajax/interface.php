@@ -146,6 +146,24 @@ switch ($action) {
         //echo 'Viewer='.$json[50178];
         //echo 'List';
         break;
+	case '2359':
+		$selectedForm = $json[50129];
+		$selectedEntity = $json[50146];
+		$viewerId = $json[$selectedForm][50178];
+		//$ret[0]='Viewer';
+		$model=Model::getModel();
+		$model->log("ACTION=2359,Viewer=".$viewerId.",SelectedForm=".$json[50129].",SelectedEntity=".$json[50146]);
+		$viewer=$model->getViewer($viewerId,$params,$model);
+		$cell = new Cell(null,null);
+		$echo = $viewer->show($cell,$params);
+		//$model->log("ACTION=2359,RESULT=".$echo);
+		$ret[0] = $echo;
+		$ret[1]=' ';
+		//$model->log("ACTION=2359,RESULT2=".json_encode($ret));
+		$ret = json_encode($ret);
+		echo $ret;
+
+		break;
 
 	case '2342':
 		//echo 'Step';
@@ -156,6 +174,7 @@ switch ($action) {
 		$params[5058] = 2342;
         $mainController->executeAction(2342, $params);//2342.Поиск сущностей(обработка запроса)
         break;
+
 	return 0;
 }
 
