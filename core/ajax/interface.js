@@ -295,6 +295,16 @@ function sendForm2(frm, req, req_frm) {
   });
 }
 
+function randomInteger(min, max) {
+    var rand = min - 0.5 + Math.random() * (max - min + 1)
+    rand = Math.round(rand);
+    return rand;
+  }
+function messageRemove(id){
+  //$("#"+id).remove();
+  $("#"+id).fadeOut(2000,'swing',function(){this.remove();})
+}
+
 function messageAdd(msg_text, msg_type, msg_container){
   var msg_text = msg_text || '';
   var msg_type = msg_type || 1;
@@ -311,12 +321,13 @@ function messageAdd(msg_text, msg_type, msg_container){
     default:
       add_class='';
 }
-
-  $(msg_wrapper).append('<li class="dritem '+add_class+'">'+msg_text+'</li>')
+   var nid=randomInteger(0,10000)+Math.floor(new Date() / 10);
+  $(msg_wrapper).append('<li class="dritem '+add_class+'" id="'+nid+'">'+msg_text+'</li>');
+  setTimeout(function(){ messageRemove(nid); }, 2000);
 
 }
 
-function fileUpload(obj){
+function fileUpload(obj,strEval){
   var formData = new FormData(obj.get(0));
   var fl_input=obj.children('#inp_file'); // находим инпут файла
   var view_div=obj.children('#file_name_view'); // обертка заголовка
@@ -328,6 +339,7 @@ function fileUpload(obj){
       $.ajax({
       url: '/core/ajax/upload.php',
       type: 'post',
+	  dataType: 'json',
       contentType: false, // важно - убираем форматирование данных по умолчанию
       processData: false, // важно - убираем преобразование строк по умолчанию
       data: formData,
@@ -343,20 +355,23 @@ function fileUpload(obj){
         return xhr;
       },
       success: function(data){
-          obj.attr('fl_data', data);
+          obj.attr('fl_data', data[0]);
           fl_input.css('display', 'none');
-          var str=fl_input.val();
-          str=str.substring(str.lastIndexOf('\'')+1,str.length)
-          alert(str);
-          span_name.text(fl_input.val().substring(fl_input.val().lastIndexOf('/')+1,fl_input.val().length));
+          span_name.text(data[2]);
           view_div.css('display', 'inline');
           var fl_ext=fl_input.val().substr(fl_input.val().length-3,3).toLowerCase();
           var str_app="";
           if ((fl_ext=="jpg") || (fl_ext=="png") || (fl_ext=="bmp") || (fl_ext=="gif"))
-            str_app='<img src="core/ajax/'+data+'" style="width: 100%;"></img>';
+            str_app='<a href="core/ajax/'+data[0]+'" class="highslide" onclick="return hs.expand(this)"><img src="core/ajax/'+data[0]+'" width="200" alt="Highslide JS" title="Click to enlarge" /></a><div class="highslide-heading">'+data[2]+'</div>';
              else
             str_app='<a href="core/ajax/'+data+'">Скачать</a>';
           div_vv.append(str_app);
+		  //alert(data[1]);
+		  //alert(strEval);
+		  //var retValue = data[1];
+		  strEval = strEval.replace ('%VALUE%', '\''+data[1]+'\'');
+		  //alert(strEval);
+          window.eval(strEval);
       }
     });
 }
