@@ -17,7 +17,8 @@ class File2Viewer{
 		$fileId = $cell->id;
 		if (!empty($fileId)) {
 			$file = $this->model->getResourceOpt($fileId,1018);//1018.Файл
-			return 'FileViewer'.$cell->id.",".$file->items[50142][0].",".$file->items[50177][0];
+			return '<a href="'.$file->items[50177][0].'" class="highslide" onclick="return hs.expand(this)">
+	<img src="'.$file->items[50177][0].'" width="200" alt="Highslide JS" title="Click to enlarge" /></a><div class="highslide-heading">'.$file->items[50142][0].'</div>';
 		} else{
 			$viewer = $this->model->getViewer(1223, $this->params, $this->model);//1223.FileViewer
 			return $viewer->show($cell, $params);

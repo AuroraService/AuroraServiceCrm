@@ -57,45 +57,7 @@ echo '
 </style>
 <div class="msg-div" id="msg_cont" style="width: 300px; text-align: center; position: fixed; right: 20px; bottom: 80px; max-height: 500px;overflow: auto;">
 <ul style="width: 100%;">
-  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>  <li class="dritem">Первое сообщение</li>
-  <li class="dritem msg-alert">Второе сообщение</li>
-  <li class="dritem msg-warning">Третье сообщение</li>
+
 </ul></div>';
 echo '<div style="position: fixed; bottom: 80px; height: 20px; width: 100px; background-color: black;" onclick="messageAdd();"></div>';
 //echo '<div class="message_list_view" >Vot</div>';

@@ -6,10 +6,11 @@ class FileViewerFabrica{
 }
 class FileViewer{
 	public function show($cell, $params){
+		$str = "'editProperty(".$params[50129].",".$params[5013].",".$params[5082].",".$params[5088].",%VALUE%)'";
 		return '
 		<form action="core/ajax/upload.php" method="post" id="my_form" enctype="multipart/form-data">
 		<div id="file_name_view" style="display: none;"><span class="label label-primary" id="file_name_span"></span><span class="glyphicon glyphicon-remove btn_popup_close" style="margin-left: 9px;" onclick="fileRemove($(this).parent().parent());"></span></div>
-        <input id="inp_file" style="display: inline" type="file" name="userfile" placeholder="Загрузка файла" onchange="fileUpload($(this).parent());" />
+        <input id="inp_file" style="display: inline" type="file" name="userfile" placeholder="Загрузка файла" onchange="fileUpload($(this).parent(), '.$str.');" />
         <div class="progress" style="margin-top: 10px; height: 10px; width: 100%; display: none;" id="div_prg">
           <div class="progress-bar" role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="width: 15%;">
             <span class="sr-only">60% Complete</span>
