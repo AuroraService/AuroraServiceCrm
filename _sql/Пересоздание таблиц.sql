@@ -215,7 +215,9 @@ insert into dim_resource(id,name,type) values(11516,'Форма создания
 insert into dim_resource(id,name,type) values(15211,'Параметр 1',1611);
 insert into dim_resource(id,name,type) values(15212,'Параметр 2',1611);
 insert into dim_resource(id,name,type) values(15213,'Параметр 3',1611);
-insert into dim_resource(id,name,type) values(15214,'Параметр 4',1611);
+insert into dim_resource(id,name,type) values(15214,'Параметр Заявки на изъятие техники',1611);
+
+insert into dim_resource(id,name,type) values(15215,'Параметр Заявки на заказ запчасти',1611);
 
 -- Наборы фильтров
 insert into dim_resource(id,name,type) values(15371,'Набор 1',1637);
@@ -283,6 +285,7 @@ insert into triplets(subj_id, prop_id,obj_id) values(15212,5058,2338);
 
 insert into triplets(subj_id, prop_id,obj_id) values(15213,5058,2346);
 insert into triplets(subj_id, prop_id,obj_id) values(15214,5058,234);
+insert into triplets(subj_id, prop_id,obj_id) values(15215,5058,232);
 
 
 
@@ -1404,39 +1407,42 @@ insert into sColumns(id, name, position,  type, template,editable,form,pid,viewe
   values(112307,'Возможные проблемы',9, 1, NULL,1,1154,NULL,121,151163);
   */
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id)
-  values(112308,'Дата заказа',10, 1, NULL,1,1154,NULL,122,151173);
+  values(112308,'Дата заказа',8, 1, NULL,1,1154,NULL,122,151173);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112309,'Дата прихода',11,1, NULL,1,1154,NULL,122,151174);
+  values(112309,'Дата прихода',9,1, NULL,1,1154,NULL,122,151174);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112310,'Код запчасти',12, 1, NULL,1,1154,NULL,121,151175);
+  values(112310,'Код запчасти',10, 1, NULL,1,1154,NULL,121,151175);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,value_template) 
-  values(112311,'Поставщик',13, 0, NULL,1,1154,NULL,123,151176,'%501%');
+  values(112311,'Поставщик',11, 0, NULL,1,1154,NULL,123,151176,'%501%');
   
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,value_template) 
-  values(112489,'Бренд техники',13, 0, NULL,1,1154,NULL,123,1511267,'%50139%');
+  values(112489,'Бренд техники',12, 0, NULL,1,1154,NULL,123,1511267,'%50139%');
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,value_template) 
   values(112491,'Бренд производителя',13, 0, NULL,1,1154,NULL,123,1511268,'%50139%');
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,value_template) 
-  values(112492,'Запчасть',13, 0, NULL,1,1154,NULL,123,1511269,'%50139%');
+  values(112492,'Запчасть',14, 0, NULL,1,1154,NULL,123,1511269,'%50139%');
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112493,'Название запчасти',13, 1, NULL,1,1154,NULL,121,1511271);
+  values(112493,'Название запчасти',15, 1, NULL,1,1154,NULL,121,1511271);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,value_template) 
-  values(112494,'Модель техники',13, 0, NULL,1,1154,NULL,123,1511272,'%50139%');
+  values(112494,'Модель техники',16, 0, NULL,1,1154,NULL,123,1511272,'%50139%');
   
   
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112312,'Цена покупки',14, 1, NULL,1,1154,NULL,121,151177);
+  values(112312,'Цена покупки',17, 1, NULL,1,1154,NULL,121,151177);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112313,'Цена продажи',15, 1, NULL,1,1154,NULL,121,151178);
+  values(112313,'Цена продажи',18, 1, NULL,1,1154,NULL,121,151178);
   
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112495,'Получено',13, 1, NULL,1,1154,NULL,121,1511270);
+  values(112495,'Получено',19, 1, NULL,1,1154,NULL,121,1511270);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112506,'Предоплата',13, 1, NULL,1,1154,NULL,121,1511284);  
+  values(112506,'Предоплата',20, 1, NULL,1,1154,NULL,121,1511284);  
+  
+insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112522,'Вложение',21,0, NULL,1,1154,NULL,1224,1511294);
 
   
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112314,'Комментарий',16, 1, NULL,1,1154,NULL,1222,151165);
+  values(112314,'Комментарий',22, 1, NULL,1,1154,NULL,1222,151165);
   
 select * from sColumns;
   
@@ -1854,7 +1860,7 @@ insert into buttons(id,name,link,pid,action,position,level) values(15057,'Отч
 insert into buttons(id,name,link,pid,action,position,level) values(150532,'Запчасти',null,15052,null,5,3);
 
 insert into buttons(id,name,link,pid,action,position,level,type) values(15058,'Заявки на сервис','index.php?action=2341&param=15211',15054,null,1,4,1);
-insert into buttons(id,name,link,pid,action,position,level,type) values(15059,'Заявки на заказ запчасти','index.php?action=232',15054,null,2,4,1);
+insert into buttons(id,name,link,pid,action,position,level,type) values(15059,'Заявки на заказ запчасти','index.php?action=2341&param=15215',15054,null,2,4,1);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150510,'Заявки на доставку','index.php?action=233',15054,null,3,4,1);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150511,'Заявки на изъятие техники','index.php?action=2341&param=15214',15054,null,4,4,1);
 insert into buttons(id,name,link,pid,action,position,level,type) values(150528,'Звонки','index.php?action=2331',15054,null,5,4,1);
@@ -2124,6 +2130,7 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 -- insert into ent_properties(id, ent_id, prop_id, alias,domain,external,virtual,cardinal) values(151164,103,5050,'prehistory',103,1,1,-1);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151165,103,5021,'comment',134,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511148,103,5051,'type',103,0);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,cardinal) values(1511294,103,50221,'attachment',1018,1,-1);
 
 select * from ent_properties where ent_id = 1012;
 select * from ent_properties where ent_id = 103;
@@ -2176,7 +2183,6 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511291,1012,50219,'dep_executor',102,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511292,1012,50220,'samp_executor',102,0);
 
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external,cardinal) values(1511294,1012,50221,'attachment',1018,1,-1);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511295,1012,50222,'part_list',134,0);
 select * from ent_properties;
 -- 10.Элемент предметной области
@@ -2740,6 +2746,8 @@ create table sFilters(
 insert into sFilters(id) values(15171);
 insert into sFilters(id) values(15172);
 insert into sFilters(id) values(15173);
+insert into sFilters(id) values(15175);
+insert into sFilters(id) values(15176);
 
 -- Создание таблицы значений фильтра
 drop table if exists sFilterFields;
@@ -2759,6 +2767,7 @@ insert into sFilterFields(id,name,sql_code,filter_id) values(15181,'На сег�
 insert into sFilterFields(id,name,sql_code,filter_id) values(15182,'На завтра','DATE_FORMAT(%COLUMN%, "%Y-%m-%d") = DATE_ADD(CURDATE(),INTERVAL 1 DAY)',15171);
 insert into sFilterFields(id,name,sql_code,filter_id) values(15183,'На неделю','YEAR(%COLUMN%) = YEAR(NOW()) AND WEEK(%COLUMN%, 1) = WEEK(NOW(), 1)',15171);
 insert into sFilterFields(id,name,sql_code,filter_id) values(15184,'За всё время','1=1',15171);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151813,'Все предстоящие','%COLUMN% > now()',15171);
 
 -- 1572. Сессии
 insert into sFilterFields(id,name,sql_code,filter_id) values(15185,'За сегодня','DATE_FORMAT(%COLUMN%, "%Y-%m-%d") = CURDATE()',15172);
@@ -2771,6 +2780,31 @@ insert into sFilterFields(id,name,sql_code,filter_id) values(15189,'50','50',151
 insert into sFilterFields(id,name,sql_code,filter_id) values(151810,'100','100',15174);
 insert into sFilterFields(id,name,sql_code,filter_id) values(151811,'500','500',15174);
 insert into sFilterFields(id,name,sql_code,filter_id) values(151812,'ВСЕ','',15174);
+
+-- 1573.Состояние заявки на заказ запчасти
+insert into sFilterFields(id,name,sql_code,filter_id) values(151814,'Обрабатывается','%COLUMN% = 12015',15175);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151815,'Отказ(Клиент)','%COLUMN% = 12016',15175);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151816,'Отказ(Наша сторона)','%COLUMN% = 12017',15175);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151817,'Цена сообщена клиенту','%COLUMN% = 12018',15175);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151818,'Оплачено','%COLUMN% = 12019',15175);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151819,'Заказано','%COLUMN% =12020 ',15175);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151820,'Получен','%COLUMN% = 12021',15175);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151821,'Доставлен клиенту','%COLUMN% = 12022',15175);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151822,'Возврат','%COLUMN% = 12023',15175);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151823,'Все','1=1',15175);
+
+
+-- 1574.Состояние заявки на изъятие техники
+insert into sFilterFields(id,name,sql_code,filter_id) values(151824,'Обрабатывается','%COLUMN% = 12024',15176);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151825,'Отказ(Клиент)','%COLUMN% = 12025',15176);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151826,'Отказ(Наша сторона)','%COLUMN% = 12026',15176);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151827,'Техника забрана','%COLUMN% = 12027',15176);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151828,'Ожидание запчасти','%COLUMN% = 12028',15176);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151829,'Техника ожидает отвоза','%COLUMN% = 12029',15176);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151830,'Доставлено','%COLUMN% = 12030',15176);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151831,'Все','1=1',15176);
+
+
 
 -- Создание таблицы фильтров действий
 drop table if exists actionFilters;
@@ -2802,8 +2836,13 @@ create table actionFilters(
 insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15211,15171,'Дата выезда:',5031,15181,1,1);
 
 -- delete from actionFilters where param_id = 15214;
-insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15214,15171,'Дата забора:',5031,15181,1,1);
-insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15214,15171,'Дата отвоза:',50216,15181,2,1);
+insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15214,15171,'Дата забора:',5031,15184,1,1);
+insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15214,15171,'Дата отвоза:',50216,151813,2,1);
+insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15214,15176,'Состояние:',50217,151831,2,1);
+
+insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15215,15171,'Дата заказа:',5035,15184,1,1);
+insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15215,15171,'Дата прихода:',5036,151813,2,1);
+insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15215,15175,'Состояние:',50203,151823,3,1);
 
 insert into actionFilters(param_id,filter_id,name,prop_id,default_value,position,showable) values(15212,15172,'Время создания:',5022,15185,1,1);
 

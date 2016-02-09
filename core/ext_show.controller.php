@@ -24,11 +24,16 @@ class ExtShowController {
 				$contr = new $contr[0]->items[501]; //501.Название
 				$params2[5048] = $aFilter->items[5095];
 				$params2[5082] =  $aFilter->items[5082];
-				$contr->execute($params2);
 
-				$filters2[5048] = '%COLUMN%=' . $aFilter->items[5094];
+
+
+				$filters2[5048] = '%COLUMN%=' . $aFilter->items[5094];//5094.Значение по умолчанию
 				$defValue = $model->getResources(162, $filters2);
-				$filters3[$aFilter->items[5082]] = $defValue[0]->items[5096];
+				$filters3[$aFilter->items[5082]] = $defValue[0]->items[5096];//5096.SQL,5082.Идентификатор свойства
+				$model->log("ExtShowController: ParamSetId=".$paramSetId.", PropId=".$aFilter->items[5082].", DefaultValue=".$aFilter->items[5094].", SQL=".$defValue[0]->items[5096]);
+
+				$params2[5094] = $aFilter->items[5094];
+				$contr->execute($params2);
 			}
 			echo '<a onclick="sendData(2316);">Применить</a>';
 			echo '</div>';

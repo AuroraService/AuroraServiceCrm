@@ -155,6 +155,11 @@ switch ($action) {
 		$model->log("ACTION=2359,Viewer=".$viewerId.",SelectedForm=".$json[50129].",SelectedEntity=".$json[50146]);
 		$viewer=$model->getViewer($viewerId,$params,$model);
 		$cell = new Cell(null,null);
+
+		$params[50129]=$json[$selectedForm][50185];
+		$params[5013]=$selectedEntity;
+		$params[5082]=$json[$selectedForm][5082];
+		$params[5088]=$json[$selectedForm][5088];
 		$echo = $viewer->show($cell,$params);
 		//$model->log("ACTION=2359,RESULT=".$echo);
 		$ret[0] = $echo;

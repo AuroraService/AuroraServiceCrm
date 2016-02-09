@@ -133,8 +133,8 @@ function sendDataJSON(data, elemId) {
 
 function editProperty(form,entId,propId,valCounter,value){
   //alert(form+", "+propId+", "+valCounter+", "+value);
+  //alert (form+','+entId+','+propId+','+valCounter+','+value);
   data[form][entId][propId][valCounter]=value;
-
   //alert(value);
 }
 
@@ -269,14 +269,14 @@ function sendForm(frm){
 
 
 function sendForm2(frm, req, req_frm,rewriteFlag1,rewriteFlag2) {
-  alert(rewriteFlag1);
+  //alert(rewriteFlag1);
   if (rewriteFlag1 == undefined) rewriteFlag1=true;
   if (rewriteFlag2 == undefined) rewriteFlag2=true;
   var rewriteFlag2=rewriteFlag2 || true;
    var req = req || false;
   data['50129']=frm;
   resultContainer = data[frm]['50181'];
-  alert(resultContainer);
+  //alert(resultContainer);
   var str = 'data='+JSON.stringify(data);
   //var elemId=elemId || 'dop_form_interface';
   $.ajax({
@@ -286,7 +286,7 @@ function sendForm2(frm, req, req_frm,rewriteFlag1,rewriteFlag2) {
     cache: false,
     data: str,
     success: function(data,status,xhr) {
-		alert(data[0]);
+		//alert(data[0]);
 		if (resultContainer != undefined){
             //alert(rewriteFlag1);
 			if (rewriteFlag1) $(resultContainer).text("");
@@ -395,12 +395,15 @@ function fileRemove(obj){
 }
 
 function getViewer(formCnt,resId,propId,propCounter,resultContainer,viewer){
-  alert(12345);
+  //alert(propCounter);
   data['-2'] = {};
   data['-2']['5058']=2359;
   data['-2']['50181']=resultContainer;
   data['-2']['50178']=viewer;
+  data['-2']['5082']=propId;
+  data['-2']['5088']=propCounter;
+  data['-2']['50185']=formCnt;
   data['50146']=resId;
   sendForm2(-2, false, null,false);
-  alert(123456);
+  //alert(123456);
 }

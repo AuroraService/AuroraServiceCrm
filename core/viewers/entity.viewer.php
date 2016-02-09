@@ -24,7 +24,7 @@ class EntityViewer{
 		
 		//$result['0']=$result['0'].'FormId='.$formId;
 		
-		$result['1']=$result['1'].'data["50129"]='.$formCounter.'; data["50130"]='.$formCounter.'; data["'.$formCounter.'"]={};data["'.$formCounter.'"]["5065"] = '.$formId.'; data["'.$formCounter.'"]["'.$resId.'"]={};data["'.$formCounter.'"]["5055"]='.$params[5055].';';
+		$result['1']=$result['1'].'data["50129"]='.$formCounter.'; data["50130"]='.$formCounter.'; data["'.$formCounter.'"]={};data["'.$formCounter.'"]["5065"] = '.$formId.'; data["'.$formCounter.'"]["'.$resId.'"]={};data["'.$formCounter.'"]["'.$resId.'"]["50223"]={}; data["'.$formCounter.'"]["5055"]='.$params[5055].';';
 		
 		
 		$resource2 = $model->getResource2Opt($resId,null);
@@ -41,6 +41,8 @@ class EntityViewer{
 		if (!empty($val->cols)) foreach ($val->cols as $col_value) {
 			//$formCounter++;
 			$propId = $col_value->property;
+
+
 			
 			$params[5013] = $resId;
 			$params[5082] = $propId;
@@ -89,8 +91,9 @@ class EntityViewer{
 				$cell = new Cell(null,null);
 				$viewerData[50115][$propId][0]=$viewer->show($cell, $params);
 			}
+			$result['1']=$result['1'].'data["'.$formCounter.'"]["'.$resId.'"]["50223"]["'.$propId.'"]='.($valueCounter+1).';';
 			//$result[0]=$result[0].'CARDINAL='.$col_value->res->items['50111']['0'];;
-			if ($col_value->prop->items[50111][0] != 1) {$viewerData[50115][$propId][-1]='<a onclick="getViewer(\''.$params[50129].'\',\''.$params[5013].'\',\''.$params[5082].'\',\''.$params[5088].'\',\''."#".$params[50129]."-".$resId."-".$propId.'\',\''.$col_value->viewer.'\');">Добавить</a>';}
+			if ($col_value->prop->items[50111][0] != 1) {$viewerData[50115][$propId][-1]='<a onclick="getViewer(\''.$params[50129].'\',\''.$params[5013].'\',\''.$params[5082].'\',data[\''.$formCounter.'\'][\''.$resId.'\'][\'50223\'][\''.$propId.'\']++,\''."#".$params[50129]."-".$resId."-".$propId.'\',\''.$col_value->viewer.'\');">Добавить</a>';}
 			//$params[50129].",".$params[5013].",".$params[5082].",".$params[5088]
 			$model->log("EntityViewer: FieldOk");
 			$lineNum++;
@@ -107,11 +110,13 @@ class EntityViewer{
 			$propId = $col_value->property;
 			$result[0]=$result[0]. "<tr>";
 			$result[0]=$result[0]. "<td>".$col_value->name."</td>";
-			$result[0]=$result[0]. "<td id = '".$params[50129]."-".$resId."-".$propId."''>";
+			$result[0]=$result[0]. "<td>";
+			$result[0]=$result[0]."<div id = '".$params[50129]."-".$resId."-".$propId."''>";
 			if (!empty($viewerData[50115][$propId][0])) foreach ($viewerData[50115][$propId] as $valueCounter =>$propValue) {
 				$value = $propValue;
 				if ($valueCounter >= 0) $result[0]=$result[0]. $value;
 			}
+			$result[0]=$result[0].'</div>';
 			$result[0]=$result[0].$viewerData[50115][$propId][-1];
 			$result[0]=$result[0]. '</td></tr>';
 			//$lineNum++;

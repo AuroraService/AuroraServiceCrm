@@ -13,11 +13,12 @@ class FilterController {
 		//$propId = $filter[0]->items[5082];
 		$propId = $params[5082];
 		//print_r($filter[0]);
-		echo ' <script language ="JavaScript">data["'.$formId.'"]["5095"]["'.$propId.'"] = '.$filter[0]->items[5094].'; </script>';//5094.Значение по умолчанию
+		if (!empty($params[5094])) $defValue = $params[5094]; else $defValue = $filter[0]->items[5094];
+		echo ' <script language ="JavaScript">data["'.$formId.'"]["5095"]["'.$propId.'"] = '.$defValue.'; </script>';//5094.Значение по умолчанию
 		//echo '<script language ="JavaScript">data["'.$formId.'"]["5095"]["'.$filterId.'"]=</script>';
 		echo "<select onchange='editFilter(".$formId.",".$params[5082].",this.options[this.selectedIndex].value); data[\"".$formId."\"][\"50149\"]=1; sendData2(data,data_container,false);'>";
 		foreach($fields as $field){
-			if ($field->items[5048] == $filter[0]->items[5094]) {
+			if ($field->items[5048] == $defValue) {
 				$selected = 'selected';
 			} else $selected = '';
 
