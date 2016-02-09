@@ -89,6 +89,9 @@ class EntityViewer{
 				$cell = new Cell(null,null);
 				$viewerData[50115][$propId][0]=$viewer->show($cell, $params);
 			}
+			//$result[0]=$result[0].'CARDINAL='.$col_value->res->items['50111']['0'];;
+			if ($col_value->prop->items[50111][0] != 1) {$viewerData[50115][$propId][-1]='<a onclick="getViewer(\''.$params[50129].'\',\''.$params[5013].'\',\''.$params[5082].'\',\''.$params[5088].'\',\''."#".$params[50129]."-".$resId."-".$propId.'\',\''.$col_value->viewer.'\');">Добавить</a>';}
+			//$params[50129].",".$params[5013].",".$params[5082].",".$params[5088]
 			$model->log("EntityViewer: FieldOk");
 			$lineNum++;
 		}
@@ -104,12 +107,14 @@ class EntityViewer{
 			$propId = $col_value->property;
 			$result[0]=$result[0]. "<tr>";
 			$result[0]=$result[0]. "<td>".$col_value->name."</td>";
-			$result[0]=$result[0]. "<td>";
+			$result[0]=$result[0]. "<td id = '".$params[50129]."-".$resId."-".$propId."''>";
 			if (!empty($viewerData[50115][$propId][0])) foreach ($viewerData[50115][$propId] as $valueCounter =>$propValue) {
 				$value = $propValue;
-				$result[0]=$result[0]. $value;
+				if ($valueCounter >= 0) $result[0]=$result[0]. $value;
 			}
+			$result[0]=$result[0].$viewerData[50115][$propId][-1];
 			$result[0]=$result[0]. '</td></tr>';
+			//$lineNum++;
 
 }
 		$result[0]=$result[0]. "</table></div>";

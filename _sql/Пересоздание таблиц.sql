@@ -1512,7 +1512,7 @@ insert into sColumns(id, name, position,  type, template,editable,form,pid,viewe
   values(112517,'Срок изъятия',16,1, NULL,1,1156,NULL,121,1511290);
   
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112520,'Список запчастей',17,1, NULL,1,1156,NULL,121,11511295);
+  values(112520,'Список запчастей',17,1, NULL,1,1156,NULL,121,1511295);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(112521,'Вложение',18,0, NULL,1,1156,NULL,1224,1511294);
   
@@ -1799,7 +1799,7 @@ insert into sColumns(id, name, position, type, template,editable,form,pid,viewer
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
   values(112503, 'Название', 4, 1, NULL,1,15393,NULL,121,1511217);
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112519, 'Изображение', 4, 0, NULL,1,15393,NULL,1223,1511293);
+  values(112519, 'Изображение', 4, 0, NULL,1,15393,NULL,1224,1511293);
  
 select max(id) from sColumns;
  
@@ -2176,8 +2176,9 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(15
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511291,1012,50219,'dep_executor',102,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511292,1012,50220,'samp_executor',102,0);
 
-insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511294,1012,50221,'attachment',1018,1);
+insert into ent_properties(id, ent_id, prop_id, alias,domain,external,cardinal) values(1511294,1012,50221,'attachment',1018,1,-1);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(1511295,1012,50222,'part_list',134,0);
+select * from ent_properties;
 -- 10.Элемент предметной области
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(151191,10,5048,'id',10,0,0);
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external) values(151192,10,503,'location',134,0);
@@ -2399,10 +2400,10 @@ insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511249,102
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511250,1029,50166,'schema_id',1019);
 -- 1018.Файлы
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511251,1018,5048,'id',1018,0,0);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511252,1018,50142,'ph_name',135);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511252,1018,50142,'ph_name',134);
 insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511253,1018,5051,'type',135);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511254,1018,50177,'path',135);
-insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511255,1018,50197,'description',135);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511254,1018,50177,'path',134);
+insert into ent_properties(id, ent_id, prop_id, alias,domain) values(1511255,1018,50197,'description',134);
 
 -- 111.Форма просмотра
 insert into ent_properties(id, ent_id, prop_id, alias,domain,external,editable) values(1511257,111,5048,'id',111,0,0);
@@ -2854,3 +2855,5 @@ insert into forms(id,result_viewer,action,result_container,result_domain,pid,nes
 insert into forms(id,result_viewer,action,result_container,result_domain,pid) values(15368,1212,2354,'#find_res_2',1016,15371);
 
 insert into forms(id,result_viewer,action,result_container,result_domain,pid) values(15369,null,2354,null,1016,15372);
+
+select * from models
