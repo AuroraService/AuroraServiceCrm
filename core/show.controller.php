@@ -34,8 +34,21 @@ class ShowController {
 		if (!empty($table->data)) foreach ($table->data as $val) {
 			echo ' <script language ="JavaScript">data["'.$formCounter.'"]["'.$val[0]->id.'"]={};</script>';//Переписать
 			echo "<tr>";
+			//DELETE START
 			$colNum = 0;
 			foreach ($val as $col_value) {
+				if ($action->items[5055]==1010){
+					if ($table->cols[$colNum]->property == 5036) $tempDate = $col_value->value;
+					if ($table->cols[$colNum]->property == 50203) $tempState = $col_value->id;
+				}
+				$colNum++;
+			}
+			//DELETE END
+			
+			$colNum = 0;
+			
+			foreach ($val as $col_value) {
+
 				$params[5055] = $table->cols[$colNum]->domain;
 				$params[5048] = $val[0]->id; //Переписать
 				$params[50199]=$table->cols[$colNum]->res->items[50199][0];
@@ -43,10 +56,19 @@ class ShowController {
 				$params[50201]=$table->cols[$colNum]->res->items[50201][0];
 				$params[50130]=$formCounter;
 				$viewer = $model->getViewer($table->cols[$colNum]->viewer,$params,$this);
-				echo '<td>'.$viewer->show($col_value,$params).'</td>';
+				$tdbackground="fd"; // строка для изменение фона в зависимости от даты
+				if ($action->items[5055]==1010){
+					$day_diff=ceil((strtotime($tempDate)-time()) / 86400);
+					if ($day_diff=="-0") $day_diff=0;
+					if (($day_diff<10) and (($tempState=="12020") or ($tempState=="12015"))) $tdbackground="background-color: rgb(245,112,118);";
+					//$tdbackground=strtotime($tempDate);
+					
+				}
+				echo '<td ddif="'.$day_diff.'" style="'.$tdbackground.'">'.$viewer->show($col_value,$params).'</td>';
 				$this->printJavaScript($formCounter,$val[0]->id,$table->cols[$colNum]->property,0,$col_value->value); //Переписать
 				$colNum++;
 			}
+			if ($action->items[5055]==1010){echo 'Заявка на заказ запчасти, Date='.$tempDate.', TempState='.$tempState.'<br>';};
 			echo "</tr>";
 			$lineNum++;
 		}
