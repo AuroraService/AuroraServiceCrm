@@ -68,7 +68,9 @@ class ShowController {
 				$this->printJavaScript($formCounter,$val[0]->id,$table->cols[$colNum]->property,0,$col_value->value); //Переписать
 				$colNum++;
 			}
-			if ($action->items[5055]==1010){echo 'Заявка на заказ запчасти, Date='.$tempDate.', TempState='.$tempState.'<br>';};
+			if ($action->items[5055]==1010){
+				//echo 'Заявка на заказ запчасти, Date='.$tempDate.', TempState='.$tempState.'<br>';
+			};
 			echo "</tr>";
 			$lineNum++;
 		}

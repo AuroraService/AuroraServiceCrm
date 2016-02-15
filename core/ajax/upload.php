@@ -16,6 +16,7 @@ if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
 chdir('../');
 require_once("model.php");
 $model = Model::getModel();
+$model->log("FILE_PATH=".$uploadfile);
 $items[50177][0]= "core/ajax/".$uploadfile;
 $items[50142][0]= basename($_FILES['userfile']['name']);
 $file = new Resource2($items);

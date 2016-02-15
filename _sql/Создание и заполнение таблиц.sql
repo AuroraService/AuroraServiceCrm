@@ -115,6 +115,8 @@ create table requests(
   dep_executor bigint,
   samp_executor bigint,
   part_list varchar(256),
+  payment_state bigint default 12034,
+  service_state bigint dafault 12031,
   start_date datetime default '2015-11-01',
   end_date   datetime default '9999-01-01',
   PRIMARY KEY(id,end_date)
@@ -222,6 +224,7 @@ create table addresses(
   value      varchar(256),
   obj_id varchar(256),
   comment varchar(256),
+  ind varchar(256),
   start_date datetime default '2015-11-01',
   end_date   datetime default '9999-01-01',
   PRIMARY KEY(id,end_date)

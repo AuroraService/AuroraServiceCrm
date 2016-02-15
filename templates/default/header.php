@@ -7,7 +7,7 @@
     <title><? echo $var_names_sitetitle; ?></title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <? require_once('/plugins/req.php'); ?>
+    <? require_once('plugins/req.php'); ?>
     <script type="text/javascript" src="/plugins/load.js"></script>
 
     <!--[if lt IE 9]>

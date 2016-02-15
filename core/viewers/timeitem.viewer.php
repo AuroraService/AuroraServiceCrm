@@ -15,10 +15,12 @@ class TimeItemViewer{
         $count_selector=1;
 		foreach ($this->items as $elem){
 			if ($elem->id == $cell->value) $selected = "_selected "; else $selected = "";
+			$selected = "_selected ";
 			//$result = $result."<option".$selected.">".$elem->value."</option>";
 			$result=$result.'<div class="control_time_selector'.$selected.'" id="tt_sel_'.$count_selector.'" onclick="SelectTime(tt_sel_'.$count_selector.')"; //"SelectTime(fds)">'.$elem->value.'</div>';
 			$count_selector=$count_selector+1;
 		}
+		$result=$result."<input type='text' onchange='editProperty(".$params[50129].",".$params[5013].",".$params[5082].",".$params[5088].",this.value);/>";
 
 		return $result.'<script>
             function SelectTime(vid) {

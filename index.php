@@ -59,7 +59,7 @@ echo '
 <ul style="width: 100%;">
 
 </ul></div>';
-echo '<div style="position: fixed; bottom: 80px; height: 20px; width: 100px; background-color: black;" onclick="messageAdd();"></div>';
+//echo '<div style="position: fixed; bottom: 80px; height: 20px; width: 100px; background-color: black;" onclick="messageAdd();"></div>';
 //echo '<div class="message_list_view" >Vot</div>';
 require_once('temp/footer.php'); // Временная подгрузка меню, пока не готова динамическая
 //require_once($var_pth_template.$template_end);

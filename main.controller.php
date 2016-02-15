@@ -106,7 +106,7 @@ class Controller{
 		}
         echo '</div>
               <div class="col-xs-12 col-sm-6 col-md-5 col-lg-4">';
-		//$result = $this->executeAction(2352,null);
+		$result = $this->executeAction(2352,null);
 		echo $result[0];
 		echo '</div>';
 		echo '</div>';
