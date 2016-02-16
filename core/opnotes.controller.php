@@ -10,16 +10,24 @@ class OpNotesController {
                  <p class="msg-header clearfix">
                  <span style="float: left;">Записки операторов</span>
                  <span class="msg-add-open" style="float: right;" id="href-op-msg-add">Добавить<span class="glyphicon glyphicon-chevron-down" style="margin-left: 5px;" id="href-op-msg-add-arrow"></span></span>
+                 
                  <span class="msg-add-open" style="float: right; margin-right: 20px;" id="href-op-filters-add">Фильтр<span class="glyphicon glyphicon-chevron-down" id="href-op-filters-add-arrow" style="margin-left: 5px;"></span></span>
+                 <span class="glyphicon glyphicon-remove tt" id="filter_clear_btn" style="cursor: pointer; float: right; font-size: 8pt; color: red; margin-right: 5px; margin-top: 3px;" data-toggle="tooltip" data-placement="left" title="Сбросить фильтр"></span>
                  </p>
                  <div id="op-msg-added-form" style="display: none;" up="false">
-                 <textarea placeholder="Текст сообщения" style="width: 100%; max-width: 100%;"></textarea>
+                 <textarea class="form-control" placeholder="Текст сообщения" style="width: 100%; max-width: 100%;"></textarea>
                  <div class="msg-footer">
                  <input type="checkbox"><span style="line-height: 10px;">Требует исполнения</span>
                  <button type="button" class="btn btn-default btn-xs" style="float: right;">Отправить</button>
                  </div>
                  </div>
                  <div class="op-msg-filters" id="op-msg-filters-form" style="display: none; z-index: 999;" up="false">
+                    <input id="filter_input" type="text" class="form-control" style="width: 90%; margin: 10px auto;" onkeyup="checkFilterStatus();"/>
+                    <p style="width: 90%; margin: 5px auto;">
+                       <input id="fch1" type="checkbox" checked="checked"> В обработке</input><br />
+                       <input id="fch2" type="checkbox" checked="checked"> Исполненные</input><br />
+                       <input id="fch3" type="checkbox" checked="checked"> Отмененные</input><br />
+                    </p>
                  </div><div id="op_view_form">';
 		foreach ($notes as $note) {
 			if (!empty($note->items[50150])) $user = $model->getResource($note->items[50150],102); //50150.Отправитель сообщения, 102.Сотрудник
@@ -52,6 +60,16 @@ class OpNotesController {
 		}
 		$ret[0]=$ret[0].'</div></div>';
 $ret[1]='<script>
+$(".tt").tooltip();
+
+function checkFilterStatus(){
+    var res = false;
+    if ($("#filter_input").val() != "") res=true;
+    if ($("#fch1").prop("checked")) res=true;
+    if (!res) $("#filter_clear_btn").css("display", "none");
+    else $("#filter_clear_btn").css("display", "inline");
+}
+
 $("#href-op-msg-add").click(function(){
   if ($("#op-msg-added-form").attr("up")=="false"){
     $("#op-msg-added-form").slideDown();

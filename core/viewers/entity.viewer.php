@@ -137,7 +137,7 @@ class EntityViewer{
 		//$ret=$ret. '<script language ="JavaScript">';
 		$mas = 'mas'.$formCounter.'_'.$entId.'_'.$propId;
 		if ($valueCounter == 0) $ret=$ret. "var ".$mas." = {};";
-		$ret=$ret. $mas."['".$valueCounter."']='".$propValue."';
+		$ret=$ret. $mas."['".$valueCounter."']=`".$propValue."`;
 		data['".$formCounter."']['". $entId."']['".$propId."'] = ".$mas.";";
 		//$ret=$ret. "</script>";
 		return $ret;

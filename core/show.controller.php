@@ -111,9 +111,9 @@ class ShowController {
 		echo '<script language ="JavaScript">';
 		$mas = 'mas'.$formCounter.'_'.$entId.'_'.$propId;
 		if ($valueCounter == 0) echo "var ".$mas." = {};";
-		echo $mas."['".$valueCounter."']='".$propValue."';
-		data['".$formCounter."']['". $entId."']['".$propId."'] = ".$mas.";";
-		echo "</script>";
+		echo $mas.'[`'.$valueCounter.'`]=`'.$propValue.'`;
+		data[`'.$formCounter.'`][`'. $entId.'`][`'.$propId.'`] = '.$mas.';';
+		echo '</script>';
 	}
 }
 ?>
