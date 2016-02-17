@@ -298,11 +298,11 @@ class Model {
 	public function getDataSet($table, $formId, $id, $filters = null){
 		$entId = $this->getResProperty($formId,507,0); //507.Представление
 		$tableName = $this->getResProperty($entId,503,0,0); //503.Местоположение
-		if ($this->isSubclassOf($entId,1612)) $where2 = ' and end_date = "9999-01-01"'; //1612.Версионная сущность
+		if ($this->isSubclassOf($entId,1612)) $where2 = ' and '.$tableName.'.end_date = "9999-01-01"'; //1612.Версионная сущность
 		$columns = '';
 		foreach ($table->cols as $line)  {
 			if (!empty($filters[$line->property])){
-				$filter = str_replace('%COLUMN%',$line->alias,$filters[$line->property]);
+				$filter = str_replace('%COLUMN%',$tableName.".".$line->alias,$filters[$line->property]);
 				$where2 = $where2 ." and ". $filter;
 			}
 			if ($line->external == '0'){
@@ -310,10 +310,10 @@ class Model {
 					$childCols = $this->getChildColumns($line->id);
 					$location = $this->getResProperty($line->domain,503);
 					if (!empty($childCols)) $columns = $columns . ", " . "(select concat($childCols) from $location where $location .id = $tableName.$line->alias and $location.end_date='9999-01-01') ".$line->alias."_value";
-					else $columns = $columns . ", " . $line->alias . " ".$line->alias."_value";
+					else $columns = $columns . ", " .$tableName.".".$line->alias . " ".$line->alias."_value";
 				}
 				if ($line->type == 3) $column = "DATE_FORMAT(".$line->alias.",'".$line->template."') ".$line->alias; else $column = $line->alias;
-				$columns = $columns . ", " . $column;
+				$columns = $columns . ", " . $tableName.".".$column;
 			} else {
 
 				if ($line->external == 1) {$relation = 'subj_id'; $relation2 = 'obj_id'; $property = $line->property;} else {$relation = 'obj_id'; $relation2 = 'subj_id'; $property = $this->getResProperty($line->property,5049,0);} //5049.Явдяется обратным
@@ -348,7 +348,7 @@ class Model {
 		$classId = $this->getResProperty($formId,507,0);
 		$tableClassId = $this->getStorageClass($tableName);
 		if (!empty($tableClassId) && $classId != $tableClassId) {
-			$filter[$filterNum] = "type = '".$classId."'";
+			$filter[$filterNum] = $tableName."."."type = '".$classId."'";
 			$filterNum++;
 		}
 		//if ($filterNum != 0) {
@@ -366,7 +366,12 @@ class Model {
 		$columns = substr($columns,2);
 		if (!empty($filters[50147])) $limit = ' limit '.$filters[50147]; else $limit = '';
 		//echo 'LIMIT='.$filters[50147];
-		$query = "select SQL_CALC_FOUND_ROWS ". $columns. " from ".$tableName." ".$where . $limit;
+		if (!empty($filters[50100])) {
+			$join = " join dim_resource r on r.id = ".$tableName.".id ";
+			$where = $where." and ".str_replace('%COLUMN%',"r.search_name",$filters[50100])." ";
+		}
+		$query = "select SQL_CALC_FOUND_ROWS ". $columns. " from ".$tableName." ".$join.$where . $limit;
+
 		file_put_contents("log_sql","\n$query",FILE_APPEND);
 		//echo $query;
 		$this->log("QUERY:".$query);

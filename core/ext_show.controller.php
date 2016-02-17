@@ -22,20 +22,20 @@ class ExtShowController {
 				$contr = $model->getResources(14, $filters4);
 				require_once(substr($contr[0]->items[503], 5));   //503.Местоположение
 				$contr = new $contr[0]->items[501]; //501.Название
-				$params2[5048] = $aFilter->items[5095];
+				$params2[5048] = $aFilter->items[5048];
 				$params2[5082] =  $aFilter->items[5082];
 
 
 
 				$filters2[5048] = '%COLUMN%=' . $aFilter->items[5094];//5094.Значение по умолчанию
-				$defValue = $model->getResources(162, $filters2);
+				if (!empty($aFilter->items[5094])) $defValue = $model->getResources(162, $filters2);
 				$filters3[$aFilter->items[5082]] = $defValue[0]->items[5096];//5096.SQL,5082.Идентификатор свойства
 				$model->log("ExtShowController: ParamSetId=".$paramSetId.", PropId=".$aFilter->items[5082].", DefaultValue=".$aFilter->items[5094].", SQL=".$defValue[0]->items[5096]);
 
 				$params2[5094] = $aFilter->items[5094];
 				$contr->execute($params2);
 			}
-			echo '<a onclick="sendData(2316);">Применить</a>';
+			//echo '<a onclick="sendData(2316);">Применить</a>';
 			echo '</div>';
 		}
 		$params[5095]=$filters3;

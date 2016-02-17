@@ -397,7 +397,7 @@ function fileRemove(obj){
 function getViewer(formCnt,resId,propId,propCounter,resultContainer,viewer){
   //alert(propCounter);
   data['-2'] = {};
-  data['-2']['5058']=2359;
+  data['-2']['5058']=2363;
   data['-2']['50181']=resultContainer;
   data['-2']['50178']=viewer;
   data['-2']['5082']=propId;

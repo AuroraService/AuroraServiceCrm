@@ -2,6 +2,7 @@
 //file_put_contents("log","start");
 //error_reporting(0);
 chdir('../../');
+ob_start();
 
 require_once('core/model.php');
 $model = Model::getModel();
@@ -19,6 +20,7 @@ if (empty($action)) $action=$json[$json[50129]][5058];
 require_once('main.controller.php');
 $mainController = Controller::getController();
 //echo 'USER:'.$json[50126][5079];
+//echo 'F:'.$json[1][5095][5048];
 $mainController->loadPermissions($json[50126][5079]);
 
 file_put_contents("log",'ActionId='.$action);
@@ -42,11 +44,15 @@ switch ($action) {
 		$startRow = $json[$formCounter][50148];//50148.Начальная позиция
 
 		$f1[50109] = '%COLUMN%='.$json[$formCounter][50109];//50109.Идентификатор набора параметра
-		$filters = $model->getResources(163,$f1);//163.Фильтр
-		foreach($filters as $filter){
+		if (!empty($json[$formCounter][50109])) $filters = $model->getResources(163,$f1);//163.Фильтр
+		if (!empty($filters)) foreach($filters as $filter){
 			$f2[5048] = '%COLUMN%='.$params[5095][$filter->items[5082]];//5095.Фильтр [5095]->[$filterId]->[$fieldId]
-			$field = $model->getResources(162,$f2);//162.Поле фильтра
-			$expFilters[$filter->items[5082]]=$field[0]->items[5096];//5096.SQL
+			if (!empty($filter->items[5095])) {
+				$field = $model->getResources(162, $f2);//162.Поле фильтра
+				$expFilters[$filter->items[5082]] = $field[0]->items[5096];//5096.SQL
+			} else {
+				$expFilters[$filter->items[5082]] = $params[5095][$filter->items[5082]];//5096.SQL
+			}
 			//print_r($expFilters);
 		}
 		$params[50147] = $expFilters[50147];//50147.Количество строк
@@ -134,10 +140,13 @@ switch ($action) {
         //$ret['2']='123';
         //$ret['3']['4']=5;
 		file_put_contents("log","\nHTML=".$ret[0],FILE_APPEND);
-		file_put_contents("log","\nERROR:".$php_errormsg,FILE_APPEND);
+		//echo '12345';
+		$out = ob_get_contents();
+		file_put_contents("log","\nBUFFER=".$out,FILE_APPEND);
+		//file_put_contents("log","\nERROR:".$php_errormsg,FILE_APPEND);
         $ret=json_encode($ret);
 		//$error = 0/0;
-		file_put_contents("log","\nERROR:".$php_errormsg,FILE_APPEND);
+		//file_put_contents("log","\nERROR:".$php_errormsg,FILE_APPEND);
 
         echo $ret;
         //return $ret;
@@ -146,13 +155,13 @@ switch ($action) {
         //echo 'Viewer='.$json[50178];
         //echo 'List';
         break;
-	case '2359':
+	case '2363':
 		$selectedForm = $json[50129];
 		$selectedEntity = $json[50146];
 		$viewerId = $json[$selectedForm][50178];
 		//$ret[0]='Viewer';
 		$model=Model::getModel();
-		$model->log("ACTION=2359,Viewer=".$viewerId.",SelectedForm=".$json[50129].",SelectedEntity=".$json[50146]);
+		$model->log("ACTION=2361,Viewer=".$viewerId.",SelectedForm=".$json[50129].",SelectedEntity=".$json[50146]);
 		$viewer=$model->getViewer($viewerId,$params,$model);
 		$cell = new Cell(null,null);
 

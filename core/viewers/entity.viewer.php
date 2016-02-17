@@ -111,7 +111,7 @@ class EntityViewer{
 			$result[0]=$result[0]. "<tr>";
 			$result[0]=$result[0]. "<td>".$col_value->name."</td>";
 			$result[0]=$result[0]. "<td>";
-			$result[0]=$result[0]."<div id = '".$params[50129]."-".$resId."-".$propId."''>";
+			$result[0]=$result[0]."<div id = '".$params[50129]."-".$resId."-".$propId."'>";
 			if (!empty($viewerData[50115][$propId][0])) foreach ($viewerData[50115][$propId] as $valueCounter =>$propValue) {
 				$value = $propValue;
 				if ($valueCounter >= 0) $result[0]=$result[0]. $value;

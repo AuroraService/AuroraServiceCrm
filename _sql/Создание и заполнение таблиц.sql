@@ -34,6 +34,12 @@ insert into users(id,first_name,second_name,position,state,paswd,login) values(1
 insert into users(id,first_name,second_name,position,state,paswd,login) values(15019,'Дмитрий','Подопригора','Курьер','Активный', md5(md5('12345')),'dpodoprigora');
 insert into users(id,first_name,second_name,position,state,paswd,login) values(150110,'Дмитрий','Караваев','Сервис-инженер','Активный', md5(md5('12345')),'dkaravaev');
 
+insert into users(id,first_name,second_name,patronymic,position,tel,state,paswd,login) values(150111,'Майоров','Роман', '','Техник','','Активный',md5(md5('12345')),'rmaiorov');
+insert into users(id,first_name,second_name,patronymic,position,tel,state,paswd,login) values(150112,'Порчхидзе','Эдуард', '','Техник','','Активный',md5(md5('12345')),'aporchhidze');
+insert into users(id,first_name,second_name,patronymic,position,tel,state,paswd,login) values(150113,'Баев','Максим', '','Техник','','Активный',md5(md5('12345')),'mbaev');
+insert into users(id,first_name,second_name,patronymic,position,tel,state,paswd,login) values(150114,'Попов','Иван', 'Васильевич','Техник','','Активный',md5(md5('12345')),'ipopov');
+
+select * from base_users
 
 insert into dim_resource(id,name,search_name,type) values(15011,'Чернов Максим Михайлович','Чернов Максим Михайлович Разработчик Россия, Саратовская обл., г.Ртищево, ул.Железнодорожная, д.16., кв.56 +7(906)313-75-54',102);
 insert into dim_resource(id,name,search_name,type) values(15012,'Лобанов Станислав Дмитриевич','Лобанов Станислав Дмитриевич Руководитель разработки +7(906)153-26-06  slobanov',102);
@@ -46,6 +52,10 @@ insert into dim_resource(id,name,search_name,type) values(15018,'Коротко�
 insert into dim_resource(id,name,search_name,type) values(15019,'Подопригора Дмитрий','Подопригора Дмитрий  Курьер   dpodoprigora',102);
 insert into dim_resource(id,name,search_name,type) values(150110,'Караваев Дмитрий','Караваев Дмитрий  Сервис-инженер   dkaravaev',102);
 
+insert into dim_resource(id,name,search_name,type) values(150111,'Роман Майоров','Роман Майоров',102);
+insert into dim_resource(id,name,search_name,type) values(150112,'Эдуард Порчхидзе','Эдуард Порчхидзе',102);
+insert into dim_resource(id,name,search_name,type) values(150113,'Максим Баев','Максим Баев',102);
+insert into dim_resource(id,name,search_name,type) values(150114,'Иван Попов','Иван Попов',102);
 /*
 select u.id, concat(IFNULL(u.second_name,''),' ',IFNULL(u.first_name,''),' ',IFNULL(u.patronymic,''),' ',IFNULL(u.position,''),' ',IFNULL(u.tel,''),' ',IFNULL(u.address,''),' ',IFNULL(u.login,''))
 from users u;
@@ -116,24 +126,13 @@ create table requests(
   samp_executor bigint,
   part_list varchar(256),
   payment_state bigint default 12034,
-  service_state bigint dafault 12031,
+  service_state bigint default 12031,
+  model_name varchar(256),
   start_date datetime default '2015-11-01',
   end_date   datetime default '9999-01-01',
   PRIMARY KEY(id,end_date)
 );
 
--- alter table requests add column prepayment varchar(256);
--- alter table requests add column prepayment varchar(256);
--- alter table requests add column   del_date date;
--- alter table requests add column   state1 bigint default 12024;
--- alter table requests add column   samp_period varchar(256);
--- alter table requests add column   dep_executor bigint;
--- alter table requests add column   samp_executor bigint;
--- alter table requests add column   part_list varchar(256);
-  
--- alter table requests modify column state bigint default 12015;
--- update requests set state = 12015 where state is null;
--- select * from requests where state is null;
 
 insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time,version_state) values(15031,'12.10.2015', 'la-la-la',109,15021,15012,15091,15082, '10000','201510-12',1203,1208,15241);
 insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time,version_state) values(15032,'12.08.2011', 'test1',1010,15022,15011,15092,15081, '10000','12.08.2010',1203,1208,15242);
@@ -143,7 +142,7 @@ insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address
 insert into requests(id,creation_time,comment,type,client_id,user_id,tel,address,cost,dep_date,state,dep_time,version_state) values(15036,'12.10.2015', 'la-la-la',109,15021,15012,15091,15082, '10000','2015-10-12',1203,1208,15246);
 
 
-
+delete from dim_resource where type in(109,1010,1011,1012);
 insert into dim_resource(id,name,search_name,type) values(15031,'Заявка №15031','15031 Лобанов Станислав Дмитриевич Илья Бобошко Александрович +7(909)925-77-54 Железнодорожная 12-15',109);
 insert into dim_resource(id,name,search_name,type) values(15032,'Заявка №15032','15032 Чернов Максим Михайлович Валентин Коткин Николаевич +7(906)313-75-54 Красная 16-54',1010);
 insert into dim_resource(id,name,search_name,type) values(15033,'Заявка №15033','15033 Лобанов Станислав Дмитриевич Елена Ерохина Владимировна +7(913)160-49-42 Красная 16-54',1011);
@@ -669,6 +668,22 @@ insert into tech_types(id,show_name) values (15409,'Кондиционер');
 
 insert into dim_resource(id,name,type,search_name)
 select id,show_name,1031,show_name from tech_types;
+
+-- Создание таблицы комментариев
+drop table if exists comments;
+create table  comments(
+  id bigint,
+  creation_time timestamp default current_timestamp,
+  creator bigint,
+  value varchar(1024),
+  start_date       datetime default '2015-10-01',
+  end_date         datetime default '9999-01-01',
+  PRIMARY KEY(id,end_date)
+);
+
+insert into comments(id,value) value(15421,'Тестовый комментарий');
+
+insert into dim_resource(id,type) values(15421,1032); 
   
 -- 
 select * from actionFilters;
