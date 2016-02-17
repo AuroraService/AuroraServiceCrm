@@ -12,7 +12,7 @@ class OpNotesController {
                  <span class="msg-add-open" style="float: right;" id="href-op-msg-add">Добавить<span class="glyphicon glyphicon-chevron-down" style="margin-left: 5px;" id="href-op-msg-add-arrow"></span></span>
                  
                  <span class="msg-add-open" style="float: right; margin-right: 20px;" id="href-op-filters-add">Фильтр<span class="glyphicon glyphicon-chevron-down" id="href-op-filters-add-arrow" style="margin-left: 5px;"></span></span>
-                 <span class="glyphicon glyphicon-remove tt" id="filter_clear_btn" style="cursor: pointer; float: right; font-size: 8pt; color: red; margin-right: 5px; margin-top: 3px;" data-toggle="tooltip" data-placement="left" title="Сбросить фильтр"></span>
+                 <span class="glyphicon glyphicon-remove tt" id="filter_clear_btn" style="display: none; cursor: pointer; float: right; font-size: 8pt; color: red; margin-right: 5px; margin-top: 3px;" data-toggle="tooltip" data-placement="left" title="Сбросить фильтр"></span>
                  </p>
                  <div id="op-msg-added-form" style="display: none;" up="false">
                  <textarea class="form-control" placeholder="Текст сообщения" style="width: 100%; max-width: 100%;"></textarea>
@@ -24,9 +24,9 @@ class OpNotesController {
                  <div class="op-msg-filters" id="op-msg-filters-form" style="display: none; z-index: 999;" up="false">
                     <input id="filter_input" type="text" class="form-control" style="width: 90%; margin: 10px auto;" onkeyup="checkFilterStatus();"/>
                     <p style="width: 90%; margin: 5px auto;">
-                       <input id="fch1" type="checkbox" checked="checked"> В обработке</input><br />
-                       <input id="fch2" type="checkbox" checked="checked"> Исполненные</input><br />
-                       <input id="fch3" type="checkbox" checked="checked"> Отмененные</input><br />
+                       <input id="fch1" type="checkbox" checked="checked" onclick="checkFilterStatus();"> В обработке</input><br />
+                       <input id="fch2" type="checkbox" checked="checked" onclick="checkFilterStatus();"> Исполненные</input><br />
+                       <input id="fch3" type="checkbox" checked="checked" onclick="checkFilterStatus();"> Отмененные</input><br />
                     </p>
                  </div><div id="op_view_form">';
 		foreach ($notes as $note) {
@@ -65,10 +65,19 @@ $(".tt").tooltip();
 function checkFilterStatus(){
     var res = false;
     if ($("#filter_input").val() != "") res=true;
-    if ($("#fch1").prop("checked")) res=true;
+    if (!$("#fch1").prop("checked")) res=true;
+    if (!$("#fch2").prop("checked")) res=true;
+    if (!$("#fch3").prop("checked")) res=true;
     if (!res) $("#filter_clear_btn").css("display", "none");
     else $("#filter_clear_btn").css("display", "inline");
 }
+$("#filter_clear_btn").click(function(){
+   $("#filter_input").val("");
+   $("#fch1").prop("checked", true);
+   $("#fch2").prop("checked", true);
+   $("#fch3").prop("checked", true);
+   $("#filter_clear_btn").css("display", "none");
+});
 
 $("#href-op-msg-add").click(function(){
   if ($("#op-msg-added-form").attr("up")=="false"){
