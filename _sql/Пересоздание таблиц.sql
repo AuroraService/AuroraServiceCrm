@@ -188,6 +188,9 @@ insert into dim_resource(id,name,type) values(12032,'Ожидает запчас
 insert into dim_resource(id,name,type) values(12033,'Ожидает выезда',120);
 insert into dim_resource(id,name,type) values(12039,'Выполнен',120);
 
+insert into dim_resource(id,name,type) values(12040,'Отказ(Клиент)',120);
+insert into dim_resource(id,name,type) values(12041,'Отказ(Наша сторона)',120);
+
 -- Состояния сервисной заявки
 insert into dim_resource(id,name,type) values(12034,'Не оплачен',120);
 insert into dim_resource(id,name,type) values(12035,'Частично оплачен',120);
@@ -423,11 +426,15 @@ insert into triplets(subj_id, prop_id,obj_id) values(12031,1515,120);
 insert into triplets(subj_id, prop_id,obj_id) values(12032,1515,120);
 insert into triplets(subj_id, prop_id,obj_id) values(12033,1515,120);
 insert into triplets(subj_id, prop_id,obj_id) values(12039,1515,120);
+insert into triplets(subj_id, prop_id,obj_id) values(12040,1515,120);
+insert into triplets(subj_id, prop_id,obj_id) values(12041,1515,120);
 
 insert into triplets(subj_id, prop_id,obj_id) values(12031,502,1196);
 insert into triplets(subj_id, prop_id,obj_id) values(12032,502,1196);
 insert into triplets(subj_id, prop_id,obj_id) values(12033,502,1196);
 insert into triplets(subj_id, prop_id,obj_id) values(12039,502,1196);
+insert into triplets(subj_id, prop_id,obj_id) values(12040,502,1196);
+insert into triplets(subj_id, prop_id,obj_id) values(12041,502,1196);
 
 
 -- Состояния по оплате
@@ -725,6 +732,8 @@ insert into triplets(subj_id, prop_id,obj_id) values(15013,5011,239); -- Соз�
 
 insert into triplets(subj_id, prop_id,obj_id) values(15013,5011,2362); -- Просмотр комментариев
 
+insert into triplets(subj_id, prop_id,obj_id) values(15013,5011,2345); -- Создание сущности
+
 -- 15016.Великанова Юлия
 insert into triplets(subj_id, prop_id,obj_id) values(15016,5011,232);
 insert into triplets(subj_id, prop_id,obj_id) values(15016,5011,2326);
@@ -981,7 +990,7 @@ insert into sColumns(id, name, position,  type, template,editable,form,pid,viewe
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(11221,'Возможные проблемы',9,1, NULL,1,1113,NULL,1210,151163);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(11225,'Стоимость',10,1, NULL,1,1113,NULL,1210,151170);
+  values(11225,'Стоимость запчастей',10,1, NULL,1,1113,NULL,1210,151170);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(11226,'Стоимость ремонта',11,1, NULL,1,1113,NULL,1210,151171);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
@@ -990,10 +999,10 @@ insert into sColumns(id, name, position,  type, template,editable,form,pid,viewe
   values(112529,'Состояние оплаты',13,0, null,1,1113,NULL,1210,1511297);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(11219,'Состояние',14,0, null,1,1113,NULL,1210,1511296);
-/*
+
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(11227,'Комментарий',15,1, NULL,1,1113,NULL,1210,151165);
-*/
+
 select max(id) from sColumns;
 
 insert into sColumns(id, name, position, property, alias, domain, type, template,editable,location,form,pid,external,viewer) 
@@ -1473,7 +1482,7 @@ insert into sColumns(id, name, position,  type, template,editable,form,pid,viewe
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,value_template,event_form,event_form_viewer,event_form_container) 
   values(11284, 'Адрес', 8, 0, NULL,1,1153,NULL,123,151160,'%5066%',1157,null,'#dop_form_interface');
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112536, 'Название модели',9, 1, NULL,1,1153,NULL,121,1511299);
+  values(112536, 'Название модели',9, 1, NULL,1,1153,NULL,1222,1511299);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(11290, 'Модель', 10, 0, NULL,1,1153,NULL,123,151169);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
@@ -1481,7 +1490,7 @@ insert into sColumns(id, name, position,  type, template,editable,form,pid,viewe
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(11292, 'Стоимость ремонта', 12, 1, NULL,1,1153,NULL,121,151171);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(11287, 'Возможные проблемы', 13, 1, NULL,1,1153,NULL,121,151163);
+  values(11287, 'Возможные проблемы', 13, 1, NULL,1,1153,NULL,1222,151163);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(11285, 'Состояние', 14, 4, NULL,1,1153,NULL,124,1511296);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
@@ -1492,7 +1501,7 @@ insert into sColumns(id, name, position,  type, template,editable,form,pid,viewe
   */
 
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(11293, 'Комментарий', 16, 1, NULL,1,1153,NULL,121,151165);
+  values(11293, 'Комментарий', 16, 1, NULL,1,1153,NULL,1222,151165);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
   values(112524,'Вложение',17,0, NULL,1,1153,NULL,1224,1511294);
   /*
@@ -1542,7 +1551,7 @@ insert into sColumns(id, name, position,  type, template,editable,form,pid,viewe
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,value_template) 
   values(112492,'Запчасть',14, 0, NULL,1,1154,NULL,123,1511269,'%50139%');
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id) 
-  values(112493,'Название запчасти',15, 1, NULL,1,1154,NULL,121,1511271);
+  values(112493,'Название запчасти',15, 1, NULL,1,1154,NULL,1222,1511271);
 insert into sColumns(id, name, position,  type, template,editable,form,pid,viewer,ent_prop_id,value_template) 
   values(112494,'Модель техники',16, 0, NULL,1,1154,NULL,123,1511272,'%50139%');
   
@@ -1942,6 +1951,15 @@ insert into sColumns(id, name, position, type, template,editable,form,pid,viewer
   values(112544, 'Текст', 4, 1, NULL,1,15394,NULL,121,1511304); 
 insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
   values(112545, 'Вложение', 5, 0, NULL,1,15394,NULL,1224,1511305); 
+  
+-- 15395.Форма изменения записки оператора
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112546, 'Статус исполнения', 1, 1, NULL,1,15395,NULL,122,1511191); 
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112547, 'Исполнитель', 2, 0, NULL,1,15395,NULL,122,1511192); 
+insert into sColumns(id, name, position, type, template,editable,form,pid,viewer,ent_prop_id) 
+  values(112548, 'Дата исполнения', 3, 1, NULL,1,15395,NULL,122,1511193); 
+
 
 select max(id) from sColumns;
  
@@ -2075,10 +2093,10 @@ insert into entities(id, location,namespace,counter,name_template,search_name_te
 insert into entities(id, location) values(106, 'actions');
 insert into entities(id, location) values(107, 'logins');
 insert into entities(id, location) values(103, 'requests');
-insert into entities(id, location,namespace,counter,name_template,search_name_template,present_name_template) values(109, 'requests',1512,10,'Заявка №%5048%','%5048% %5022% %5014% %5024% %5025% %5026% %5029%','Дата создания:%5022%, Исполнитель:%5014%, Клиент:%5024%, Телефон:%5025%, Адрес:%5026%');
-insert into entities(id, location,namespace,counter,name_template,search_name_template,present_name_template) values(1010, 'requests',1513,10,'Заявка №%5048%','%5048%','%5048%');
-insert into entities(id, location,namespace,counter,name_template,search_name_template,present_name_template) values(1011, 'requests',1514,10,'Заявка №%5048%','%5048%','%5048%');
-insert into entities(id, location,namespace,counter,name_template,search_name_template,present_name_template) values(1012, 'requests',1515,10,'Заявка №%5048%','%5048%','%5048%');
+insert into entities(id, location,namespace,counter,name_template,search_name_template,present_name_template) values(109, 'requests',1512,10,'Заявка №%5048%','%5048% %5022% %5014% %5024% %5025% %5026% %5029% %5021%','Дата создания:%5022%, Исполнитель:%5014%, Клиент:%5024%, Телефон:%5025%, Адрес:%5026%');
+insert into entities(id, location,namespace,counter,name_template,search_name_template,present_name_template) values(1010, 'requests',1513,10,'Заявка №%5048%','%5048% %5022% %5014% %5024% %5025% %5026% %5029% %5021%','%5048%');
+insert into entities(id, location,namespace,counter,name_template,search_name_template,present_name_template) values(1011, 'requests',1514,10,'Заявка №%5048%','%5048% %5022% %5014% %5024% %5025% %5026% %5029% %5021%','%5048%');
+insert into entities(id, location,namespace,counter,name_template,search_name_template,present_name_template) values(1012, 'requests',1515,10,'Заявка №%5048%','%5048% %5022% %5014% %5024% %5025% %5026% %5029% %5021%','%5048%');
 
 insert into entities(id, location) values(12, 'sCrmElements');
 insert into entities(id, location) values(14, 'sCrmElements');
@@ -2985,6 +3003,8 @@ insert into sFilterFields(id,name,sql_code,filter_id) values(151832,'Обраб�
 insert into sFilterFields(id,name,sql_code,filter_id) values(151833,'Ожидает запчасти','%COLUMN% = 12032',15177);
 insert into sFilterFields(id,name,sql_code,filter_id) values(151834,'Ожидает выезда','%COLUMN% = 12033',15177);
 insert into sFilterFields(id,name,sql_code,filter_id) values(151842,'Выполнен','%COLUMN% = 12039',15177);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151843,'Отказ(Клиент)','%COLUMN% = 12040',15177);
+insert into sFilterFields(id,name,sql_code,filter_id) values(151844,'Отказ(Наша сторона)','%COLUMN% = 12041',15177);
 insert into sFilterFields(id,name,sql_code,filter_id) values(151835,'Все','1=1',15177);
 
 -- 1578.Состояние заявки по оплате

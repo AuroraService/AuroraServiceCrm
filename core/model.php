@@ -938,7 +938,10 @@ class Model {
 				$alias = $prop->items[506];//506.Псевдоним
 				$selectList = $selectList . ',' . $tableAlias . '.' . $alias . ' "' . $propId.'"';
 				if (!empty($filters[$propId])) $whereList = $whereList . ' and ' . str_replace('%COLUMN%', $tableAlias.".".$alias, $filters[$propId]);
-				if (!empty($orders[$propId])) $orderList = $orderList . ',' . $tableAlias . '.' . $alias;
+				if (!empty($orders[$propId])) {
+					if ($orders[$propId]==1) $direction = ' ASC'; else $direction = ' DESC';
+					$orderList = $orderList . ',' . $tableAlias . '.' . $alias.$direction;
+				}
 			}
 		}
 		$ret[0] = $selectList;
@@ -1116,13 +1119,19 @@ class Model {
 
 
 	public function insertTriplets($id, $subjId,$propId,$value,$isResource = 1, $startDate = null){
-		if ($isResource) $value_name = 'obj_id'; else $value_name = 'value';
+		$this->log("Model->insertTriplets");
+		if (!empty($value)) {
+			if ($isResource) $value_name = 'obj_id'; else $value_name = 'value';
 
-		if (empty($startDate)) $startDate = date("Y-m-d H:i:s");
-		$query = "insert into triplets(subj_id,prop_id,".$value_name.",start_date,end_date) values(".$subjId.",".$propId.",".$value.",'".$startDate."','9999-01-01')";
-		$this->log("QUERY:".$query);
-		$result = mysqli_query($this->link, $query);
-		if (!$result) {$this->log('ERROR: QUERY:'.$query . mysqli_error()); die('ERROR: QUERY:'.$query . mysqli_error());};
+			if (empty($startDate)) $startDate = date("Y-m-d H:i:s");
+			$query = "insert into triplets(subj_id,prop_id," . $value_name . ",start_date,end_date) values(" . $subjId . "," . $propId . "," . $value . ",'" . $startDate . "','9999-01-01')";
+			$this->log("QUERY:" . $query);
+			$result = mysqli_query($this->link, $query);
+			if (!$result) {
+				$this->log('ERROR: QUERY:' . $query . mysqli_error());
+				die('ERROR: QUERY:' . $query . mysqli_error());
+			};
+		}
 		return $startDate;
 	}
 
@@ -1240,6 +1249,7 @@ class Model {
 
 	public function updateExternalProperties($newResource2,$oldResource2,$entProps,$formPropsIds,$closeDate = null){
 		//echo 'UpdateExternal';
+		$this->log("Model->updateExternalProperties, ID=".$newResource2->items[5048][0]);
 		if (empty($closeDate)) $closeDate = date("Y-m-d H:i:s");
 		$resourceId = $newResource2->items[5048][0];
 		foreach ($entProps as $propId => $prop) {

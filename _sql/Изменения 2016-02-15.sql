@@ -34,8 +34,8 @@ select  from requests;
 
 -- Перенос заявок
 select @id:=(select counter + 10 from entities where id = 109);
-insert into requests(id,creation_time,dep_time, dep_date, ext_id, model_name, poss_problem, comment, cost,type,user_id)
-select concat('1512',@id:=@id+1) id, dateAdd creation_time,timeext dep_time, dateext dep_date, id ext_id, model model_name, hint poss_problem, comment, price cost, 109 type, worker user_id
+insert into requests(id,creation_time,dep_time, dep_date, ext_id, model_name, poss_problem, comment, cost,type,user_id,service_state)
+select concat('1512',@id:=@id+1) id, dateAdd creation_time,timeext dep_time, dateext dep_date, id ext_id, model model_name, hint poss_problem, comment, price cost, 109 type, worker user_id, status service_state
 from base_items where type = 0;
 
 update entities set counter = (@id+10) where id = 109;
@@ -136,9 +136,26 @@ insert into comments(id,value) value(15421,'Тестовый комментар�
 
 insert into dim_resource(id,type) values(15421,1032); 
 
--------------------------------------------------------------
-select * from triplets where prop_id = 50221;
+-- Проставление статуса
+update requests set service_state = 12031 where service_state = 0 and ext_id is not null;
+update requests set service_state = 12040 where service_state = 2 and ext_id is not null;
+update requests set service_state = 12039 where service_state = 1 and ext_id is not null;
 
+select * from requests;
+-- Проставление идентификатора в комментарии и имени поиска
+update requests set comment = concat(IFNULL(comment,''),' ID=',ext_id) where ext_id is not null;
+
+update dim_resource d
+  join requests r on r.id = d.id and r.ext_id is not null
+set d.search_name = concat(d.search_name,' ',r.ext_id);
+
+select ext_id,count(1) from requests group by ext_id;
+
+select * from dim_resource where id = 15124006
+
+-- ------------------------------------------------------------------------------------------------
+select * from triplets where prop_id = 50221;
+/*
 14 стас 15012
 23 подопригора 15019
 21 димочка караваев 150110
@@ -147,9 +164,9 @@ select * from triplets where prop_id = 50221;
 29 порчхидзе 150112
 25 баев  150113
 19 попов иван 150114
-
+*/
 select * from base_users;
 select * from base_items;
 select * from base_comments;
 
-select * from dim_resource where id = 15121904
+select * from dim_resource where id = 15121904;

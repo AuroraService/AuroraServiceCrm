@@ -105,13 +105,15 @@ class Controller{
 			} else echo "Нет прав";
 		}
         echo '</div>
-              <div class="col-xs-12 col-sm-6 col-md-5 col-lg-4">';
-		$result = $this->executeAction(2352,null);
+              <div id = "op_notes_result" class="col-xs-12 col-sm-6 col-md-5 col-lg-4">';
+		$params2[5095][5022]='%COLUMN%>"'.date("Y-m-d H:i:s",mktime(date("H"), date("i"), date("s"), date("m")  , date("d")-2, date("Y"))).'"';
+		$params2[5079]=$model->user_id;
+		$result = $this->executeAction(2352,$params2);
 		echo $result[0];
 		echo '</div>';
 		echo '</div>';
 		echo '</div>';
-		echo $result[1];
+		echo '<script>'.$result[1].'</script>';
 	}
 
 	public function loadPermissions($userId){

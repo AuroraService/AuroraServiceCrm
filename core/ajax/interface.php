@@ -23,7 +23,7 @@ $mainController = Controller::getController();
 //echo 'F:'.$json[1][5095][5048];
 $mainController->loadPermissions($json[50126][5079]);
 
-file_put_contents("log",'ActionId='.$action);
+file_put_contents("log",'ActionId='.$action.', Form='.$json[50129].', Entity='.$json[50146]);
 switch ($action) {
     case '2315':
 		$params[5048] = $json[50128]; //5048.Идентификатор
@@ -64,12 +64,17 @@ switch ($action) {
 	case '2345':
 
 		$selectedForm = $json[50129];
+		$selectedEntity = $json[50146];
 		//echo 'Create'.$json[$selectedForm][5066];
-		$resource2 = new Resource2($json[$selectedForm]);
+		$resource2 = new Resource2($json[$selectedForm][$selectedEntity]);
 		$params[5013] = $resource2;//5013.Объект
 		$params[5065] = $json[$selectedForm][5065];//5065.Форма
 		$params[5055] = $json[$selectedForm][5055];//5055.Домен
 		$mainController -> executeAction(2345, $params);//2345.Создание сущности
+		$out = ob_get_contents();
+		file_put_contents("log","\nBUFFER=".$out,FILE_APPEND);
+		$ret[0]='<br>';
+		echo json_encode($ret);
 		break;
 	case '2334':
 		//echo 'Step';
@@ -178,6 +183,13 @@ switch ($action) {
 		echo $ret;
 
 		break;
+	case '2352':
+		//echo 'Step';
+		$params[5079]=$json[50126][5079];
+		$ret = $mainController->executeAction(2352, $params);//2352.Отображение записок
+		$ret = json_encode($ret);
+		echo $ret;
+		break;
 
 	case '2342':
 		//echo 'Step';
@@ -188,6 +200,7 @@ switch ($action) {
 		$params[5058] = 2342;
         $mainController->executeAction(2342, $params);//2342.Поиск сущностей(обработка запроса)
         break;
+
 
 	return 0;
 }

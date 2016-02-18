@@ -457,34 +457,6 @@ insert into dim_resource(id,name,type) values(15277,'15275.jpg',1018);
 insert into dim_resource(id,name,type) values(15278,'15275.jpg',1018);
 select * from files;
 
--- Создание таблицы записок
-drop table if exists op_notes;
-create table  op_notes(
-  id  bigint,
-  value varchar(1024),
-  sender bigint,
-  creation_time datetime,
-  ex_req_flag int,
-  ex_status int,
-  performer_id bigint,
-  ex_date datetime,
-  start_date datetime default '2015-10-01',
-  end_date   datetime default '9999-01-01',
-  PRIMARY KEY(id,end_date)
-);
-
-select * from op_notes;
-
-insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15321,'Записка 1',15011,'2015-12-10 13:42',0,0,null,null);
-insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15322,'Записка 2',15011,'2015-12-10 13:43',1,0,null,null);
-insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15323,'Записка 3',15011,'2015-12-10 13:44',1,0,null,null);
-insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15324,'Записка 4',15011,'2015-12-10 13:40',1,0,null,null);
-
-insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15325,'Записка 5',15012,'2015-12-10 13:45',1,2,15015,'2015-12-10 13:55');
-insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15326,'Записка 6',15013,'2015-12-10 13:49',1,1,15014,'2015-12-10 13:50');
-
-insert into dim_resource(id,type) values(15324,1026);
-
 
 -- Создание таблицы моделей
 drop table if exists models;
@@ -684,6 +656,35 @@ create table  comments(
 insert into comments(id,value) value(15421,'Тестовый комментарий');
 
 insert into dim_resource(id,type) values(15421,1032); 
+
+-- Создание таблицы записок
+drop table if exists op_notes;
+create table  op_notes(
+  id  bigint,
+  value varchar(1024),
+  sender bigint,
+  creation_time timestamp default current_timestamp,
+  ex_req_flag int,
+  ex_status int,
+  performer_id bigint,
+  ex_date datetime,
+  start_date datetime default '2015-10-01',
+  end_date   datetime default '9999-01-01',
+  PRIMARY KEY(id,end_date)
+);
+
+select * from op_notes;
+
+insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15321,'Записка 1',15011,'2016-02-17 13:42',0,0,null,null);
+insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15322,'Записка 2',15011,'2016-02-16 13:43',1,0,null,null);
+insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15323,'Записка 3',15011,'2016-02-16 13:44',1,0,null,null);
+insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15324,'Записка 4',15011,'2016-02-16 13:40',1,0,null,null);
+
+insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15325,'Записка 5',15012,'2016-02-16 13:45',1,2,15015,'2015-12-10 13:55');
+insert into op_notes(id,value,sender,creation_time,ex_req_flag,ex_status,performer_id,ex_date) values (15326,'Записка 6',15013,'2016-02-16 13:49',1,1,15014,'2015-12-10 13:50');
+
+
+insert into dim_resource(id,type) values(15324,1026);
   
 -- 
 select * from actionFilters;
