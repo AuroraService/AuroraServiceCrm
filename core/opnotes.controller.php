@@ -12,7 +12,8 @@ class OpNotesController {
         $filters2[50158] = '%COLUMN% = 1';
         $filters2[50114] = 1;
         $notes2 = $model->getResourcesOpt(1026, $filters2,$orders);
-        $notes = array_merge($notes1,$notes2);
+        if (!empty($notes1) && !empty($notes2)) $notes = array_merge($notes1,$notes2);
+        else if (!empty($notes1)) $notes = $notes1; else $notes = $notes2;
         $userId = $params[5079];
         $ret[0]='<div class="b-panel">
                  <p class="msg-header clearfix">

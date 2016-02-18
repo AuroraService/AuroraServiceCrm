@@ -23,6 +23,8 @@ $mainController = Controller::getController();
 //echo 'F:'.$json[1][5095][5048];
 $mainController->loadPermissions($json[50126][5079]);
 
+if (($action == 231)||($action == 232)||($action == 234)) $action = '2316';
+
 file_put_contents("log",'ActionId='.$action.', Form='.$json[50129].', Entity='.$json[50146]);
 switch ($action) {
     case '2315':

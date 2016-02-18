@@ -366,9 +366,9 @@ function fileUpload(obj,strEval){
           var fl_ext=fl_input.val().substr(fl_input.val().length-3,3).toLowerCase();
           var str_app="";
           if ((fl_ext=="jpg") || (fl_ext=="png") || (fl_ext=="bmp") || (fl_ext=="gif"))
-            str_app='<a href="core/ajax/'+data[0]+'" class="highslide" onclick="return hs.expand(this)"><img src="core/ajax/'+data[0]+'" width="200" alt="Highslide JS" title="Click to enlarge" /></a><div class="highslide-heading">'+data[2]+'</div>';
+            str_app='<a href="'+data[0]+'" class="highslide" onclick="return hs.expand(this)"><img src="'+data[0]+'" width="200" alt="Highslide JS" title="Click to enlarge" /></a><div class="highslide-heading">'+data[2]+'</div>';
              else
-            str_app='<a href="core/ajax/'+data+'">Скачать</a>';
+            str_app='<a href="'+data+'">Скачать</a>';
           div_vv.append(str_app);
 		  //alert(data[1]);
 		  //alert(strEval);
